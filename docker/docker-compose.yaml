@@ -1,0 +1,44 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  ubuntu:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile.ubuntu.yaml
+    container_name: ubuntu
+    tty: true
+    stdin_open: true
+    volumes:
+      - ../:/workspace
+    working_dir: /workspace
+
+  dms:
+    build:
+      context: ../dms
+      dockerfile: ../docker/Dockerfile.dms.yaml
+    container_name: dms
+    depends_on:
+      - mongodb
+    volumes:
+      - ../dms:/app
+
+  redact:
+    build:
+      context: ../redact
+      dockerfile: ../docker/Dockerfile.redact.yaml
+    container_name: redact
+    volumes:
+      - ../redact:/app
+
+volumes:
+  mongodb_data:
