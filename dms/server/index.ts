@@ -82,8 +82,10 @@ async function main() {
 
   koaRouter.use('/api', koaApiRouter.routes());
 
-  koaRouter.use((ctx) => {
-    return handle(ctx.req, ctx.res);
+  koaRouter.get('/{*any}', async (ctx) => {
+    ctx.respond = false;
+    ctx.response.status = 200;
+    await handle(ctx.req, ctx.res);
   });
 
   koaApp.use(koaRouter.routes());
