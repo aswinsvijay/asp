@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
 import { MyServerResponse } from '../objects';
+import Koa from 'koa';
 
 export type MyServerControllerFn<
   T extends {
@@ -7,4 +7,4 @@ export type MyServerControllerFn<
     queryParams: {};
   },
   TResponse extends {}
-> = (ctx: T & { req: Request; res: Response }) => Promise<MyServerResponse<TResponse>>;
+> = (ctx: T & { req: Koa.Request; res: Koa.Response }) => Promise<MyServerResponse<TResponse>>;

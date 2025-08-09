@@ -1,12 +1,17 @@
 import next from 'next';
-import express from 'express';
+import Koa from 'koa';
+import KoaRouter from 'koa-router';
 import compiledRouterConfig from './routerConfig/compiledRouterConfig';
 import Ajv from 'ajv';
 import { controllerGroup, initialize } from './controllers';
+import { errorHandler } from './middlewares';
 
-const expressApp = express();
-const apiRouter = express.Router();
+const koaApp = new Koa();
+const koaRouter = new KoaRouter();
+const koaApiRouter = new KoaRouter();
 const ajv = new Ajv();
+
+koaApiRouter.use(errorHandler);
 
 const compiledRoutes = Object.entries(compiledRouterConfig).map(([operationId, operationInfo]) => {
   const pathValidator = ajv.compile({
@@ -33,17 +38,17 @@ const compiledRoutes = Object.entries(compiledRouterConfig).map(([operationId, o
 });
 
 compiledRoutes.forEach((operationInfo) => {
-  apiRouter[operationInfo.method](operationInfo.path, async (req, res) => {
-    const pathValidationResult = operationInfo.pathValidator(req.params);
+  koaApiRouter[operationInfo.method](operationInfo.path, async (ctx) => {
+    const pathValidationResult = operationInfo.pathValidator(ctx.params);
 
     if (!pathValidationResult) {
-      return res.status(400).send('Invalid path parameters');
+      throw new Error('Invalid path parameters');
     }
 
-    const queryValidationResult = operationInfo.queryValidator(req.query);
+    const queryValidationResult = operationInfo.queryValidator(ctx.query);
 
     if (!queryValidationResult) {
-      return res.status(400).send('Invalid query parameters');
+      throw new Error('Invalid query parameters');
     }
 
     const controller = controllerGroup.get(operationInfo.operationId);
@@ -53,13 +58,16 @@ compiledRoutes.forEach((operationInfo) => {
     }
 
     const response = await controller({
-      req,
-      res,
-      pathParams: req.params,
-      queryParams: req.query,
+      req: ctx.request,
+      res: ctx.response,
+      pathParams: ctx.params,
+      queryParams: ctx.query,
     });
 
-    return res.status(response.status).send(response.data);
+    ctx.status = response.status;
+    ctx.body = response.data;
+
+    return;
   });
 });
 
@@ -72,13 +80,15 @@ async function main() {
 
   await initialize();
 
-  expressApp.use('/api', apiRouter);
+  koaRouter.use('/api', koaApiRouter.routes());
 
-  expressApp.use((req, res) => {
-    return handle(req, res);
+  koaRouter.use((ctx) => {
+    return handle(ctx.req, ctx.res);
   });
 
-  expressApp.listen(3000, () => {
+  koaApp.use(koaRouter.routes());
+
+  koaApp.listen(3000, () => {
     console.log('Server is running on port 3000');
   });
 }
