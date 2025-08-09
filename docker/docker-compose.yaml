@@ -18,6 +18,8 @@ services:
     container_name: ubuntu
     tty: true
     stdin_open: true
+    ports:
+      - "3000:3000"
     volumes:
       - ../:/workspace
     working_dir: /workspace
