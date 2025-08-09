@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "npx ts-node --project ./tsconfig.server.json ./server",
+    "dev": "ts-node --project ./tsconfig.server.json ./server",
     "prebuild": "ts-node --project tsconfig.server.json ./prebuild",
     "build": "next build",
     "start": "next start",
@@ -14,6 +14,7 @@
     "axios": "^1.6.8",
     "koa": "^3.0.1",
     "koa-router": "^14.0.0",
+    "mongoose": "^8.17.1",
     "next": "14.0.2",
     "react": "^18",
     "react-dom": "^18"
@@ -30,6 +31,7 @@
     "json-schema-to-typescript": "^13.1.1",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
+    "cross-env": "^7.0.3",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   }
