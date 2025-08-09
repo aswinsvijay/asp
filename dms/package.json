@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "ts-node --project ./tsconfig.server.json ./server",
+    "dev": "cross-env WATCHPACK_POLLING=true CHOKIDAR_USEPOLLING=true NODE_ENV=development ts-node --project ./tsconfig.server.json ./server",
     "prebuild": "ts-node --project tsconfig.server.json ./prebuild",
     "build": "next build",
     "start": "next start",
