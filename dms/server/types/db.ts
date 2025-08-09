@@ -1,6 +1,6 @@
-type ObjectId = {};
+export type ObjectId = {};
 
-type StoredDocument = {
+export type StoredDocument = {
     id: ObjectId;
     name: string;
     owner: string;
@@ -8,7 +8,7 @@ type StoredDocument = {
     parent?: ObjectId;
 }
 
-type Folder = {
+export type Folder = {
     id: ObjectId;
     name: string;
 }
