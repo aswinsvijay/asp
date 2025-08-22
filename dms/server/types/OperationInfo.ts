@@ -4,5 +4,6 @@ export type OperationInfo = {
   controller: string;
   pathParams: {};
   queryParams: {};
+  requestBody: {};
   response: {};
 };
