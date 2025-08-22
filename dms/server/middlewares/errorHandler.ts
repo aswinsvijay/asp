@@ -1,6 +1,6 @@
-import { Context, Next } from 'koa';
+import { IMiddleware } from 'koa-router';
 
-export const errorHandler = async (ctx: Context, next: Next) => {
+export const errorHandler: IMiddleware = async (ctx, next) => {
   try {
     await next();
   } catch (err) {
