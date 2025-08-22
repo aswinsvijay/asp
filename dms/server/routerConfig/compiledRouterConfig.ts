@@ -11,6 +11,7 @@ export default narrowedValue({
         type: 'string',
       },
     },
+    requestBody: {},
     response: {
       type: 'object',
       properties: {
@@ -59,6 +60,9 @@ export default narrowedValue({
       path: {
         type: 'string',
       },
+    },
+    requestBody: {
+      type: 'object',
     },
     response: {
       type: 'object',

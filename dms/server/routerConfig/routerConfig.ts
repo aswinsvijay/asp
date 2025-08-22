@@ -60,7 +60,9 @@ export default narrowedValue({
               type: 'string',
             },
           },
-          requestBody: {},
+          requestBody: {
+            type: 'object',
+          },
           response: {
             type: 'object',
             properties: {

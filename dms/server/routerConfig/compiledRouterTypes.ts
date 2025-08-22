@@ -14,6 +14,7 @@ export interface CompiledOperations {
     queryParams: {
       path?: string;
     };
+    requestBody?: unknown;
     response: {
       data: {
         root: string;
@@ -28,6 +29,9 @@ export interface CompiledOperations {
     pathParams: {};
     queryParams: {
       path?: string;
+    };
+    requestBody?: {
+      [k: string]: unknown;
     };
     response: {
       data: {};
