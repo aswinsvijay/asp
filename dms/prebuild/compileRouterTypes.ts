@@ -8,7 +8,7 @@ export default async function compileRouterTypes() {
 
   
   const compiledOperations = Object.entries(routerConfig).reduce<Record<string, JSONSchema>>(
-    (acc, [cur, operationInfo]) => {
+    (acc, [operationId, operationInfo]) => {
       if ('requestBody' in operationInfo) { 
         operationInfo.requestBody
       }
@@ -46,7 +46,7 @@ export default async function compileRouterTypes() {
 
       return {
         ...acc,
-        [cur]: schema,
+        [operationId]: schema,
       };
     },
     {}

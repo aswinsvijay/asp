@@ -54,7 +54,7 @@ function* compileRouterGenerator(
             requestBody: operationInfo.requestBody,
           }
         : {
-            requestBody: { type: 'object' },
+            requestBody: {},
           }),
       response: operationInfo.response,
     };
