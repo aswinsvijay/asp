@@ -1,6 +1,8 @@
 import next from 'next';
 import Koa from 'koa';
 import KoaRouter from 'koa-router';
+import { bodyParser } from '@koa/bodyparser';
+import koaMulter from '@koa/multer';
 import compiledRouterConfig from './routerConfig/compiledRouterConfig';
 import Ajv from 'ajv';
 import { controllerGroup, initialize } from './controllers';
@@ -12,6 +14,8 @@ const koaApiRouter = new KoaRouter();
 const ajv = new Ajv();
 
 koaApiRouter.use(errorHandler);
+koaApp.use(bodyParser());
+koaApp.use(koaMulter().any());
 
 const compiledRoutes = Object.entries(compiledRouterConfig).map(([operationId, operationInfo]) => {
   const pathValidator = ajv.compile({
@@ -28,12 +32,17 @@ const compiledRoutes = Object.entries(compiledRouterConfig).map(([operationId, o
     additionalProperties: false,
   });
 
+  const requestBodyValidator = ajv.compile(operationInfo.requestBody);
+  const responseValidator = ajv.compile(operationInfo.response);
+
   return {
     operationId,
     path: operationInfo.path,
     method: operationInfo.method,
     pathValidator,
     queryValidator,
+    requestBodyValidator,
+    responseValidator,
   };
 });
 
@@ -51,6 +60,12 @@ compiledRoutes.forEach((operationInfo) => {
       throw new Error('Invalid query parameters');
     }
 
+    const requestBodyValidationResult = operationInfo.requestBodyValidator(ctx.request.body);
+
+    if (!requestBodyValidationResult) {
+      throw new Error('Invalid request body');
+    }
+
     const controller = controllerGroup.get(operationInfo.operationId);
 
     if (!controller) {
@@ -64,10 +79,14 @@ compiledRoutes.forEach((operationInfo) => {
       queryParams: ctx.query,
     });
 
+    const responseValidationResult = operationInfo.responseValidator(response.data);
+
+    if (!responseValidationResult) {
+      throw new Error('Invalid response data');
+    }
+
     ctx.status = response.status;
     ctx.body = response.data;
-
-    return;
   });
 });
 
