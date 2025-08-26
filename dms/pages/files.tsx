@@ -3,7 +3,11 @@ import { useApiCall } from '@/src/utils';
 
 const Files: React.FC = () => {
   const path = '';
-  const { loading, error, data: response } = useApiCall('GetFiles', {
+  const {
+    loading,
+    error,
+    data: response,
+  } = useApiCall('GetFiles', {
     queryParams: {
       ...(path ? { path: path } : {}),
     },
@@ -17,12 +21,14 @@ const Files: React.FC = () => {
     return null;
   }
 
-  return response && (
-    <>
-      {response.data.items.map((item) => {
-        return item.name;
-      })}
-    </>
+  return (
+    response && (
+      <>
+        {response.data.items.map((item) => {
+          return item.name;
+        })}
+      </>
+    )
   );
 };
 
