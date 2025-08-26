@@ -13,9 +13,23 @@ const koaRouter = new KoaRouter();
 const koaApiRouter = new KoaRouter();
 const ajv = new Ajv();
 
-koaApiRouter.use(errorHandler);
+koaApp.use(errorHandler);
 koaApp.use(bodyParser());
-koaApp.use(koaMulter().any());
+koaApp.use(
+  koaMulter({
+    dest: '/file_storage',
+    limits: { fileSize: 5 * 1024 * 1024 },
+  }).fields([
+    {
+      name: 'file',
+      maxCount: 1,
+    },
+    {
+      name: 'data',
+      maxCount: 1,
+    },
+  ])
+);
 
 const compiledRoutes = Object.entries(compiledRouterConfig).map(([operationId, operationInfo]) => {
   const pathValidator = ajv.compile({
