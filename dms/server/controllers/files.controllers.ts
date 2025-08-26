@@ -9,19 +9,13 @@ controllerGroup.add('UploadFile', async (ctx) => {
   console.log(ctx.req.body);
   console.log(ctx.req.files);
 
-  if (!Array.isArray(ctx.req.files)) {
-    throw new Error('Files should be array');
+  if (Array.isArray(ctx.req.files)) {
+    throw new Error('Files should be object');
   }
 
-  const files = Object.fromEntries(
-    ctx.req.files.map((value) => {
-      return [value.fieldname, value];
-    })
-  );
+  const uploadedFile = ctx.req.files?.['file'];
 
-  const uploadedFile = files['file'];
-
-  if (!uploadedFile) {
+  if (!uploadedFile?.[0]) {
     throw new Error('file is required');
   }
 
