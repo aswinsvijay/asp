@@ -44,4 +44,4 @@ export const useApiCall = <T extends keyof CompiledOperations>(
   }, [operation, JSON.stringify(args)]);
 
   return { loading, error, data };
-}
+};
