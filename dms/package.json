@@ -23,6 +23,9 @@
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@aswinsvijay/eslint-config": "^0.0.3",
+    "@aswinsvijay/prettier-config": "^0.0.1",
+    "@aswinsvijay/tsconfig": "^0.0.1",
     "@types/koa": "^3.0.0",
     "@types/koa__multer": "^2.0.7",
     "@types/koa-router": "^7.4.8",
