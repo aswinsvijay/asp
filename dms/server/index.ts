@@ -7,6 +7,7 @@ import compiledRouterConfig from './routerConfig/compiledRouterConfig';
 import Ajv from 'ajv';
 import { controllerGroup, initialize } from './controllers';
 import { errorHandler } from './middlewares';
+import { MyServerJSONResponse } from './objects';
 
 const koaApp = new Koa();
 const koaRouter = new KoaRouter();
@@ -82,10 +83,6 @@ compiledRoutes.forEach((operationInfo) => {
 
     const controller = controllerGroup.get(operationInfo.operationId);
 
-    if (!controller) {
-      throw new Error(`Controller for operation ${operationInfo.operationId} not found`);
-    }
-
     const response = await controller({
       req: ctx.request,
       res: ctx.response,
@@ -100,7 +97,13 @@ compiledRoutes.forEach((operationInfo) => {
     }
 
     ctx.status = response.status;
-    ctx.body = response.data;
+
+    if (response instanceof MyServerJSONResponse) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      ctx.body = response.data;
+    } else {
+      throw new Error('Unhandled response type');
+    }
   });
 });
 
@@ -128,4 +131,4 @@ async function main() {
   });
 }
 
-main();
+void main();
