@@ -3,7 +3,10 @@ import { MyServerControllerFn, OperationInfo } from '../types';
 
 export class ControllerGroup<TParameterTypes extends Record<string, OperationInfo>> {
   public routerConfig: Record<string, OperationInfo>;
-  public controllerMap: Map<string, MyServerControllerFn<{ pathParams: {}; queryParams: {} }, {}>>;
+  public controllerMap: Map<
+    string,
+    MyServerControllerFn<{ pathParams: NonNullable<unknown>; queryParams: NonNullable<unknown> }, NonNullable<unknown>>
+  >;
 
   constructor(routerConfig: Record<string, OperationInfo>) {
     this.routerConfig = routerConfig;

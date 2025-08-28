@@ -3,8 +3,8 @@ import Koa from 'koa';
 
 export type MyServerControllerFn<
   T extends {
-    pathParams: {};
-    queryParams: {};
+    pathParams: NonNullable<unknown>;
+    queryParams: NonNullable<unknown>;
   },
-  TResponse extends {},
+  TResponse extends NonNullable<unknown>,
 > = (ctx: T & { req: Koa.Request; res: Koa.Response }) => Promise<MyServerResponse<TResponse>>;

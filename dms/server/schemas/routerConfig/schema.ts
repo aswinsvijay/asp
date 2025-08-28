@@ -1,5 +1,7 @@
 import { JSONSchema } from 'json-schema-to-typescript';
 
+const jsonSchemaPath = 'http://json-schema.org/draft-04/schema#';
+
 const schema = {
   title: 'RouterConfig',
   type: 'object',
@@ -47,7 +49,7 @@ const schema = {
               type: 'object',
               patternProperties: {
                 '*': {
-                  $ref: 'http://json-schema.org/draft-04/schema#',
+                  $ref: jsonSchemaPath,
                 },
               },
             },
@@ -55,12 +57,12 @@ const schema = {
               type: 'object',
               patternProperties: {
                 '*': {
-                  $ref: 'http://json-schema.org/draft-04/schema#',
+                  $ref: jsonSchemaPath,
                 },
               },
             },
             response: {
-              $ref: 'http://json-schema.org/draft-04/schema#',
+              $ref: jsonSchemaPath,
             },
           },
           required: ['response'],
@@ -80,7 +82,7 @@ const schema = {
               type: 'object',
               patternProperties: {
                 '*': {
-                  $ref: 'http://json-schema.org/draft-04/schema#',
+                  $ref: jsonSchemaPath,
                 },
               },
             },
@@ -88,15 +90,15 @@ const schema = {
               type: 'object',
               patternProperties: {
                 '*': {
-                  $ref: 'http://json-schema.org/draft-04/schema#',
+                  $ref: jsonSchemaPath,
                 },
               },
             },
             requestBody: {
-              $ref: 'http://json-schema.org/draft-04/schema#',
+              $ref: jsonSchemaPath,
             },
             response: {
-              $ref: 'http://json-schema.org/draft-04/schema#',
+              $ref: jsonSchemaPath,
             },
           },
           required: ['response'],

@@ -1,6 +1,8 @@
-export type MyServerResponseArgs = {
+import { Readable } from 'stream';
+
+export interface MyServerResponseArgs {
   status?: number;
-};
+}
 
 export class MyServerResponse<T> {
   data: T;
@@ -14,14 +16,14 @@ export class MyServerResponse<T> {
 
 export class MyServerJSONResponse<T> extends MyServerResponse<T> {}
 
-export type MyServerStreamResponseArgs = MyServerResponseArgs & {
+export interface MyServerStreamResponseArgs extends MyServerResponseArgs {
   contentType: string;
-};
+}
 
-export class MyServerStreamResponse<T> extends MyServerResponse<T> {
+export class MyServerStreamResponse extends MyServerResponse<Readable> {
   contentType: string;
 
-  constructor(data: T, args?: MyServerStreamResponseArgs) {
+  constructor(data: Readable, args?: MyServerStreamResponseArgs) {
     super(data, args);
 
     this.contentType = args?.contentType ?? '';
