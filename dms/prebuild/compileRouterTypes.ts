@@ -6,12 +6,8 @@ import compiledRouterConfig from '../server/routerConfig/compiledRouterConfig';
 export default async function compileRouterTypes() {
   const routerConfig = compiledRouterConfig;
 
-  
   const compiledOperations = Object.entries(routerConfig).reduce<Record<string, JSONSchema>>(
     (acc, [operationId, operationInfo]) => {
-      if ('requestBody' in operationInfo) { 
-        operationInfo.requestBody
-      }
       const schema: JSONSchema = {
         type: 'object',
         properties: {

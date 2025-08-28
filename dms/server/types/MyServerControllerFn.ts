@@ -6,5 +6,5 @@ export type MyServerControllerFn<
     pathParams: {};
     queryParams: {};
   },
-  TResponse extends {}
+  TResponse extends {},
 > = (ctx: T & { req: Koa.Request; res: Koa.Response }) => Promise<MyServerResponse<TResponse>>;

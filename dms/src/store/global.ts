@@ -1,8 +1,8 @@
 import React from 'react';
 
-export type IGloabalStore = {
+export interface IGloabalStore {
   theme?: 'light' | 'dark';
-};
+}
 
 export const GlobalStore = React.createContext<IGloabalStore>({});
 

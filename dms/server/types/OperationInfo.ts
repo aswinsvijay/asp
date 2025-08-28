@@ -1,4 +1,4 @@
-export type OperationInfo = {
+export interface OperationInfo {
   path: string;
   method: 'get' | 'post';
   controller: string;
@@ -6,4 +6,4 @@ export type OperationInfo = {
   queryParams: {};
   requestBody: {};
   response: {};
-};
+}
