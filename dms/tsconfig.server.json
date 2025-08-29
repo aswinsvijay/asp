@@ -2,6 +2,11 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "noEmit": false,
-    "module": "CommonJS"
-  }
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "rootDir": "./"
+  },
+  "include": ["server/**/*", "prebuild/**/*"],
+  "exclude": ["node_modules", "dist", ".next", "pages", "src", "public", "styles"]
 }
