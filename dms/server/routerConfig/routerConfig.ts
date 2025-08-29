@@ -1,5 +1,5 @@
 import { RouterConfig } from '../schemas/routerConfig/type';
-import { narrowedValue } from '../../src/utils';
+import { narrowedValue } from '../../src/utils/typeUtils';
 
 export default narrowedValue({
   paths: {
