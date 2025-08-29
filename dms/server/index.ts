@@ -6,7 +6,7 @@ import koaMulter from '@koa/multer';
 import compiledRouterConfig from './routerConfig/compiledRouterConfig';
 import Ajv from 'ajv';
 import { controllerGroup, initialize } from './controllers';
-import { errorHandler } from './middlewares';
+import { authenticator, errorHandler } from './middlewares';
 import { MyServerJSONResponse } from './objects';
 
 const koaApp = new Koa();
@@ -60,6 +60,10 @@ const compiledRoutes = Object.entries(compiledRouterConfig).map(([operationId, o
     responseValidator,
   };
 });
+
+koaApiRouter.post('/login', async () => {});
+
+koaApiRouter.use(authenticator);
 
 compiledRoutes.forEach((operationInfo) => {
   koaApiRouter[operationInfo.method](operationInfo.path, async (ctx) => {
