@@ -12,6 +12,7 @@ export type GetMethodConfig = ControllerInfo & {
   queryParams?: {
     [k: string]: HttpJsonSchemaOrgDraft04Schema;
   };
+  requestBody?: null;
   response: HttpJsonSchemaOrgDraft04Schema;
 };
 /**

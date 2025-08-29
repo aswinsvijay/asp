@@ -48,7 +48,7 @@ export default async function compileRouterTypes() {
     {}
   );
 
-  const config = await resolveConfig('.');
+  const config = await resolveConfig(__dirname);
 
   if (!config) {
     throw new Error('No prettier config found');

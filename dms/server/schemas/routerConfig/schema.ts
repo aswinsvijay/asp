@@ -61,6 +61,9 @@ const schema = {
                 },
               },
             },
+            requestBody: {
+              type: 'null',
+            },
             response: {
               $ref: jsonSchemaPath,
             },

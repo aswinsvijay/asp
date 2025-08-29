@@ -13,6 +13,7 @@ export default narrowedValue({
               type: 'string',
             },
           },
+          requestBody: null,
           response: {
             type: 'object',
             properties: {

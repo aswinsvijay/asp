@@ -48,13 +48,7 @@ function* compileRouterGenerator(
       controller: operationInfo.controller,
       pathParams: { ...ctx.pathParams, ...operationInfo.pathParams },
       queryParams: { ...ctx.queryParams, ...operationInfo.queryParams },
-      ...('requestBody' in operationInfo && operationInfo.requestBody
-        ? {
-            requestBody: operationInfo.requestBody,
-          }
-        : {
-            requestBody: {},
-          }),
+      requestBody: operationInfo.requestBody ?? {},
       response: operationInfo.response,
     };
   }
@@ -67,14 +61,14 @@ export default async function compileRouter() {
     return { ...acc, ...cur };
   });
 
-  const config = await resolveConfig('.');
+  const config = await resolveConfig(__dirname);
 
   if (!config) {
     throw new Error('No prettier config found');
   }
 
   const templateString = fs.readFileSync('./server/templates/compiledRouterConfig', 'utf8');
-  const replacedString = format(
+  const replacedString = await format(
     templateString.replace('`{{compiledRouterConfig}}`', JSON.stringify(compiledOperations, null, 2)),
     { ...config, parser: 'typescript' }
   );
