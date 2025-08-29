@@ -41,7 +41,6 @@ function* compileRouterGenerator(
     if (!operationInfo) {
       continue;
     }
-    operationInfo;
 
     compiledOperations[operationInfo.operationId] = {
       path,

@@ -16,3 +16,9 @@ export function narrowedValue<const T>(value: T) {
 export const UNSAFE_DOWNCAST = <T>(value: unknown) => {
   return value as T;
 };
+
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters, @typescript-eslint/no-explicit-any
+export const UNSAFE_PROPERTY_ACCESS = <T>(object: any, key: PropertyKey) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  return object[key] as T;
+};

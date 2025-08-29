@@ -2,8 +2,8 @@ import { controllerGroup } from '.';
 import { createStoredDocument } from '../db';
 import { MyServerJSONResponse } from '../objects';
 
-controllerGroup.add('GetFiles', async () => {
-  return new MyServerJSONResponse({ data: { root: '', items: [] } });
+controllerGroup.add('GetFiles', () => {
+  return Promise.resolve(new MyServerJSONResponse({ data: { root: '', items: [] } }));
 });
 
 controllerGroup.add('UploadFile', async (ctx) => {

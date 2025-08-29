@@ -25,12 +25,12 @@ export default async function compileRouterTypes() {
           },
           pathParams: {
             type: 'object',
-            properties: operationInfo.pathParams ?? {},
+            properties: operationInfo.pathParams,
             additionalProperties: false,
           },
           queryParams: {
             type: 'object',
-            properties: operationInfo.queryParams ?? {},
+            properties: operationInfo.queryParams,
             additionalProperties: false,
           },
           requestBody: operationInfo.requestBody,
