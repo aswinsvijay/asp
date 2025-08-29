@@ -7,11 +7,11 @@ controllerGroup.add('GetFiles', () => {
 });
 
 controllerGroup.add('UploadFile', async (ctx) => {
-  if (Array.isArray(ctx.req.files)) {
+  if (Array.isArray(ctx.request.files)) {
     throw new Error('Files should be object');
   }
 
-  const uploadedFile = ctx.req.files?.['file']?.[0];
+  const uploadedFile = ctx.request.files?.['file']?.[0];
 
   if (!uploadedFile) {
     throw new Error('file is required');

@@ -7,4 +7,4 @@ export type MyServerControllerFn<
     queryParams: NonNullable<unknown>;
   },
   TResponse extends NonNullable<unknown>,
-> = (ctx: T & { req: Koa.Request; res: Koa.Response }) => Promise<MyServerResponse<TResponse>>;
+> = (ctx: T & { request: Koa.Request; response: Koa.Response }) => Promise<MyServerResponse<TResponse>>;

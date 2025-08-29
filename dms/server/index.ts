@@ -84,8 +84,8 @@ compiledRoutes.forEach((operationInfo) => {
     const controller = controllerGroup.get(operationInfo.operationId);
 
     const response = await controller({
-      req: ctx.request,
-      res: ctx.response,
+      request: ctx.request,
+      response: ctx.response,
       pathParams: ctx.params,
       queryParams: ctx.query,
     });
