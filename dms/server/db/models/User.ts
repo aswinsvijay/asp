@@ -3,6 +3,8 @@ import { Schema, model, InferSchemaType } from 'mongoose';
 const UserSchema = new Schema({
   userId: { type: String, required: true },
   name: { type: String, required: true },
+  hashedPassword: { type: String, required: true },
+  createdAt: { type: Date, required: true },
 });
 
 export const User = model('User', UserSchema);
