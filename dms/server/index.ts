@@ -3,7 +3,7 @@ import Koa from 'koa';
 import KoaRouter from 'koa-router';
 import { bodyParser } from '@koa/bodyparser';
 import koaMulter from '@koa/multer';
-import compiledRouterConfig from './routerConfig/compiledRouterConfig';
+import compiledRouterConfig from './routerConfig/compiledRouterConfig.out';
 import Ajv from 'ajv';
 import { controllerGroup, initialize } from './controllers';
 import { authenticator, errorHandler } from './middlewares';

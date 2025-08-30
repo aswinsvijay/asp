@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { resolveConfig } from 'prettier';
 import { JSONSchema, compile } from 'json-schema-to-typescript';
-import compiledRouterConfig from '../server/routerConfig/compiledRouterConfig';
+import compiledRouterConfig from '../server/routerConfig/compiledRouterConfig.out';
 
 export default async function compileRouterTypes() {
   const routerConfig = compiledRouterConfig;
@@ -55,7 +55,7 @@ export default async function compileRouterTypes() {
   }
 
   fs.writeFileSync(
-    './server/routerConfig/compiledRouterTypes.ts',
+    './server/routerConfig/compiledRouterTypes.out.ts',
     await compile(
       {
         type: 'object',

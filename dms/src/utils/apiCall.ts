@@ -1,6 +1,6 @@
 import axios from 'axios';
-import compiledRouterConfig from '../../server/routerConfig/compiledRouterConfig';
-import { CompiledOperations } from '../../server/routerConfig/compiledRouterTypes';
+import compiledRouterConfig from '../../server/routerConfig/compiledRouterConfig.out';
+import { CompiledOperations } from '../../server/routerConfig/compiledRouterTypes.out';
 import { useEffect, useState } from 'react';
 
 export async function apiCall<T extends keyof CompiledOperations>(

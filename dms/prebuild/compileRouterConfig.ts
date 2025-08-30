@@ -73,5 +73,5 @@ export default async function compileRouter() {
     { ...config, parser: 'typescript' }
   );
 
-  fs.writeFileSync('./server/routerConfig/compiledRouterConfig.ts', replacedString);
+  fs.writeFileSync('./server/routerConfig/compiledRouterConfig.out.ts', replacedString);
 }
