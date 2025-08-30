@@ -1,10 +1,12 @@
 import { HttpStatusCode } from 'axios';
 
-export abstract class MyServerError {
+export abstract class MyServerError extends Error {
   data: NonNullable<unknown>;
   status: number;
 
   constructor(data: NonNullable<unknown>, args: { status: number }) {
+    super(JSON.stringify(data));
+
     this.data = data;
     this.status = args.status;
   }
