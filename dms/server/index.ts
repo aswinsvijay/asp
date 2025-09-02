@@ -3,15 +3,20 @@ import Koa from 'koa';
 import KoaRouter from 'koa-router';
 import { bodyParser } from '@koa/bodyparser';
 import koaMulter from '@koa/multer';
+import mongoose from 'mongoose';
 import compiledRouterConfig from './routerConfig/compiledRouterConfig.out';
 import Ajv from 'ajv';
 import { controllerGroup, initialize } from './controllers';
 import { authenticator, errorHandler } from './middlewares';
-import { MyServerJSONResponse } from './objects';
+import { MyServerBadRequestError, MyServerJSONResponse } from './objects';
+import { User } from './db/models';
+import { hashPassword } from './utils';
+import { CustomState } from './types';
 
-const koaApp = new Koa();
-const koaRouter = new KoaRouter();
-const koaApiRouter = new KoaRouter();
+const koaApp = new Koa<CustomState>();
+const koaRouter = new KoaRouter<CustomState>();
+const koaApiRouter = new KoaRouter<CustomState>();
+const koaAuthRouter = new KoaRouter<CustomState>();
 const ajv = new Ajv();
 
 koaApp.use(errorHandler);
@@ -61,7 +66,24 @@ const compiledRoutes = Object.entries(compiledRouterConfig).map(([operationId, o
   };
 });
 
-koaApiRouter.post('/login', async () => {});
+koaAuthRouter.post('/login', async (ctx) => {
+  const requestBody = (ctx.request.body as Record<string, unknown> | undefined) ?? {};
+
+  const { userId, password } = requestBody;
+
+  if (typeof userId !== 'string' || typeof password !== 'string') {
+    throw new MyServerBadRequestError('userId and password and required and must be strings');
+  }
+
+  const hashedPassword = hashPassword(password);
+
+  const x = await User.findOne({
+    userId,
+    hashedPassword,
+  });
+
+  ctx.body = x;
+});
 
 koaApiRouter.use(authenticator);
 
@@ -120,6 +142,11 @@ async function main() {
 
   await initialize();
 
+  await mongoose.connect('mongodb://host.docker.internal:27017/', {
+    auth: { username: 'admin', password: 'password' },
+  });
+
+  koaRouter.use('/auth', koaAuthRouter.routes());
   koaRouter.use('/api', koaApiRouter.routes());
 
   koaRouter.get('/{*any}', async (ctx) => {
