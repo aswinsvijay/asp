@@ -38,6 +38,14 @@ export class MyServerBadRequestError extends MyServer4xxError {
   }
 }
 
+export class MyServerUnauthorizedError extends MyServer4xxError {
+  constructor(data: NonNullable<unknown>) {
+    super(data, {
+      status: HttpStatusCode.Unauthorized,
+    });
+  }
+}
+
 export class MyServerForbiddenError extends MyServer4xxError {
   constructor(data: NonNullable<unknown>) {
     super(data, {
