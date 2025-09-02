@@ -1,12 +1,16 @@
 import { controllerGroup } from '.';
 import { createStoredDocument } from '../db';
-import { MyServerJSONResponse } from '../objects';
+import { MyServerJSONResponse, MyServerUnauthorizedError } from '../objects';
 
 controllerGroup.add('GetFiles', () => {
   return Promise.resolve(new MyServerJSONResponse({ data: { root: '', items: [] } }));
 });
 
 controllerGroup.add('UploadFile', async (ctx) => {
+  if (!ctx.state.user) {
+    throw new MyServerUnauthorizedError('Un-authorized');
+  }
+
   if (Array.isArray(ctx.request.files)) {
     throw new Error('Files should be object');
   }
@@ -21,7 +25,7 @@ controllerGroup.add('UploadFile', async (ctx) => {
     name: uploadedFile.originalname,
     path: uploadedFile.path,
     mimetype: uploadedFile.mimetype,
-    owner: '',
+    owner: ctx.state.user.userId,
   });
 
   return new MyServerJSONResponse({ data: {} });
