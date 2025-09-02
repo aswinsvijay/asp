@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "cross-env WATCHPACK_POLLING=true CHOKIDAR_USEPOLLING=true NODE_ENV=development ts-node --project ./tsconfig.server.json ./server",
     "prebuild": "ts-node --transpile-only --project tsconfig.server.json ./prebuild",
-    "build": "npm run prebuild && tsc --project tsconfig.server.json && next build",
+    "build": "tsc --project tsconfig.server.json && next build",
     "start": "NODE_ENV=production node ./dist/server",
     "lint": "eslint . && next lint"
   },
