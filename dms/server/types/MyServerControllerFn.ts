@@ -1,5 +1,6 @@
 import { MyServerResponse } from '../objects';
 import Koa from 'koa';
+import { CustomState } from './CustomState';
 
 export type MyServerControllerFn<
   T extends {
@@ -7,4 +8,6 @@ export type MyServerControllerFn<
     queryParams: NonNullable<unknown>;
   },
   TResponse extends NonNullable<unknown>,
-> = (ctx: T & { request: Koa.Request; response: Koa.Response }) => Promise<MyServerResponse<TResponse>>;
+> = (
+  ctx: T & { request: Koa.Request; response: Koa.Response; state: CustomState }
+) => Promise<MyServerResponse<TResponse>>;

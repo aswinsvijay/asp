@@ -114,6 +114,7 @@ compiledRoutes.forEach((operationInfo) => {
       response: ctx.response,
       pathParams: ctx.params,
       queryParams: ctx.query,
+      state: ctx.state,
     });
 
     const responseValidationResult = operationInfo.responseValidator(response.data);
