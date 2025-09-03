@@ -1,12 +1,14 @@
 import { RouterConfig } from '../schemas/routerConfig/type';
 import { narrowedValue } from '../../src/utils/typeUtils';
 
+const filesControllers = 'files.controllers';
+
 export default narrowedValue({
   paths: {
     '/files': {
       methods: {
         get: {
-          controller: 'files.controllers',
+          controller: filesControllers,
           operationId: 'GetFiles',
           queryParams: {
             path: {
@@ -54,7 +56,7 @@ export default narrowedValue({
           },
         },
         post: {
-          controller: 'files.controllers',
+          controller: filesControllers,
           operationId: 'UploadFile',
           queryParams: {
             path: {
@@ -75,6 +77,39 @@ export default narrowedValue({
             },
             required: ['data'],
             additionalProperties: false,
+          },
+        },
+      },
+      paths: {
+        '/{fileId}': {
+          methods: {
+            patch: {
+              controller: filesControllers,
+              operationId: 'UpdateFile',
+              pathParams: {
+                fileId: {
+                  allOf: [
+                    {
+                      type: 'string',
+                      'x-mongo-id': true,
+                    },
+                  ],
+                  tsType: 'import("mongoose").Types.ObjectId',
+                },
+              },
+              response: {
+                type: 'object',
+                properties: {
+                  data: {
+                    type: 'object',
+                    properties: {},
+                    additionalProperties: false,
+                  },
+                },
+                required: ['data'],
+                additionalProperties: false,
+              },
+            },
           },
         },
       },

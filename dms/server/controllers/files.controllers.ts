@@ -30,3 +30,9 @@ controllerGroup.add('UploadFile', async (ctx) => {
 
   return new MyServerJSONResponse({ data: {} });
 });
+
+controllerGroup.add('UpdateFile', (ctx) => {
+  console.log(ctx.pathParams.fileId);
+
+  return Promise.resolve(new MyServerJSONResponse({ data: {} }));
+});
