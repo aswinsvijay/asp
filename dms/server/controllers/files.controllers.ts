@@ -21,14 +21,14 @@ controllerGroup.add('UploadFile', async (ctx) => {
     throw new Error('file is required');
   }
 
-  await createStoredDocument({
+  const document = await createStoredDocument({
     name: uploadedFile.originalname,
     path: uploadedFile.path,
     mimetype: uploadedFile.mimetype,
     owner: ctx.state.user.userId,
   });
 
-  return new MyServerJSONResponse({ data: {} });
+  return new MyServerJSONResponse({ data: document });
 });
 
 controllerGroup.add('UpdateFile', (ctx) => {

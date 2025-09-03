@@ -11,4 +11,6 @@ export const createStoredDocument = async (args: { name: string; path: string; m
   const dataObject = new StoredDocument(insertData);
 
   await dataObject.save();
+
+  return dataObject.toObject();
 };
