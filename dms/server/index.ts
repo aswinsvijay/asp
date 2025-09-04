@@ -6,18 +6,22 @@ import koaMulter from '@koa/multer';
 import mongoose from 'mongoose';
 import compiledRouterConfig from './routerConfig/compiledRouterConfig.out';
 import Ajv from 'ajv';
+import { mongoId } from './keywords';
 import { controllerGroup, initialize } from './controllers';
 import { authenticator, errorHandler } from './middlewares';
 import { MyServerBadRequestError, MyServerJSONResponse } from './objects';
 import { User } from './db/models';
 import { hashPassword } from './utils';
 import { CustomState } from './types';
+import { createUser } from './db';
 
 const koaApp = new Koa<CustomState>();
 const koaRouter = new KoaRouter<CustomState>();
 const koaApiRouter = new KoaRouter<CustomState>();
 const koaAuthRouter = new KoaRouter<CustomState>();
-const ajv = new Ajv();
+const ajv = new Ajv({
+  keywords: [mongoId, 'tsType'],
+});
 
 koaApp.use(errorHandler);
 koaApp.use(bodyParser());
@@ -67,6 +71,12 @@ const compiledRoutes = Object.entries(compiledRouterConfig).map(([operationId, o
 });
 
 koaAuthRouter.post('/login', async (ctx) => {
+  await createUser({
+    name: 'Admin',
+    userId: 'admin',
+    hashedPassword: hashPassword('Admin$1234'),
+  });
+
   const requestBody = (ctx.request.body as Record<string, unknown> | undefined) ?? {};
 
   const { userId, password } = requestBody;
@@ -146,6 +156,8 @@ async function main() {
   await mongoose.connect('mongodb://host.docker.internal:27017/', {
     auth: { username: 'admin', password: 'password' },
   });
+
+  await mongoose.syncIndexes();
 
   koaRouter.use('/auth', koaAuthRouter.routes());
   koaRouter.use('/api', koaApiRouter.routes());
