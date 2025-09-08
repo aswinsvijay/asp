@@ -25,7 +25,7 @@ controllerGroup.add('UploadFile', async (ctx) => {
     name: uploadedFile.originalname,
     path: uploadedFile.path,
     mimetype: uploadedFile.mimetype,
-    owner: ctx.state.user.userId,
+    owner: ctx.state.user._id,
   });
 
   return new MyServerJSONResponse({ data: document });
