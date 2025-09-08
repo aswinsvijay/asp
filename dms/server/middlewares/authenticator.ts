@@ -21,7 +21,7 @@ export const authenticator: IMiddleware<CustomState> = async (ctx, next) => {
   }
 
   const user = await User.findOne({
-    userId: session.userId,
+    _id: session.user,
   });
 
   if (!user) {
