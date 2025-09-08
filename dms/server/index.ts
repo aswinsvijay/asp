@@ -9,7 +9,7 @@ import Ajv from 'ajv';
 import { mongoId } from './keywords';
 import { controllerGroup, initialize } from './controllers';
 import { authenticator, errorHandler } from './middlewares';
-import { MyServerBadRequestError, MyServerJSONResponse } from './objects';
+import { MyServerBadRequestError, MyServerJSONResponse, MyServerUnauthorizedError } from './objects';
 import { User } from './db/models';
 import { hashPassword } from './utils';
 import { CustomState } from './types';
@@ -87,12 +87,16 @@ koaAuthRouter.post('/login', async (ctx) => {
 
   const hashedPassword = hashPassword(password);
 
-  const x = await User.findOne({
+  const user = await User.findOne({
     userId,
     hashedPassword,
   });
 
-  ctx.body = x;
+  if (!user) {
+    throw new MyServerUnauthorizedError('Invalid userId or password');
+  }
+
+  ctx.body = user;
 });
 
 koaApiRouter.use(authenticator);
