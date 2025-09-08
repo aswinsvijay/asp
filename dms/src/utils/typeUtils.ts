@@ -8,6 +8,8 @@ export type RemoveIndexSignature<T> = {
   [K in keyof T as string extends K ? never : K]: T[K];
 };
 
+export type MappedOmit<T, K extends keyof T> = { [P in keyof T as P extends K ? never : P]: T[P] };
+
 export function narrowedValue<const T>(value: T) {
   return value as DeepMutable<T>;
 }
