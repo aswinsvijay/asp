@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useApiCall } from '@/src/utils';
 
 const Files: React.FC = () => {
-  const [path] = useState('');
+  const [path] = useState<string | null>(null);
   const {
     loading,
     error,
