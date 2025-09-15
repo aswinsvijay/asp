@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { useApiCall } from '@/src/utils';
+import { Types } from 'mongoose';
 
 const Files: React.FC = () => {
-  const [path] = useState<string | null>(null);
+  const [parent] = useState<Types.ObjectId | null>(null);
   const {
     loading,
     error,
     data: response,
   } = useApiCall('GetChildren', {
     queryParams: {
-      ...(path ? { path: path } : {}),
+      ...(parent ? { parent } : {}),
     },
   });
 

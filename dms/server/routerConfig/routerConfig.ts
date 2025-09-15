@@ -21,9 +21,7 @@ export default narrowedValue({
           controller: filesControllers,
           operationId: 'GetChildren',
           queryParams: {
-            path: {
-              type: 'string',
-            },
+            parent: mongoId,
           },
           requestBody: null,
           response: {
