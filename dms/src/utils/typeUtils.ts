@@ -15,7 +15,7 @@ export function narrowedValue<const T>(value: T) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
-export const UNSAFE_DOWNCAST = <T>(value: unknown) => {
+export const UNSAFE_CAST = <T>(value: unknown) => {
   return value as T;
 };
 

@@ -2,7 +2,7 @@ import axios from 'axios';
 import compiledRouterConfig from '../../server/routerConfig/compiledRouterConfig.out';
 import { CompiledOperations } from '../../server/routerConfig/compiledRouterTypes.out';
 import { useEffect, useState } from 'react';
-import { UNSAFE_DOWNCAST } from './typeUtils';
+import { UNSAFE_CAST } from './typeUtils';
 
 export async function apiCall<T extends keyof CompiledOperations>(
   operation: T,
@@ -29,7 +29,7 @@ export async function tryApiCall<T extends keyof CompiledOperations>(
 
     return [response, null] as const;
   } catch (error) {
-    return [null, UNSAFE_DOWNCAST<Error>(error)] as const;
+    return [null, UNSAFE_CAST<Error>(error)] as const;
   }
 }
 
