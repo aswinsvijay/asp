@@ -34,6 +34,9 @@ const schema = {
         post: {
           $ref: '#/definitions/PostMethodConfig',
         },
+        patch: {
+          $ref: '#/definitions/PatchMethodConfig',
+        },
       },
       additionalProperties: false,
     },
@@ -74,6 +77,42 @@ const schema = {
       ],
     },
     PostMethodConfig: {
+      allOf: [
+        {
+          $ref: '#/definitions/ControllerInfo',
+        },
+        {
+          type: 'object',
+          properties: {
+            pathParams: {
+              type: 'object',
+              patternProperties: {
+                '*': {
+                  $ref: jsonSchemaPath,
+                },
+              },
+            },
+            queryParams: {
+              type: 'object',
+              patternProperties: {
+                '*': {
+                  $ref: jsonSchemaPath,
+                },
+              },
+            },
+            requestBody: {
+              $ref: jsonSchemaPath,
+            },
+            response: {
+              $ref: jsonSchemaPath,
+            },
+          },
+          required: ['response'],
+          additionalProperties: false,
+        },
+      ],
+    },
+    PatchMethodConfig: {
       allOf: [
         {
           $ref: '#/definitions/ControllerInfo',

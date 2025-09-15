@@ -33,6 +33,16 @@ export type PostMethodConfig = ControllerInfo & {
   requestBody?: HttpJsonSchemaOrgDraft04Schema;
   response: HttpJsonSchemaOrgDraft04Schema;
 };
+export type PatchMethodConfig = ControllerInfo & {
+  pathParams?: {
+    [k: string]: HttpJsonSchemaOrgDraft04Schema;
+  };
+  queryParams?: {
+    [k: string]: HttpJsonSchemaOrgDraft04Schema;
+  };
+  requestBody?: HttpJsonSchemaOrgDraft04Schema;
+  response: HttpJsonSchemaOrgDraft04Schema;
+};
 
 export interface RouterConfig {
   paths?: RouterConfigPaths;
@@ -44,6 +54,7 @@ export interface RouterConfigPaths {
 export interface PathMethods {
   get?: GetMethodConfig;
   post?: PostMethodConfig;
+  patch?: PatchMethodConfig;
 }
 export interface ControllerInfo {
   controller: string;
@@ -51,6 +62,12 @@ export interface ControllerInfo {
 }
 /**
  * Core schema meta-schema
+ *
+ * This interface was referenced by `undefined`'s JSON-Schema definition
+ * via the `patternProperty` "*".
+ *
+ * This interface was referenced by `undefined`'s JSON-Schema definition
+ * via the `patternProperty` "*".
  *
  * This interface was referenced by `undefined`'s JSON-Schema definition
  * via the `patternProperty` "*".

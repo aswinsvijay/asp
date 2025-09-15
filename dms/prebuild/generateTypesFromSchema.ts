@@ -1,7 +1,7 @@
 import { compile } from 'json-schema-to-typescript';
 import fs from 'fs';
 import path from 'path';
-import { UNSAFE_PROPERTY_ACCESS } from '../src/utils';
+import { UNSAFE_PROPERTY_ACCESS } from '../src/utils/typeUtils';
 
 const schemaDirs = ['../server/schemas/routerConfig'];
 

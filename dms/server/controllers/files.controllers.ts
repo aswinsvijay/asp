@@ -1,12 +1,24 @@
+import { Schema, Types } from 'mongoose';
 import { controllerGroup } from '.';
-import { createStoredDocument } from '../db';
-import { MyServerJSONResponse } from '../objects';
+import { createStoredDocument, getStoredDocuments } from '../db';
+import { MyServerJSONResponse, MyServerUnauthorizedError } from '../objects';
 
-controllerGroup.add('GetFiles', () => {
-  return Promise.resolve(new MyServerJSONResponse({ data: { root: '', items: [] } }));
+controllerGroup.add('GetChildren', async () => {
+  const documents = await getStoredDocuments(null);
+
+  const mappedDocuments = documents.map((document) => ({
+    ...document,
+    type: 'document' as const,
+  }));
+
+  return new MyServerJSONResponse({ data: mappedDocuments });
 });
 
 controllerGroup.add('UploadFile', async (ctx) => {
+  if (!ctx.state.user) {
+    throw new MyServerUnauthorizedError('Un-authorized');
+  }
+
   if (Array.isArray(ctx.request.files)) {
     throw new Error('Files should be object');
   }
@@ -17,12 +29,26 @@ controllerGroup.add('UploadFile', async (ctx) => {
     throw new Error('file is required');
   }
 
-  await createStoredDocument({
+  const document = await createStoredDocument({
     name: uploadedFile.originalname,
     path: uploadedFile.path,
     mimetype: uploadedFile.mimetype,
-    owner: '',
+    owner: ctx.state.user._id,
   });
 
-  return new MyServerJSONResponse({ data: {} });
+  return new MyServerJSONResponse({ data: document });
+});
+
+controllerGroup.add('UpdateFile', (ctx) => {
+  console.log(
+    ctx.pathParams.fileId,
+    ctx.pathParams.fileId instanceof Types.ObjectId,
+    ctx.pathParams.fileId instanceof Schema.Types.ObjectId
+  );
+
+  return Promise.resolve(new MyServerJSONResponse({ data: {} }));
+});
+
+controllerGroup.add('DownloadFile', () => {
+  return Promise.resolve(new MyServerJSONResponse({ data: {} }));
 });

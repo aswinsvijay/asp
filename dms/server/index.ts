@@ -3,16 +3,25 @@ import Koa from 'koa';
 import KoaRouter from 'koa-router';
 import { bodyParser } from '@koa/bodyparser';
 import koaMulter from '@koa/multer';
-import compiledRouterConfig from './routerConfig/compiledRouterConfig';
+import mongoose from 'mongoose';
+import compiledRouterConfig from './routerConfig/compiledRouterConfig.out';
 import Ajv from 'ajv';
+import { mongoId } from './keywords';
 import { controllerGroup, initialize } from './controllers';
-import { errorHandler } from './middlewares';
-import { MyServerJSONResponse } from './objects';
+import { authenticator, errorHandler } from './middlewares';
+import { MyServerBadRequestError, MyServerUnauthorizedError } from './objects';
+import { User } from './db/models';
+import { hashPassword } from './utils';
+import { CustomState } from './types';
+import { createUser } from './db';
 
-const koaApp = new Koa();
-const koaRouter = new KoaRouter();
-const koaApiRouter = new KoaRouter();
-const ajv = new Ajv();
+const koaApp = new Koa<CustomState>();
+const koaRouter = new KoaRouter<CustomState>();
+const koaApiRouter = new KoaRouter<CustomState>();
+const koaAuthRouter = new KoaRouter<CustomState>();
+const ajv = new Ajv({
+  keywords: [mongoId, 'tsType'],
+});
 
 koaApp.use(errorHandler);
 koaApp.use(bodyParser());
@@ -61,6 +70,37 @@ const compiledRoutes = Object.entries(compiledRouterConfig).map(([operationId, o
   };
 });
 
+koaAuthRouter.post('/login', async (ctx) => {
+  await createUser({
+    name: 'Admin',
+    userId: 'admin',
+    hashedPassword: hashPassword('Admin$1234'),
+  });
+
+  const requestBody = (ctx.request.body as Record<string, unknown> | undefined) ?? {};
+
+  const { userId, password } = requestBody;
+
+  if (typeof userId !== 'string' || typeof password !== 'string') {
+    throw new MyServerBadRequestError('userId and password and required and must be strings');
+  }
+
+  const hashedPassword = hashPassword(password);
+
+  const user = await User.findOne({
+    userId,
+    hashedPassword,
+  });
+
+  if (!user) {
+    throw new MyServerUnauthorizedError('Invalid userId or password');
+  }
+
+  ctx.body = user;
+});
+
+koaApiRouter.use(authenticator);
+
 compiledRoutes.forEach((operationInfo) => {
   koaApiRouter[operationInfo.method](operationInfo.path, async (ctx) => {
     const pathValidationResult = operationInfo.pathValidator(ctx.params);
@@ -88,6 +128,7 @@ compiledRoutes.forEach((operationInfo) => {
       response: ctx.response,
       pathParams: ctx.params,
       queryParams: ctx.query,
+      state: ctx.state,
     });
 
     const responseValidationResult = operationInfo.responseValidator(response.data);
@@ -97,13 +138,7 @@ compiledRoutes.forEach((operationInfo) => {
     }
 
     ctx.status = response.status;
-
-    if (response instanceof MyServerJSONResponse) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      ctx.body = response.data;
-    } else {
-      throw new Error('Unhandled response type');
-    }
+    ctx.body = response.data;
   });
 });
 
@@ -116,6 +151,13 @@ async function main() {
 
   await initialize();
 
+  await mongoose.connect('mongodb://host.docker.internal:27017/', {
+    auth: { username: 'admin', password: 'password' },
+  });
+
+  await mongoose.syncIndexes();
+
+  koaRouter.use('/auth', koaAuthRouter.routes());
   koaRouter.use('/api', koaApiRouter.routes());
 
   koaRouter.get('/{*any}', async (ctx) => {

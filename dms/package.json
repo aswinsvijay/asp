@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "cross-env WATCHPACK_POLLING=true CHOKIDAR_USEPOLLING=true NODE_ENV=development ts-node --project ./tsconfig.server.json ./server",
-    "prebuild": "ts-node --project tsconfig.server.json ./prebuild",
-    "build": "npm run prebuild && tsc --project tsconfig.server.json && next build",
+    "prebuild": "ts-node --transpile-only --project tsconfig.server.json ./prebuild",
+    "build": "tsc --project tsconfig.server.json && next build",
     "start": "NODE_ENV=production node ./dist/server",
     "lint": "eslint . && next lint"
   },
@@ -16,6 +16,7 @@
     "axios": "^1.6.8",
     "koa": "^3.0.1",
     "koa-router": "^14.0.0",
+    "mongodb": "^6.19.0",
     "mongoose": "^8.17.1",
     "multer": "^2.0.2",
     "next": "14.0.2",

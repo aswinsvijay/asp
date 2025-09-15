@@ -1,10 +1,12 @@
 import { HttpStatusCode } from 'axios';
 
-export abstract class MyServerError {
+export abstract class MyServerError extends Error {
   data: NonNullable<unknown>;
   status: number;
 
   constructor(data: NonNullable<unknown>, args: { status: number }) {
+    super(JSON.stringify(data));
+
     this.data = data;
     this.status = args.status;
   }
@@ -32,6 +34,14 @@ export class MyServerBadRequestError extends MyServer4xxError {
   constructor(data: NonNullable<unknown>) {
     super(data, {
       status: HttpStatusCode.BadRequest,
+    });
+  }
+}
+
+export class MyServerUnauthorizedError extends MyServer4xxError {
+  constructor(data: NonNullable<unknown>) {
+    super(data, {
+      status: HttpStatusCode.Unauthorized,
     });
   }
 }

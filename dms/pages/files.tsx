@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { useApiCall } from '@/src/utils';
 
 const Files: React.FC = () => {
-  const [path] = useState('');
+  const [path] = useState<string | null>(null);
   const {
     loading,
     error,
     data: response,
-  } = useApiCall('GetFiles', {
+  } = useApiCall('GetChildren', {
     queryParams: {
       ...(path ? { path: path } : {}),
     },
@@ -22,13 +22,11 @@ const Files: React.FC = () => {
   }
 
   return (
-    response && (
-      <>
-        {response.data.items.map((item) => {
-          return item.name;
-        })}
-      </>
-    )
+    <>
+      {response.data.map((item) => {
+        return item.name;
+      })}
+    </>
   );
 };
 
