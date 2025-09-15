@@ -7,7 +7,7 @@ const Files: React.FC = () => {
     loading,
     error,
     data: response,
-  } = useApiCall('GetFiles', {
+  } = useApiCall('GetChildren', {
     queryParams: {
       ...(path ? { path: path } : {}),
     },
@@ -24,7 +24,7 @@ const Files: React.FC = () => {
   return (
     response && (
       <>
-        {response.data.items.map((item) => {
+        {response.data.map((item) => {
           return item.name;
         })}
       </>
