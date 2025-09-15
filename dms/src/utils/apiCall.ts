@@ -33,29 +33,61 @@ export async function tryApiCall<T extends keyof CompiledOperations>(
   }
 }
 
+type UseApiCallResult<T> =
+  | {
+      loading: true;
+      data: null;
+      error: null;
+    }
+  | {
+      loading: false;
+      data: T;
+      error: null;
+    }
+  | {
+      loading: false;
+      data: null;
+      error: Error;
+    };
+
 export const useApiCall = <T extends keyof CompiledOperations>(
   operation: T,
   args: Pick<CompiledOperations[T], 'queryParams'>
-) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-  const [data, setData] = useState<CompiledOperations[T]['response'] | null>(null);
+): UseApiCallResult<CompiledOperations[T]['response']> => {
+  const [result, setResult] = useState<UseApiCallResult<CompiledOperations[T]['response']>>({
+    loading: true,
+    data: null,
+    error: null,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      try {
-        // TODO: ESLint rule for variable shadowing
-        const [apiResponse, apiError] = await tryApiCall(operation, args);
-        setData(apiResponse);
-        setError(apiError);
-      } finally {
-        setLoading(false);
+      setResult({
+        loading: true,
+        data: null,
+        error: null,
+      });
+
+      // TODO: ESLint rule for variable shadowing
+      const [apiResponse, apiError] = await tryApiCall(operation, args);
+
+      if (apiResponse) {
+        setResult({
+          loading: false,
+          data: apiResponse,
+          error: null,
+        });
+      } else {
+        setResult({
+          loading: false,
+          data: null,
+          error: apiError,
+        });
       }
     };
 
     void fetchData();
   }, [operation, JSON.stringify(args)]);
 
-  return { loading, error, data };
+  return result;
 };

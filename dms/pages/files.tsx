@@ -22,13 +22,11 @@ const Files: React.FC = () => {
   }
 
   return (
-    response && (
-      <>
-        {response.data.map((item) => {
-          return item.name;
-        })}
-      </>
-    )
+    <>
+      {response.data.map((item) => {
+        return item.name;
+      })}
+    </>
   );
 };
 
