@@ -9,7 +9,7 @@ import Ajv from 'ajv';
 import { mongoId } from './keywords';
 import { controllerGroup, initialize } from './controllers';
 import { authenticator, errorHandler } from './middlewares';
-import { MyServerBadRequestError, MyServerJSONResponse, MyServerUnauthorizedError } from './objects';
+import { MyServerBadRequestError, MyServerUnauthorizedError } from './objects';
 import { User } from './db/models';
 import { hashPassword } from './utils';
 import { CustomState } from './types';
@@ -138,13 +138,7 @@ compiledRoutes.forEach((operationInfo) => {
     }
 
     ctx.status = response.status;
-
-    if (response instanceof MyServerJSONResponse) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      ctx.body = response.data;
-    } else {
-      throw new Error('Unhandled response type');
-    }
+    ctx.body = response.data;
   });
 });
 
