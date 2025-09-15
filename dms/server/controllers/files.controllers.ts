@@ -1,9 +1,17 @@
+import { Schema, Types } from 'mongoose';
 import { controllerGroup } from '.';
-import { createStoredDocument } from '../db';
+import { createStoredDocument, getStoredDocuments } from '../db';
 import { MyServerJSONResponse, MyServerUnauthorizedError } from '../objects';
 
-controllerGroup.add('GetFiles', () => {
-  return Promise.resolve(new MyServerJSONResponse({ data: { root: '', items: [] } }));
+controllerGroup.add('GetChildren', async () => {
+  const documents = await getStoredDocuments(null);
+
+  const mappedDocuments = documents.map((document) => ({
+    ...document,
+    type: 'document' as const,
+  }));
+
+  return new MyServerJSONResponse({ data: mappedDocuments });
 });
 
 controllerGroup.add('UploadFile', async (ctx) => {
@@ -32,7 +40,15 @@ controllerGroup.add('UploadFile', async (ctx) => {
 });
 
 controllerGroup.add('UpdateFile', (ctx) => {
-  console.log(ctx.pathParams.fileId);
+  console.log(
+    ctx.pathParams.fileId,
+    ctx.pathParams.fileId instanceof Types.ObjectId,
+    ctx.pathParams.fileId instanceof Schema.Types.ObjectId
+  );
 
+  return Promise.resolve(new MyServerJSONResponse({ data: {} }));
+});
+
+controllerGroup.add('DownloadFile', () => {
   return Promise.resolve(new MyServerJSONResponse({ data: {} }));
 });
