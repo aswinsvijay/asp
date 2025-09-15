@@ -2,6 +2,7 @@ import axios from 'axios';
 import compiledRouterConfig from '../../server/routerConfig/compiledRouterConfig.out';
 import { CompiledOperations } from '../../server/routerConfig/compiledRouterTypes.out';
 import { useEffect, useState } from 'react';
+import { UNSAFE_DOWNCAST } from './typeUtils';
 
 export async function apiCall<T extends keyof CompiledOperations>(
   operation: T,
@@ -19,6 +20,19 @@ export async function apiCall<T extends keyof CompiledOperations>(
   return response.data as CompiledOperations[T]['response'];
 }
 
+export async function tryApiCall<T extends keyof CompiledOperations>(
+  operation: T,
+  args: Pick<CompiledOperations[T], 'queryParams'>
+) {
+  try {
+    const response = await apiCall(operation, args);
+
+    return [response, null] as const;
+  } catch (error) {
+    return [null, UNSAFE_DOWNCAST<Error>(error)] as const;
+  }
+}
+
 export const useApiCall = <T extends keyof CompiledOperations>(
   operation: T,
   args: Pick<CompiledOperations[T], 'queryParams'>
@@ -31,10 +45,10 @@ export const useApiCall = <T extends keyof CompiledOperations>(
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await apiCall(operation, args);
-        setData(response);
-      } catch (err) {
-        setError(err as Error);
+        // TODO: ESLint rule for variable shadowing
+        const [apiResponse, apiError] = await tryApiCall(operation, args);
+        setData(apiResponse);
+        setError(apiError);
       } finally {
         setLoading(false);
       }
