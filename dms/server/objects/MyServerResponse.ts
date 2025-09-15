@@ -1,6 +1,6 @@
+import { ContentType } from '../../src/utils';
 import { HttpStatusCode } from 'axios';
 import { Readable } from 'stream';
-import { ContentType } from './ContentType';
 
 export interface MyServerResponseArgs {
   status: number;
