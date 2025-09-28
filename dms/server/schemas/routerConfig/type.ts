@@ -7,10 +7,14 @@
 
 export type GetMethodConfig = ControllerInfo & {
   pathParams?: {
-    [k: string]: HttpJsonSchemaOrgDraft04Schema;
+    properties?: {
+      [k: string]: HttpJsonSchemaOrgDraft04Schema;
+    };
   };
   queryParams?: {
-    [k: string]: HttpJsonSchemaOrgDraft04Schema;
+    properties?: {
+      [k: string]: HttpJsonSchemaOrgDraft04Schema;
+    };
   };
   requestBody?: null;
   response: HttpJsonSchemaOrgDraft04Schema;
@@ -25,20 +29,28 @@ export type SchemaArray = [HttpJsonSchemaOrgDraft04Schema, ...HttpJsonSchemaOrgD
 export type StringArray = [string, ...string[]];
 export type PostMethodConfig = ControllerInfo & {
   pathParams?: {
-    [k: string]: HttpJsonSchemaOrgDraft04Schema;
+    properties?: {
+      [k: string]: HttpJsonSchemaOrgDraft04Schema;
+    };
   };
   queryParams?: {
-    [k: string]: HttpJsonSchemaOrgDraft04Schema;
+    properties?: {
+      [k: string]: HttpJsonSchemaOrgDraft04Schema;
+    };
   };
   requestBody?: HttpJsonSchemaOrgDraft04Schema;
   response: HttpJsonSchemaOrgDraft04Schema;
 };
 export type PatchMethodConfig = ControllerInfo & {
   pathParams?: {
-    [k: string]: HttpJsonSchemaOrgDraft04Schema;
+    properties?: {
+      [k: string]: HttpJsonSchemaOrgDraft04Schema;
+    };
   };
   queryParams?: {
-    [k: string]: HttpJsonSchemaOrgDraft04Schema;
+    properties?: {
+      [k: string]: HttpJsonSchemaOrgDraft04Schema;
+    };
   };
   requestBody?: HttpJsonSchemaOrgDraft04Schema;
   response: HttpJsonSchemaOrgDraft04Schema;

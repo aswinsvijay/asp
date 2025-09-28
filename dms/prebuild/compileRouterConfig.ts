@@ -46,8 +46,16 @@ function* compileRouterGenerator(
       path,
       method,
       controller: operationInfo.controller,
-      pathParams: { ...ctx.pathParams, ...operationInfo.pathParams },
-      queryParams: { ...ctx.queryParams, ...operationInfo.queryParams },
+      pathParams: {
+        type: 'object',
+        properties: { ...ctx.pathParams?.properties, ...operationInfo.pathParams?.properties },
+        additionalProperties: false,
+      },
+      queryParams: {
+        type: 'object',
+        properties: { ...ctx.queryParams?.properties, ...operationInfo.queryParams?.properties },
+        additionalProperties: false,
+      },
       requestBody: operationInfo.requestBody ?? {},
       response: operationInfo.response,
     };

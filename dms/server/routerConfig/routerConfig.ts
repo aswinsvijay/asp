@@ -13,15 +13,30 @@ const mongoId = {
   tsType: 'import("mongoose").Types.ObjectId',
 } as const;
 
+const stringNull = {
+  allOf: [
+    {
+      type: 'string',
+      enum: ['null'],
+      'x-string-null': true,
+    },
+  ],
+  tsType: 'null',
+} as const;
+
 export default narrowedValue({
   paths: {
-    '/files': {
+    '/{parentId}/children': {
       methods: {
         get: {
           controller: filesControllers,
           operationId: 'GetChildren',
-          queryParams: {
-            parent: mongoId,
+          pathParams: {
+            properties: {
+              parentId: {
+                oneOf: [mongoId, stringNull],
+              },
+            },
           },
           requestBody: null,
           response: {
@@ -53,12 +68,18 @@ export default narrowedValue({
             additionalProperties: false,
           },
         },
+      },
+    },
+    '/files': {
+      methods: {
         post: {
           controller: filesControllers,
           operationId: 'UploadFile',
           queryParams: {
-            path: {
-              type: 'string',
+            properties: {
+              path: {
+                type: 'string',
+              },
             },
           },
           requestBody: {
@@ -85,7 +106,9 @@ export default narrowedValue({
               controller: filesControllers,
               operationId: 'UpdateFile',
               pathParams: {
-                fileId: mongoId,
+                properties: {
+                  fileId: mongoId,
+                },
               },
               response: {
                 type: 'object',
@@ -108,7 +131,9 @@ export default narrowedValue({
                   controller: filesControllers,
                   operationId: 'DownloadFile',
                   pathParams: {
-                    fileId: mongoId,
+                    properties: {
+                      fileId: mongoId,
+                    },
                   },
                   response: {},
                 },

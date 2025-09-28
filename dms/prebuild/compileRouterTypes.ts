@@ -23,16 +23,8 @@ export default async function compileRouterTypes() {
             type: 'string',
             enum: [operationInfo.controller],
           },
-          pathParams: {
-            type: 'object',
-            properties: operationInfo.pathParams,
-            additionalProperties: false,
-          },
-          queryParams: {
-            type: 'object',
-            properties: operationInfo.queryParams,
-            additionalProperties: false,
-          },
+          pathParams: operationInfo.pathParams,
+          queryParams: operationInfo.queryParams,
           requestBody: operationInfo.requestBody,
           response: operationInfo.response,
         },
