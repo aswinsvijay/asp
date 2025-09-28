@@ -4,7 +4,7 @@ import { createStoredDocument, getStoredDocuments } from '../db';
 import { MyServerJSONResponse, MyServerUnauthorizedError } from '../objects';
 
 controllerGroup.add('GetChildren', async (ctx) => {
-  const documents = await getStoredDocuments(ctx.queryParams.parent ?? null);
+  const documents = await getStoredDocuments(ctx.pathParams.parentId ?? null);
 
   const mappedDocuments = documents.map((document) => ({
     ...document,

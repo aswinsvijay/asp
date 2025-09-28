@@ -6,21 +6,22 @@ import koaMulter from '@koa/multer';
 import mongoose from 'mongoose';
 import compiledRouterConfig from './routerConfig/compiledRouterConfig.out';
 import Ajv from 'ajv';
-import { mongoId } from './keywords';
+import { mongoId, stringNull } from './keywords';
 import { controllerGroup, initialize } from './controllers';
 import { authenticator, errorHandler } from './middlewares';
 import { MyServerBadRequestError, MyServerUnauthorizedError } from './objects';
-import { User } from './db/models';
+import { User, UserSession } from './db/models';
 import { hashPassword } from './utils';
 import { CustomState } from './types';
 import { createUser } from './db';
+import { MappedOmit } from '@/src/utils';
 
 const koaApp = new Koa<CustomState>();
 const koaRouter = new KoaRouter<CustomState>();
 const koaApiRouter = new KoaRouter<CustomState>();
 const koaAuthRouter = new KoaRouter<CustomState>();
 const ajv = new Ajv({
-  keywords: [mongoId, 'tsType'],
+  keywords: [mongoId, stringNull, 'tsType'],
 });
 
 koaApp.use(errorHandler);
@@ -71,11 +72,21 @@ const compiledRoutes = Object.entries(compiledRouterConfig).map(([operationId, o
 });
 
 koaAuthRouter.post('/login', async (ctx) => {
-  await createUser({
-    name: 'Admin',
-    userId: 'admin',
-    hashedPassword: hashPassword('Admin$1234'),
-  });
+  try {
+    await createUser({
+      name: 'Admin',
+      userId: 'admin',
+      hashedPassword: hashPassword('Admin$1234'),
+    });
+  } catch (error) {
+    if (!(error instanceof Error)) {
+      throw new Error();
+    }
+
+    if (!error.message.includes('E11000')) {
+      throw new Error('Error creating admin user');
+    }
+  }
 
   const requestBody = (ctx.request.body as Record<string, unknown> | undefined) ?? {};
 
@@ -96,7 +107,14 @@ koaAuthRouter.post('/login', async (ctx) => {
     throw new MyServerUnauthorizedError('Invalid userId or password');
   }
 
-  ctx.body = user;
+  const sessionData: MappedOmit<UserSession, '_id'> = {
+    user: user._id,
+    token: new mongoose.Types.ObjectId().toString(),
+  };
+
+  await new UserSession(sessionData).save();
+
+  ctx.body = sessionData;
 });
 
 koaApiRouter.use(authenticator);
