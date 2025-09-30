@@ -3,6 +3,20 @@ import compiledRouterConfig from '../../server/routerConfig/compiledRouterConfig
 import { CompiledOperations } from '../../server/routerConfig/compiledRouterTypes.out';
 import { useEffect, useState } from 'react';
 import { UNSAFE_CAST } from './typeUtils';
+import { LoginResponse } from '../../server/types';
+
+export async function login(userId: string, password: string) {
+  const response = await axios({
+    url: '/auth/login',
+    method: 'post',
+    data: {
+      userId,
+      password,
+    },
+  });
+
+  return UNSAFE_CAST<LoginResponse>(response.data);
+}
 
 export async function apiCall<T extends keyof CompiledOperations>(
   operation: T,

@@ -12,7 +12,7 @@ import { authenticator, errorHandler } from './middlewares';
 import { MyServerBadRequestError, MyServerUnauthorizedError } from './objects';
 import { User, UserSession } from './db/models';
 import { hashPassword } from './utils';
-import { CustomState } from './types';
+import { CustomState, LoginResponse } from './types';
 import { createUser } from './db';
 import { MappedOmit } from '@/src/utils';
 
@@ -114,7 +114,7 @@ koaAuthRouter.post('/login', async (ctx) => {
 
   await new UserSession(sessionData).save();
 
-  ctx.body = sessionData;
+  ctx.body = sessionData satisfies LoginResponse;
 });
 
 koaApiRouter.use(authenticator);
