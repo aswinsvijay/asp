@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useApiCall } from '@/src/utils';
 import { Types } from 'mongoose';
 
-const Files: React.FC = () => {
+export const FilesComponent = () => {
   const [parent] = useState<Types.ObjectId | null>(null);
   const {
     loading,
@@ -30,5 +30,3 @@ const Files: React.FC = () => {
     </>
   );
 };
-
-export default Files;
