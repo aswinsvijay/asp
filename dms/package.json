@@ -29,9 +29,9 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@aswinsvijay/eslint-config": "^0.0.4",
-    "@aswinsvijay/prettier-config": "^0.0.1",
-    "@aswinsvijay/tsconfig": "^0.0.1",
+    "@aswinsvijay/eslint-config": "^0.0.8",
+    "@aswinsvijay/prettier-config": "^0.0.2",
+    "@aswinsvijay/tsconfig": "^0.0.2",
     "@types/koa": "^3.0.0",
     "@types/koa__multer": "^2.0.7",
     "@types/koa-router": "^7.4.8",
@@ -40,12 +40,10 @@
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
     "cross-env": "^7.0.3",
-    "eslint": "^8",
     "eslint-config-next": "^15.5.4",
     "json-schema-to-typescript": "^13.1.1",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.9.3"
+    "ts-node": "^10.9.1"
   }
 }
