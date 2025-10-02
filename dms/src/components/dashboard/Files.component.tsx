@@ -9,9 +9,10 @@ export const FilesComponent = () => {
     error,
     data: response,
   } = useApiCall('GetChildren', {
-    queryParams: {
-      ...(parent ? { parent } : {}),
+    pathParams: {
+      parentId: parent,
     },
+    queryParams: {},
   });
 
   if (loading) {
