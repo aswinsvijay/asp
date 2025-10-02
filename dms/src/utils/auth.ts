@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { setCookie, deleteCookie } from 'cookies-next';
+import { getCookie, setCookie, deleteCookie } from 'cookies-next';
 import { UNSAFE_CAST } from './typeUtils';
 import { LoginResponse } from '../../server/types';
 
@@ -18,6 +18,10 @@ export async function login(userId: string, password: string) {
   const responseData = UNSAFE_CAST<LoginResponse>(response.data);
 
   await setCookie(tokenCookieKey, responseData.token);
+}
+
+export async function getToken() {
+  return await getCookie(tokenCookieKey);
 }
 
 export async function logout() {
