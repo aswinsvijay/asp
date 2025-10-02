@@ -1,4 +1,5 @@
 import { Box, Button } from '@mui/material';
+import { Spacing } from '../utils';
 
 export const SidebarComponent = <T extends string>({
   setCurrentView,
@@ -8,7 +9,7 @@ export const SidebarComponent = <T extends string>({
   items: { label: T }[];
 }) => {
   return (
-    <Box display={'flex'} flexDirection={'column'}>
+    <Box display={'flex'} flexDirection={'column'} p={Spacing.SMALL} gap={Spacing.TINY}>
       {items.map((item) => (
         <Button
           key={item.label}
