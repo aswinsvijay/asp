@@ -26,7 +26,7 @@ const stringNull = {
 
 export default narrowedValue({
   paths: {
-    '/{parentId}/children': {
+    '/:parentId/children': {
       methods: {
         get: {
           controller: filesControllers,
@@ -100,7 +100,7 @@ export default narrowedValue({
         },
       },
       paths: {
-        '/{fileId}': {
+        '/:fileId': {
           methods: {
             patch: {
               controller: filesControllers,

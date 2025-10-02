@@ -11,7 +11,7 @@ export const mongoId: FuncKeywordDefinition = {
       return true;
     }
 
-    if (mongoose.Types.ObjectId.isValid(data)) {
+    if (!mongoose.Types.ObjectId.isValid(data)) {
       return false;
     }
 

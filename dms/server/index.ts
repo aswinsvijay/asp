@@ -43,19 +43,9 @@ koaApp.use(
 );
 
 const compiledRoutes = Object.entries(compiledRouterConfig).map(([operationId, operationInfo]) => {
-  const pathValidator = ajv.compile({
-    type: 'object',
-    properties: operationInfo.pathParams,
-    required: [],
-    additionalProperties: false,
-  });
+  const pathValidator = ajv.compile(operationInfo.pathParams);
 
-  const queryValidator = ajv.compile({
-    type: 'object',
-    properties: operationInfo.queryParams,
-    required: [],
-    additionalProperties: false,
-  });
+  const queryValidator = ajv.compile(operationInfo.queryParams);
 
   const requestBodyValidator = ajv.compile(operationInfo.requestBody);
   const responseValidator = ajv.compile(operationInfo.response);

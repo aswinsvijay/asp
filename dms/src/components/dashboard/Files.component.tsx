@@ -2,16 +2,17 @@ import React, { useState } from 'react';
 import { useApiCall } from '@/src/utils';
 import { Types } from 'mongoose';
 
-const Files: React.FC = () => {
+export const FilesComponent = () => {
   const [parent] = useState<Types.ObjectId | null>(null);
   const {
     loading,
     error,
     data: response,
   } = useApiCall('GetChildren', {
-    queryParams: {
-      ...(parent ? { parent } : {}),
+    pathParams: {
+      parentId: parent,
     },
+    queryParams: {},
   });
 
   if (loading) {
@@ -30,5 +31,3 @@ const Files: React.FC = () => {
     </>
   );
 };
-
-export default Files;
