@@ -1,33 +1,63 @@
 import axios from 'axios';
-import { getCookie } from 'cookies-next';
 import compiledRouterConfig from '../../server/routerConfig/compiledRouterConfig.out';
 import { CompiledOperations } from '../../server/routerConfig/compiledRouterTypes.out';
 import { useEffect, useState } from 'react';
-import { UNSAFE_CAST } from './typeUtils';
+import { assertUnreachable, UNSAFE_CAST } from './typeUtils';
+import { getToken } from './auth';
+import { Types } from 'mongoose';
 
-export async function apiCall<T extends keyof CompiledOperations>(
-  operation: T,
-  args: Pick<CompiledOperations[T], 'queryParams'>
-) {
+type Args<T extends keyof CompiledOperations> = Pick<CompiledOperations[T], 'pathParams' | 'queryParams'>;
+
+function convertPathParams(pathParams: Record<string, Types.ObjectId | null>) {
+  const convertedPathParams = Object.fromEntries(
+    Object.entries(pathParams).map(([key, value]) => {
+      let convertedValue;
+
+      // TODO: ESLint to enforce braces
+      switch (true) {
+        case value === null:
+          convertedValue = 'null';
+          break;
+        // TODO: ESLint to enforce spaces
+        case value instanceof Types.ObjectId:
+          convertedValue = value.toString();
+          break;
+
+        default:
+          convertedValue = '';
+          assertUnreachable(value, 'Unhandled value type');
+      }
+
+      return [key, convertedValue];
+    })
+  );
+
+  return convertedPathParams;
+}
+
+export async function apiCall<T extends keyof CompiledOperations>(operation: T, args: Args<T>) {
   const operationInfo = compiledRouterConfig[operation];
-  const url = `/api${operationInfo.path}` as const;
+  let url = `/api${operationInfo.path}`;
+
+  const convertedPathParams = convertPathParams(args.pathParams);
+
+  Object.entries(convertedPathParams).forEach(([key, value]) => {
+    url = url.replace(`:${key}`, value);
+  });
 
   const response = await axios({
     url,
     method: operationInfo.method,
     params: args.queryParams,
     headers: {
-      'x-auth-token': await getCookie('token'),
+      'x-auth-token': await getToken(),
     },
   });
 
   return response.data as CompiledOperations[T]['response'];
 }
 
-export async function tryApiCall<T extends keyof CompiledOperations>(
-  operation: T,
-  args: Pick<CompiledOperations[T], 'queryParams'>
-) {
+export async function tryApiCall<T extends keyof CompiledOperations>(operation: T, args: Args<T>) {
   try {
     const response = await apiCall(operation, args);
 
@@ -56,7 +86,7 @@ type UseApiCallResult<T> =
 
 export const useApiCall = <T extends keyof CompiledOperations>(
   operation: T,
-  args: Pick<CompiledOperations[T], 'queryParams'>
+  args: Args<T>
 ): UseApiCallResult<CompiledOperations[T]['response']> => {
   const [result, setResult] = useState<UseApiCallResult<CompiledOperations[T]['response']>>({
     loading: true,
