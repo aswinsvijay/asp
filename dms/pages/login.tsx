@@ -1,12 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Button, Stack, TextField, Typography } from '@mui/material';
+import { AuthUtils } from '@/src/utils';
+import { useRouter } from 'next/router';
 
 const Login: React.FC = () => {
-  const [email, setEmail] = React.useState('');
+  const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [, setError] = React.useState<string | null>(null);
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    // TODO: ESLint to enforce spacing
+    setError(null);
+    try {
+      await AuthUtils.login(username, password);
+      await router.push('/dashboard');
+    } catch (error) {
+      console.error(error);
+      setError('Failed to login');
+    }
   };
 
   return (
@@ -15,14 +27,14 @@ const Login: React.FC = () => {
         <Typography variant="h6" component="div" sx={{ mb: 2, textAlign: 'center' }}>
           Sign in
         </Typography>
-        <Box component="form" onSubmit={handleSubmit}>
+        <Box>
           <Stack spacing={2}>
             <TextField
               label="Username"
               type="text"
-              value={email}
+              value={username}
               onChange={(e) => {
-                setEmail(e.target.value);
+                setUsername(e.target.value);
               }}
               fullWidth
               required
@@ -38,7 +50,13 @@ const Login: React.FC = () => {
               fullWidth
               required
             />
-            <Button type="submit" variant="contained" fullWidth>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={() => {
+                void handleSubmit();
+              }}
+            >
               Login
             </Button>
           </Stack>
