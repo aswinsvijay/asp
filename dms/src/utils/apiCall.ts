@@ -1,22 +1,9 @@
 import axios from 'axios';
+import { getCookie } from 'cookies-next';
 import compiledRouterConfig from '../../server/routerConfig/compiledRouterConfig.out';
 import { CompiledOperations } from '../../server/routerConfig/compiledRouterTypes.out';
 import { useEffect, useState } from 'react';
 import { UNSAFE_CAST } from './typeUtils';
-import { LoginResponse } from '../../server/types';
-
-export async function login(userId: string, password: string) {
-  const response = await axios({
-    url: '/auth/login',
-    method: 'post',
-    data: {
-      userId,
-      password,
-    },
-  });
-
-  return UNSAFE_CAST<LoginResponse>(response.data);
-}
 
 export async function apiCall<T extends keyof CompiledOperations>(
   operation: T,
@@ -29,6 +16,9 @@ export async function apiCall<T extends keyof CompiledOperations>(
     url,
     method: operationInfo.method,
     params: args.queryParams,
+    headers: {
+      'x-auth-token': await getCookie('token'),
+    },
   });
 
   return response.data as CompiledOperations[T]['response'];
