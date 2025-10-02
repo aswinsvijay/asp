@@ -24,3 +24,8 @@ export const UNSAFE_PROPERTY_ACCESS = <T>(object: any, key: PropertyKey) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   return object[key] as T;
 };
+
+export const assertUnreachable = (value: never, error: string): never => {
+  console.error(`Unhandled case ${UNSAFE_CAST<string>(value)}`);
+  throw new Error(error);
+};
