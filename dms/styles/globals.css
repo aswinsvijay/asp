@@ -16,7 +16,7 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-start-rgb));
+  background: #888888;
   width: 100vw;
   height: 100vh;
 }
