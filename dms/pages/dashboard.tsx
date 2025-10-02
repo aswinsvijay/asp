@@ -17,7 +17,7 @@ const Dashboard: React.FC = () => {
       </Box>
       <Box flex={'1'}>
         {DashboardViews.map(({ label, Component }) => {
-          return currentView === label && <Component />;
+          return currentView === label && <Component key={label} />;
         })}
       </Box>
     </Box>
