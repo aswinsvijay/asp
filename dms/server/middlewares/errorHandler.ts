@@ -12,16 +12,19 @@ export const errorHandler: IMiddleware = async (ctx, next) => {
     const errorInfo = {
       status: 500,
       message: 'Unhandled error',
+      data: {},
     };
 
     if (err instanceof MyServerError) {
       errorInfo.status = err.status;
       errorInfo.message = err.message || 'Internal server error';
+      errorInfo.data = err.data;
     }
 
     ctx.status = errorInfo.status;
     ctx.body = {
       message: errorInfo.message,
+      data: errorInfo.data,
     };
   }
 };

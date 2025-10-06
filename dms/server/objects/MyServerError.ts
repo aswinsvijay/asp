@@ -4,60 +4,59 @@ export abstract class MyServerError extends Error {
   data: NonNullable<unknown>;
   status: number;
 
-  constructor(data: NonNullable<unknown>, args: { status: number }) {
-    super(JSON.stringify(data));
+  constructor(message: string, args: { status: number; data: NonNullable<unknown> }) {
+    super(message);
 
-    this.data = data;
+    this.data = args.data;
     this.status = args.status;
   }
 }
 
-export abstract class MyServer5xxError extends MyServerError {
-  constructor(data: NonNullable<unknown>, args?: { status: number }) {
-    super(data, {
-      status: args?.status ?? HttpStatusCode.InternalServerError,
+export abstract class MyServer5xxError extends MyServerError {}
+
+export class MyServerInternalError extends MyServer5xxError {
+  constructor(message: string, args: { data: NonNullable<unknown> }) {
+    super(message, {
+      status: HttpStatusCode.InternalServerError,
+      data: args.data,
     });
   }
 }
 
-export class MyServerInternalError extends MyServer5xxError {}
-
-export abstract class MyServer4xxError extends MyServerError {
-  constructor(data: NonNullable<unknown>, args?: { status: number }) {
-    super(data, {
-      status: args?.status ?? HttpStatusCode.BadRequest,
-    });
-  }
-}
+export abstract class MyServer4xxError extends MyServerError {}
 
 export class MyServerBadRequestError extends MyServer4xxError {
-  constructor(data: NonNullable<unknown>) {
-    super(data, {
+  constructor(message: string, args?: { data?: NonNullable<unknown> }) {
+    super(message, {
       status: HttpStatusCode.BadRequest,
+      data: args?.data ?? {},
     });
   }
 }
 
 export class MyServerUnauthorizedError extends MyServer4xxError {
-  constructor(data: NonNullable<unknown>) {
-    super(data, {
+  constructor(message: string, args?: { data?: NonNullable<unknown> }) {
+    super(message, {
       status: HttpStatusCode.Unauthorized,
+      data: args?.data ?? {},
     });
   }
 }
 
 export class MyServerForbiddenError extends MyServer4xxError {
-  constructor(data: NonNullable<unknown>) {
-    super(data, {
+  constructor(message: string, args?: { data?: NonNullable<unknown> }) {
+    super(message, {
       status: HttpStatusCode.Forbidden,
+      data: args?.data ?? {},
     });
   }
 }
 
 export class MyServerConflictError extends MyServer4xxError {
-  constructor(data: NonNullable<unknown>) {
-    super(data, {
+  constructor(message: string, args?: { data?: NonNullable<unknown> }) {
+    super(message, {
       status: HttpStatusCode.Conflict,
+      data: args?.data ?? {},
     });
   }
 }
