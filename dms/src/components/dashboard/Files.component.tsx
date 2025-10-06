@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { apiCall, Spacing, useApiCall } from '@/src/utils';
 import { Types } from 'mongoose';
 import { Box, Button } from '@mui/material';
+import { CustomIcon } from '../CustomIcon.component';
 
 export const FilesComponent = () => {
   const [parent] = useState<Types.ObjectId | null>(null);
@@ -64,7 +65,7 @@ export const FilesComponent = () => {
       <input ref={fileInputRef} type="file" onChange={handleFileSelected} style={{ display: 'none' }} accept="*/*" />
 
       <Box p={Spacing.SMALL} className="flex-shrink-0 p-4 border-b border-gray-200">
-        <Button variant="contained" onClick={handleFileUpload}>
+        <Button startIcon={<CustomIcon name="Upload" />} variant="contained" onClick={handleFileUpload}>
           Upload File
         </Button>
       </Box>
