@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Button, Stack, TextField, Typography } from '@mui/material';
-import { AuthUtils } from '@/src/utils';
+import { AuthUtils, Colors } from '@/src/utils';
 import { useRouter } from 'next/router';
 
 const Login: React.FC = () => {
@@ -23,8 +23,13 @@ const Login: React.FC = () => {
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <Box sx={{ width: '100%', maxWidth: 480, border: 1, borderColor: 'divider', borderRadius: 2, p: 4 }}>
-        <Typography variant="h6" component="div" sx={{ mb: 2, textAlign: 'center' }}>
+      <Box
+        bgcolor={Colors.BACKGROUND}
+        display={'flex'}
+        flexDirection={'column'}
+        sx={{ width: '100%', maxWidth: 480, border: 1, borderColor: 'divider', borderRadius: 2, p: 4, gap: 2 }}
+      >
+        <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
           Sign in
         </Typography>
         <Box>
