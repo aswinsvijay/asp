@@ -3,7 +3,7 @@ import { getCookie, setCookie, deleteCookie } from 'cookies-next';
 import { UNSAFE_CAST } from './typeUtils';
 import { LoginResponse } from '../../server/types';
 
-const authCookieKey = 'token';
+const authCookieKey = 'auth';
 
 interface AuthCookieValue {
   userId: string;
@@ -29,7 +29,9 @@ export async function login(userId: string, password: string) {
     token: responseData.token,
   };
 
-  await setCookie(authCookieKey, JSON.stringify(value));
+  await setCookie(authCookieKey, JSON.stringify(value), {
+    maxAge: 4 * 60 * 60,
+  });
 }
 
 export async function getToken() {
