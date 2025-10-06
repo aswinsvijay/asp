@@ -37,9 +37,9 @@ export const authenticator: IMiddleware<CustomState> = async (ctx, next) => {
 export const basicAuthenticator: IMiddleware<CustomState> = async (ctx, next) => {
   const authHeader = ctx.request.headers.authorization;
 
-  const [prefix, base64Credentials] = authHeader?.split(' ') ?? [];
+  const [scheme, base64Credentials] = authHeader?.split(' ') ?? [];
 
-  if (prefix !== 'Basic') {
+  if (scheme !== 'Basic') {
     throw new MyServerUnauthorizedError(errorMessage);
   }
 
