@@ -53,7 +53,8 @@ export async function apiCall<T extends keyof CompiledOperations>(operation: T, 
     method: operationInfo.method,
     params: parameters.queryParams,
     headers: {
-      'x-auth-token': await getToken(),
+      Authorization: 'Basic ' + (await getToken()).basic,
+      'x-auth-token': (await getToken()).authToken,
     },
     ...(parameters.requestBody ? { data: parameters.requestBody } : {}),
   });
