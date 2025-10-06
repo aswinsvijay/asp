@@ -15,6 +15,7 @@ import { hashPassword } from './utils';
 import { CustomState, LoginResponse } from './types';
 import { createUser } from './db';
 import { MappedOmit } from '@/src/utils';
+import { environment } from './environment';
 
 const koaApp = new Koa<CustomState>();
 const koaRouter = new KoaRouter<CustomState>();
@@ -160,7 +161,7 @@ async function main() {
 
   await initialize();
 
-  await mongoose.connect('mongodb://localhost:27017/', {
+  await mongoose.connect(environment.MONGODB_CONNECTION_STRING, {
     auth: { username: 'admin', password: 'password' },
   });
 
