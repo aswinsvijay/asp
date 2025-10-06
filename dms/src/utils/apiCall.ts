@@ -6,7 +6,7 @@ import { assertUnreachable, UNSAFE_CAST } from './typeUtils';
 import { getToken } from './auth';
 import { Types } from 'mongoose';
 
-type Args<T extends keyof CompiledOperations> = Pick<
+type ApiParameters<T extends keyof CompiledOperations> = Pick<
   CompiledOperations[T],
   'pathParams' | 'queryParams' | 'requestBody'
 >;
@@ -38,11 +38,11 @@ function convertPathParams(pathParams: Record<string, Types.ObjectId | null>) {
   return convertedPathParams;
 }
 
-export async function apiCall<T extends keyof CompiledOperations>(operation: T, args: Args<T>) {
+export async function apiCall<T extends keyof CompiledOperations>(operation: T, parameters: ApiParameters<T>) {
   const operationInfo = compiledRouterConfig[operation];
   let url = `/api${operationInfo.path}`;
 
-  const convertedPathParams = convertPathParams(args.pathParams);
+  const convertedPathParams = convertPathParams(parameters.pathParams);
 
   Object.entries(convertedPathParams).forEach(([key, value]) => {
     url = url.replace(`:${key}`, value);
@@ -51,19 +51,19 @@ export async function apiCall<T extends keyof CompiledOperations>(operation: T, 
   const response = await axios({
     url,
     method: operationInfo.method,
-    params: args.queryParams,
+    params: parameters.queryParams,
     headers: {
       'x-auth-token': await getToken(),
     },
-    ...(args.requestBody ? { data: args.requestBody } : {}),
+    ...(parameters.requestBody ? { data: parameters.requestBody } : {}),
   });
 
   return response.data as CompiledOperations[T]['response'];
 }
 
-export async function tryApiCall<T extends keyof CompiledOperations>(operation: T, args: Args<T>) {
+export async function tryApiCall<T extends keyof CompiledOperations>(operation: T, parameters: ApiParameters<T>) {
   try {
-    const response = await apiCall(operation, args);
+    const response = await apiCall(operation, parameters);
 
     return [response, null] as const;
   } catch (error) {
@@ -90,7 +90,7 @@ type UseApiCallResult<T> =
 
 export const useApiCall = <T extends keyof CompiledOperations>(
   operation: T,
-  args: Args<T>
+  parameters: ApiParameters<T>
 ): UseApiCallResult<CompiledOperations[T]['response']> => {
   const [result, setResult] = useState<UseApiCallResult<CompiledOperations[T]['response']>>({
     loading: true,
@@ -107,7 +107,7 @@ export const useApiCall = <T extends keyof CompiledOperations>(
       });
 
       // TODO: ESLint rule for variable shadowing
-      const [apiResponse, apiError] = await tryApiCall(operation, args);
+      const [apiResponse, apiError] = await tryApiCall(operation, parameters);
 
       if (apiResponse) {
         setResult({
@@ -125,7 +125,7 @@ export const useApiCall = <T extends keyof CompiledOperations>(
     };
 
     void fetchData();
-  }, [operation, JSON.stringify(args)]);
+  }, [operation, JSON.stringify(parameters)]);
 
   return result;
 };
