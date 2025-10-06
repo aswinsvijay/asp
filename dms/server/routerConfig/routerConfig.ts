@@ -75,16 +75,8 @@ export default narrowedValue({
         post: {
           controller: filesControllers,
           operationId: 'UploadFile',
-          queryParams: {
-            properties: {
-              path: {
-                type: 'string',
-              },
-            },
-          },
-          requestBody: {
-            type: 'object',
-          },
+          queryParams: {},
+          requestBody: {},
           response: {
             type: 'object',
             properties: {
