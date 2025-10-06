@@ -6,7 +6,10 @@ import { assertUnreachable, UNSAFE_CAST } from './typeUtils';
 import { getToken } from './auth';
 import { Types } from 'mongoose';
 
-type Args<T extends keyof CompiledOperations> = Pick<CompiledOperations[T], 'pathParams' | 'queryParams'>;
+type Args<T extends keyof CompiledOperations> = Pick<
+  CompiledOperations[T],
+  'pathParams' | 'queryParams' | 'requestBody'
+>;
 
 function convertPathParams(pathParams: Record<string, Types.ObjectId | null>) {
   const convertedPathParams = Object.fromEntries(
@@ -52,6 +55,7 @@ export async function apiCall<T extends keyof CompiledOperations>(operation: T, 
     headers: {
       'x-auth-token': await getToken(),
     },
+    ...(args.requestBody ? { data: args.requestBody } : {}),
   });
 
   return response.data as CompiledOperations[T]['response'];
