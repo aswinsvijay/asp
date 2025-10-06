@@ -2,6 +2,7 @@ import { IMiddleware } from 'koa-router';
 import { MyServerUnauthorizedError } from '../objects';
 import { User, UserSession } from '../db/models';
 import { CustomState } from '../types';
+import { hashPassword } from '../utils/password';
 
 const errorMessage = 'Un-authorized';
 
@@ -22,6 +23,40 @@ export const authenticator: IMiddleware<CustomState> = async (ctx, next) => {
 
   const user = await User.findOne({
     _id: session.user,
+  });
+
+  if (!user) {
+    throw new MyServerUnauthorizedError(errorMessage);
+  }
+
+  ctx.state.user = user;
+
+  await next();
+};
+
+export const basicAuthenticator: IMiddleware<CustomState> = async (ctx, next) => {
+  const authHeader = ctx.request.headers.authorization;
+
+  const [prefix, base64Credentials] = authHeader?.split(' ') ?? [];
+
+  if (prefix !== 'Basic') {
+    throw new MyServerUnauthorizedError(errorMessage);
+  }
+
+  if (!base64Credentials) {
+    throw new MyServerUnauthorizedError(errorMessage);
+  }
+
+  const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
+  const [userId, password] = credentials.split(':');
+
+  if (!userId || !password) {
+    throw new MyServerUnauthorizedError(errorMessage);
+  }
+
+  const user = await User.findOne({
+    userId,
+    hashedPassword: hashPassword(password),
   });
 
   if (!user) {
