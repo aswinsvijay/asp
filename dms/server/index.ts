@@ -71,6 +71,7 @@ koaAuthRouter.post('/login', async (ctx) => {
       hashedPassword: hashPassword('Admin$1234'),
     });
   } catch (error) {
+    // TODO: Add ESLint rule `preserve-caught-error` to enforce passing `cause` property in the new error
     if (!(error instanceof Error)) {
       throw new Error();
     }
