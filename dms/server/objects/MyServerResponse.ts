@@ -1,16 +1,16 @@
-import { ContentType } from '../../src/utils';
 import { HttpStatusCode } from 'axios';
 import { Readable } from 'stream';
+import { ContentType } from '../schemas/routerConfig/type';
 
 export interface MyServerResponseArgs {
   status: number;
-  contentType: string;
+  contentType: ContentType;
 }
 
 export class MyServerResponse<T> {
   data: T;
   status: number;
-  contentType: string;
+  contentType: ContentType;
 
   constructor(data: T, args: MyServerResponseArgs) {
     this.data = data;
@@ -23,17 +23,17 @@ export class MyServerJSONResponse<T> extends MyServerResponse<T> {
   constructor(data: T, args?: { status?: number }) {
     super(data, {
       status: args?.status ?? HttpStatusCode.Ok,
-      contentType: ContentType.APPLICATION_JSON,
+      contentType: 'application/json',
     });
     this.data = data;
   }
 }
 
 export class MyServerStreamResponse extends MyServerResponse<Readable> {
-  constructor(data: Readable, args?: { status?: number; contentType?: string }) {
+  constructor(data: Readable, args?: { status?: number; contentType?: ContentType }) {
     super(data, {
       status: args?.status ?? HttpStatusCode.Ok,
-      contentType: args?.contentType ?? ContentType.APPLICATION_OCTET_STREAM,
+      contentType: args?.contentType ?? 'application/octet-stream',
     });
   }
 }
