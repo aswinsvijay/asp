@@ -3,7 +3,7 @@ import compiledRouterConfig from '../server/routerConfig/compiledRouterConfig.ou
 export default function generateZapIntegration() {
   const creates = Object.entries(compiledRouterConfig)
     .filter(([, config]) => {
-      return config.actionType === 'creates';
+      return config.zapierConfig.actionType === 'creates';
     })
     .map(([operationId, config]) => {
       const url = `/api${config.path}`;
