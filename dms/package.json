@@ -29,7 +29,8 @@
     "react-dom": "^19.1.1",
     "uuid": "^13.0.0",
     "zapier-platform-cli": "^17.7.2",
-    "zapier-platform-core": "^17.7.2"
+    "zapier-platform-core": "^17.7.2",
+    "zapier-platform-json-schema": "^0.4.9"
   },
   "devDependencies": {
     "@aswinsvijay/eslint-config": "^0.0.8",
