@@ -1,4 +1,9 @@
 import compiledRouterConfig from '../server/routerConfig/compiledRouterConfig.out';
+import ZapierSchemaBuilder from 'zapier-platform-json-schema/build/ZapierSchemaBuilder';
+
+function convertJsonSchemaToZapierSchema(schema: object) {
+  return new ZapierSchemaBuilder(schema).build();
+}
 
 export default function generateZapIntegration() {
   const creates = Object.entries(compiledRouterConfig)
@@ -7,6 +12,9 @@ export default function generateZapIntegration() {
     })
     .map(([operationId, config]) => {
       const url = `/api${config.path}`;
+      const urlSegments = url.split('/');
+      const replacedSegments = urlSegments.map((seg) => seg.replace(/:(.*)/, '{{bundle.inputData.$1}}'));
+      const replacedUrl = replacedSegments.join('/');
 
       return [
         operationId,
@@ -14,10 +22,26 @@ export default function generateZapIntegration() {
           noun: operationId,
           operation: {
             perform: {
-              url,
+              url: replacedUrl,
               method: config.method.toUpperCase(),
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: '*/*',
+              },
+              body: '{{bundle.inputData}}',
+              removeMissingValuesFrom: {
+                body: false,
+                params: false,
+              },
             },
+            inputFields: convertJsonSchemaToZapierSchema(config.requestBody),
           },
+          display: {
+            description: `Very very very very long description for ${operationId}`,
+            hidden: false,
+            label: operationId,
+          },
+          key: operationId,
         },
       ] as const;
     });
