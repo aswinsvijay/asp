@@ -41,7 +41,13 @@ export type PostMethodConfig = ControllerInfo & {
   requestBody?: RequestBody;
   response: HttpJsonSchemaOrgDraft04Schema;
 };
-export type ContentType = 'application/json' | 'text/plain' | 'text/html' | 'image/png' | 'application/octet-stream';
+export type ContentType =
+  | '*/*'
+  | 'application/json'
+  | 'text/plain'
+  | 'text/html'
+  | 'image/png'
+  | 'application/octet-stream';
 export type PatchMethodConfig = ControllerInfo & {
   pathParams?: {
     properties?: {

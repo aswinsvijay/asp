@@ -78,7 +78,10 @@ export default narrowedValue({
           controller: filesControllers,
           operationId: 'UploadFile',
           queryParams: {},
-          requestBody: {},
+          requestBody: {
+            contentType: '*/*',
+            schema: {},
+          },
           response: {
             type: 'object',
             properties: {
@@ -104,6 +107,10 @@ export default narrowedValue({
                 properties: {
                   fileId: mongoId,
                 },
+              },
+              requestBody: {
+                contentType: 'application/json',
+                schema: {},
               },
               response: {
                 type: 'object',
@@ -131,6 +138,7 @@ export default narrowedValue({
                       fileId: mongoId,
                     },
                   },
+                  requestBody: null,
                   response: {},
                 },
               },

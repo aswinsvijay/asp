@@ -226,7 +226,7 @@ const schema = {
     },
     ContentType: {
       type: 'string',
-      enum: ['application/json', 'text/plain', 'text/html', 'image/png', 'application/octet-stream'],
+      enum: ['*/*', 'application/json', 'text/plain', 'text/html', 'image/png', 'application/octet-stream'],
     },
   },
 } satisfies JSONSchema;
