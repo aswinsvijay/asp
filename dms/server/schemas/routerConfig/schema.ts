@@ -125,7 +125,7 @@ const schema = {
               additionalProperties: false,
             },
             requestBody: {
-              $ref: jsonSchemaPath,
+              $ref: '#/definitions/RequestBody',
             },
             response: {
               $ref: jsonSchemaPath,
@@ -173,7 +173,7 @@ const schema = {
               additionalProperties: false,
             },
             requestBody: {
-              $ref: jsonSchemaPath,
+              $ref: '#/definitions/RequestBody',
             },
             response: {
               $ref: jsonSchemaPath,
@@ -210,6 +210,23 @@ const schema = {
       },
       required: ['actionType'],
       additionalProperties: false,
+    },
+    RequestBody: {
+      type: 'object',
+      properties: {
+        contentType: {
+          $ref: '#/definitions/ContentType',
+        },
+        schema: {
+          $ref: jsonSchemaPath,
+        },
+      },
+      required: ['contentType', 'schema'],
+      additionalProperties: false,
+    },
+    ContentType: {
+      type: 'string',
+      enum: ['application/json', 'text/plain', 'text/html', 'image/png', 'application/octet-stream'],
     },
   },
 } satisfies JSONSchema;
