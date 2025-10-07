@@ -45,6 +45,7 @@ function* compileRouterGenerator(
     compiledOperations[operationInfo.operationId] = {
       path,
       method,
+      actionType: operationInfo.actionType,
       controller: operationInfo.controller,
       pathParams: {
         type: 'object',

@@ -29,6 +29,7 @@ export default narrowedValue({
     '/:parentId/children': {
       methods: {
         get: {
+          actionType: 'searches',
           controller: filesControllers,
           operationId: 'GetChildren',
           pathParams: {
@@ -73,6 +74,7 @@ export default narrowedValue({
     '/files': {
       methods: {
         post: {
+          actionType: 'creates',
           controller: filesControllers,
           operationId: 'UploadFile',
           queryParams: {},
@@ -95,6 +97,7 @@ export default narrowedValue({
         '/:fileId': {
           methods: {
             patch: {
+              actionType: 'creates',
               controller: filesControllers,
               operationId: 'UpdateFile',
               pathParams: {
@@ -120,6 +123,7 @@ export default narrowedValue({
             '/download': {
               methods: {
                 get: {
+                  actionType: 'creates',
                   controller: filesControllers,
                   operationId: 'DownloadFile',
                   pathParams: {

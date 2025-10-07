@@ -187,6 +187,10 @@ const schema = {
     ControllerInfo: {
       type: 'object',
       properties: {
+        actionType: {
+          type: 'string',
+          enum: ['triggers', 'searches', 'creates'],
+        },
         controller: {
           type: 'string',
         },
@@ -194,7 +198,7 @@ const schema = {
           type: 'string',
         },
       },
-      required: ['controller', 'operationId'],
+      required: ['actionType', 'controller', 'operationId'],
       additionalProperties: false,
     },
   },

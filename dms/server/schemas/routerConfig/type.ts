@@ -69,6 +69,7 @@ export interface PathMethods {
   patch?: PatchMethodConfig;
 }
 export interface ControllerInfo {
+  actionType: "triggers" | "searches" | "creates";
   controller: string;
   operationId: string;
 }

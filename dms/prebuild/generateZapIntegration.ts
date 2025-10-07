@@ -1,16 +1,26 @@
 import compiledRouterConfig from '../server/routerConfig/compiledRouterConfig.out';
 
 export default function generateZapIntegration() {
-  Object.entries(compiledRouterConfig).map(([operationId, config]) => {
-    const key = `/api${config.path}`;
+  const creates = Object.entries(compiledRouterConfig)
+    .filter(([, config]) => {
+      return config.actionType === 'creates';
+    })
+    .map(([operationId, config]) => {
+      const url = `/api${config.path}`;
 
-    return [
-      key,
-      {
+      return [
         operationId,
-      },
-    ];
-  });
+        {
+          noun: operationId,
+          operation: {
+            perform: {
+              url,
+              method: config.method.toUpperCase(),
+            },
+          },
+        },
+      ] as const;
+    });
 
   return {
     version: '1.0.0',
@@ -19,5 +29,6 @@ export default function generateZapIntegration() {
       type: 'basic',
       test: {},
     },
+    creates: Object.fromEntries(creates),
   };
 }

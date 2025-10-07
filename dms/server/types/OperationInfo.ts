@@ -1,6 +1,9 @@
+import { ControllerInfo, RouterConfig } from '../schemas/routerConfig/type';
+
 export interface OperationInfo {
+  actionType: ControllerInfo['actionType'];
   path: string;
-  method: 'get' | 'post' | 'patch';
+  method: keyof NonNullable<RouterConfig['methods']>;
   controller: string;
   pathParams: NonNullable<unknown>;
   queryParams: NonNullable<unknown>;
