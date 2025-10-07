@@ -187,18 +187,28 @@ const schema = {
     ControllerInfo: {
       type: 'object',
       properties: {
-        actionType: {
-          type: 'string',
-          enum: ['triggers', 'searches', 'creates'],
-        },
         controller: {
           type: 'string',
         },
         operationId: {
           type: 'string',
         },
+        zapierConfig: {
+          $ref: '#/definitions/ZapierConfig',
+        },
       },
-      required: ['actionType', 'controller', 'operationId'],
+      required: ['zapierConfig', 'controller', 'operationId'],
+      additionalProperties: false,
+    },
+    ZapierConfig: {
+      type: 'object',
+      properties: {
+        actionType: {
+          type: 'string',
+          enum: ['triggers', 'searches', 'creates'],
+        },
+      },
+      required: ['actionType'],
       additionalProperties: false,
     },
   },

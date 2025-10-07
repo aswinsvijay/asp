@@ -29,7 +29,7 @@ export default narrowedValue({
     '/:parentId/children': {
       methods: {
         get: {
-          actionType: 'searches',
+          zapierConfig: { actionType: 'searches' },
           controller: filesControllers,
           operationId: 'GetChildren',
           pathParams: {
@@ -74,7 +74,7 @@ export default narrowedValue({
     '/files': {
       methods: {
         post: {
-          actionType: 'creates',
+          zapierConfig: { actionType: 'creates' },
           controller: filesControllers,
           operationId: 'UploadFile',
           queryParams: {},
@@ -97,7 +97,7 @@ export default narrowedValue({
         '/:fileId': {
           methods: {
             patch: {
-              actionType: 'creates',
+              zapierConfig: { actionType: 'creates' },
               controller: filesControllers,
               operationId: 'UpdateFile',
               pathParams: {
@@ -123,7 +123,7 @@ export default narrowedValue({
             '/download': {
               methods: {
                 get: {
-                  actionType: 'creates',
+                  zapierConfig: { actionType: 'creates' },
                   controller: filesControllers,
                   operationId: 'DownloadFile',
                   pathParams: {

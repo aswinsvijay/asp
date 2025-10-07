@@ -45,7 +45,7 @@ function* compileRouterGenerator(
     compiledOperations[operationInfo.operationId] = {
       path,
       method,
-      actionType: operationInfo.actionType,
+      zapierConfig: operationInfo.zapierConfig,
       controller: operationInfo.controller,
       pathParams: {
         type: 'object',

@@ -69,9 +69,12 @@ export interface PathMethods {
   patch?: PatchMethodConfig;
 }
 export interface ControllerInfo {
-  actionType: "triggers" | "searches" | "creates";
   controller: string;
   operationId: string;
+  zapierConfig: ZapierConfig;
+}
+export interface ZapierConfig {
+  actionType: 'triggers' | 'searches' | 'creates';
 }
 /**
  * Core schema meta-schema
@@ -134,10 +137,10 @@ export interface HttpJsonSchemaOrgDraft04Schema {
    */
   enum?: [unknown, ...unknown[]];
   type?:
-    | ("array" | "boolean" | "integer" | "null" | "number" | "object" | "string")
+    | ('array' | 'boolean' | 'integer' | 'null' | 'number' | 'object' | 'string')
     | [
-        "array" | "boolean" | "integer" | "null" | "number" | "object" | "string",
-        ...("array" | "boolean" | "integer" | "null" | "number" | "object" | "string")[]
+        'array' | 'boolean' | 'integer' | 'null' | 'number' | 'object' | 'string',
+        ...('array' | 'boolean' | 'integer' | 'null' | 'number' | 'object' | 'string')[]
       ];
   format?: string;
   allOf?: SchemaArray;

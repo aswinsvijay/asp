@@ -1,7 +1,7 @@
 import { ControllerInfo, RouterConfig } from '../schemas/routerConfig/type';
 
 export interface OperationInfo {
-  actionType: ControllerInfo['actionType'];
+  zapierConfig: ControllerInfo['zapierConfig'];
   path: string;
   method: keyof NonNullable<RouterConfig['methods']>;
   controller: string;
