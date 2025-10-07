@@ -7,6 +7,6 @@ export interface OperationInfo {
   controller: string;
   pathParams: NonNullable<unknown>;
   queryParams: NonNullable<unknown>;
-  requestBody: NonNullable<unknown>;
+  requestBody: NonNullable<unknown> | null;
   response: NonNullable<unknown>;
 }
