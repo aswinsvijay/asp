@@ -71,7 +71,9 @@ export default function generateZapIntegration() {
     platformVersion: '16.5.1',
     authentication: {
       type: 'basic',
-      test: {},
+      test: {
+        url: 'https://{{process.env.HOST_NAME}}/api/null/children',
+      },
       connectionLabel: '{{username}}',
     },
     creates: Object.fromEntries(creates),
