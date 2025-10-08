@@ -79,7 +79,7 @@ export default narrowedValue({
           operationId: 'UploadFile',
           queryParams: {},
           requestBody: {
-            contentType: '*/*',
+            contentType: 'multipart/form-data',
             schema: {},
           },
           response: {
