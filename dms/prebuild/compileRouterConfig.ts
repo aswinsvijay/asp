@@ -57,7 +57,7 @@ function* compileRouterGenerator(
         properties: { ...ctx.queryParams?.properties, ...operationInfo.queryParams?.properties },
         additionalProperties: false,
       },
-      requestBody: operationInfo.requestBody ?? {},
+      requestBody: operationInfo.requestBody ?? null,
       response: operationInfo.response,
     };
   }
