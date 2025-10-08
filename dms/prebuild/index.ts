@@ -4,6 +4,8 @@ async function main() {
   await import('./compileRouterConfig').then(({ default: defaultFn }) => defaultFn());
 
   await import('./compileRouterTypes').then(({ default: defaultFn }) => defaultFn());
+
+  await import('./generateZapIntegration').then(({ default: defaultFn }) => defaultFn());
 }
 
 main()
