@@ -1,8 +1,23 @@
 import compiledRouterConfig from '../server/routerConfig/compiledRouterConfig.out';
 import ZapierSchemaBuilder from 'zapier-platform-json-schema/build/ZapierSchemaBuilder';
+import { Field, Create, App } from 'zapier-platform-core';
+import fs from 'fs';
 
-function convertJsonSchemaToZapierSchema(schema: object) {
-  return new ZapierSchemaBuilder(schema).build();
+function convertJsonSchemaToZapierSchema(schema: object): Field[] {
+  schema = { type: 'object', ...schema };
+
+  const inputFields = new ZapierSchemaBuilder(schema).build();
+
+  const removeChildren = (fields: typeof inputFields): Field[] => {
+    return fields.map((field): Field => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { children, ...rest } = field;
+
+      return rest;
+    });
+  };
+
+  return removeChildren(inputFields);
 }
 
 export default function generateZapIntegration() {
@@ -12,9 +27,10 @@ export default function generateZapIntegration() {
     })
     .map(([operationId, config]) => {
       const url = `/api${config.path}`;
-      const urlSegments = url.split('/');
-      const replacedSegments = urlSegments.map((seg) => seg.replace(/:(.*)/, '{{bundle.inputData.$1}}'));
-      const replacedUrl = replacedSegments.join('/');
+      const replacedUrl = url
+        .split('/')
+        .map((segment) => segment.replace(/:(.*)/, '{{bundle.inputData.$1}}'))
+        .join('/');
 
       return [
         operationId,
@@ -34,7 +50,11 @@ export default function generateZapIntegration() {
                 params: false,
               },
             },
-            inputFields: convertJsonSchemaToZapierSchema(config.requestBody),
+            inputFields: [
+              ...convertJsonSchemaToZapierSchema(config.pathParams),
+              ...convertJsonSchemaToZapierSchema(config.queryParams),
+              ...convertJsonSchemaToZapierSchema(config.requestBody?.schema ?? {}),
+            ],
           },
           display: {
             description: `Very very very very long description for ${operationId}`,
@@ -42,17 +62,20 @@ export default function generateZapIntegration() {
             label: operationId,
           },
           key: operationId,
-        },
+        } satisfies Create,
       ] as const;
     });
 
-  return {
+  const config = {
     version: '1.0.0',
     platformVersion: '16.5.1',
     authentication: {
       type: 'basic',
       test: {},
+      connectionLabel: '{{username}}',
     },
     creates: Object.fromEntries(creates),
-  };
+  } satisfies App;
+
+  fs.writeFileSync('./TestIntegration/config.json', JSON.stringify(config, null, 2));
 }
