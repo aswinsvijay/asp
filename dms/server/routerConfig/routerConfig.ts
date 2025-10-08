@@ -29,7 +29,7 @@ export default narrowedValue({
     '/:parentId/children': {
       methods: {
         get: {
-          zapierConfig: { actionType: 'searches' },
+          zapierConfig: { actionType: 'creates' },
           controller: filesControllers,
           operationId: 'GetChildren',
           pathParams: {
