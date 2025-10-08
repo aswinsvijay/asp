@@ -3,7 +3,7 @@ import ZapierSchemaBuilder from 'zapier-platform-json-schema/build/ZapierSchemaB
 import { Field, Create, App } from 'zapier-platform-core';
 import fs from 'fs';
 
-function convertJsonSchemaToZapierSchema(schema: object): Field[] {
+export function convertJsonSchemaToZapierSchema(schema: object): Field[] {
   schema = { type: 'object', ...schema };
 
   const inputFields = new ZapierSchemaBuilder(schema).build();
