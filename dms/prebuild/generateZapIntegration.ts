@@ -72,7 +72,7 @@ export default function generateZapIntegration() {
     authentication: {
       type: 'basic',
       test: {
-        url: 'https://{{process.env.HOST_NAME}}/api/null/children',
+        url: `https://{{process.env.HOST_NAME}}/api/${'0'.repeat(24)}/children`,
       },
       connectionLabel: '{{username}}',
     },
