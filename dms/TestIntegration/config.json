@@ -1,0 +1,149 @@
+{
+  "version": "1.0.0",
+  "platformVersion": "16.5.1",
+  "authentication": {
+    "type": "basic",
+    "test": {
+      "url": "https://{{process.env.HOST_NAME}}/api/000000000000000000000000/children"
+    },
+    "connectionLabel": "{{username}}"
+  },
+  "creates": {
+    "GetChildren": {
+      "noun": "GetChildren",
+      "operation": {
+        "perform": {
+          "url": "https://{{process.env.HOST_NAME}}/api/{{bundle.inputData.parentId}}/children",
+          "method": "GET",
+          "headers": {
+            "Content-Type": "application/json",
+            "Accept": "*/*"
+          },
+          "body": "{{bundle.inputData}}",
+          "removeMissingValuesFrom": {
+            "body": false,
+            "params": false
+          }
+        },
+        "inputFields": [
+          {
+            "key": "parentId",
+            "type": "string"
+          }
+        ],
+        "outputFields": [
+          {
+            "key": "data__name",
+            "type": "string"
+          },
+          {
+            "key": "data__path",
+            "type": "string"
+          },
+          {
+            "choices": [
+              "document",
+              "folder"
+            ],
+            "key": "data__type",
+            "type": "string"
+          }
+        ]
+      },
+      "display": {
+        "description": "Very very very very long description for GetChildren",
+        "hidden": false,
+        "label": "GetChildren"
+      },
+      "key": "GetChildren"
+    },
+    "DownloadFile": {
+      "noun": "DownloadFile",
+      "operation": {
+        "perform": {
+          "url": "https://{{process.env.HOST_NAME}}/api/files/{{bundle.inputData.fileId}}/download",
+          "method": "GET",
+          "headers": {
+            "Content-Type": "application/json",
+            "Accept": "*/*"
+          },
+          "body": "{{bundle.inputData}}",
+          "removeMissingValuesFrom": {
+            "body": false,
+            "params": false
+          }
+        },
+        "inputFields": [
+          {
+            "key": "fileId",
+            "type": "string"
+          }
+        ],
+        "outputFields": []
+      },
+      "display": {
+        "description": "Very very very very long description for DownloadFile",
+        "hidden": false,
+        "label": "DownloadFile"
+      },
+      "key": "DownloadFile"
+    },
+    "UpdateFile": {
+      "noun": "UpdateFile",
+      "operation": {
+        "perform": {
+          "url": "https://{{process.env.HOST_NAME}}/api/files/{{bundle.inputData.fileId}}",
+          "method": "PATCH",
+          "headers": {
+            "Content-Type": "application/json",
+            "Accept": "*/*"
+          },
+          "body": "{{bundle.inputData}}",
+          "removeMissingValuesFrom": {
+            "body": false,
+            "params": false
+          }
+        },
+        "inputFields": [
+          {
+            "key": "fileId",
+            "type": "string"
+          }
+        ],
+        "outputFields": []
+      },
+      "display": {
+        "description": "Very very very very long description for UpdateFile",
+        "hidden": false,
+        "label": "UpdateFile"
+      },
+      "key": "UpdateFile"
+    },
+    "UploadFile": {
+      "noun": "UploadFile",
+      "operation": {
+        "perform": {
+          "url": "https://{{process.env.HOST_NAME}}/api/files",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/json",
+            "Accept": "*/*"
+          },
+          "body": "{{bundle.inputData}}",
+          "removeMissingValuesFrom": {
+            "body": false,
+            "params": false
+          }
+        },
+        "inputFields": [],
+        "outputFields": []
+      },
+      "display": {
+        "description": "Very very very very long description for UploadFile",
+        "hidden": false,
+        "label": "UploadFile"
+      },
+      "key": "UploadFile"
+    }
+  }
+}
