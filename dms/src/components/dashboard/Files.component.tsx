@@ -14,7 +14,7 @@ export const FilesComponent = () => {
     data: response,
   } = useApiCall('GetChildren', {
     pathParams: {
-      parentId: parent,
+      parentId: parent ?? new Types.ObjectId('0'.repeat(24)),
     },
     queryParams: {},
   });
