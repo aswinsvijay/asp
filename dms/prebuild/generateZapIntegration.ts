@@ -56,6 +56,7 @@ export default function generateZapIntegration() {
               ...convertJsonSchemaToZapierSchema(config.queryParams),
               ...convertJsonSchemaToZapierSchema(config.requestBody?.schema ?? {}),
             ],
+            outputFields: convertJsonSchemaToZapierSchema(config.response),
           },
           display: {
             description: `Very very very very long description for ${operationId}`,
