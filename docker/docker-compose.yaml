@@ -22,7 +22,7 @@ services:
       - "3000:3000"
     volumes:
       - ../:/workspace
-      - ../file_storage:/file_storage
+      - ../dms/file_storage:/file_storage
     working_dir: /workspace
 
   dms:
