@@ -26,11 +26,12 @@ export default function generateZapIntegration() {
       return config.zapierConfig.actionType === 'creates';
     })
     .map(([operationId, config]) => {
-      const url = `/api${config.path}`;
-      const replacedUrl = url
+      const replacedPath = config.path
         .split('/')
         .map((segment) => segment.replace(/:(.*)/, '{{bundle.inputData.$1}}'))
         .join('/');
+
+      const fullUrl = `https://{{process.env.HOST_NAME}}/api${replacedPath}`;
 
       return [
         operationId,
@@ -38,7 +39,7 @@ export default function generateZapIntegration() {
           noun: operationId,
           operation: {
             perform: {
-              url: replacedUrl,
+              url: fullUrl,
               method: config.method.toUpperCase(),
               headers: {
                 'Content-Type': 'application/json',
