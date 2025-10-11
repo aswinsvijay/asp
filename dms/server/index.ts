@@ -8,7 +8,7 @@ import compiledRouterConfig from './routerConfig/compiledRouterConfig.out';
 import Ajv from 'ajv';
 import { mongoId, stringNull } from './keywords';
 import { controllerGroup, initialize } from './controllers';
-import { authenticator, errorHandler } from './middlewares';
+import { basicAuthenticator as authenticator, errorHandler } from './middlewares';
 import { MyServerBadRequestError, MyServerUnauthorizedError } from './objects';
 import { User, UserSession } from './db/models';
 import { hashPassword } from './utils';
