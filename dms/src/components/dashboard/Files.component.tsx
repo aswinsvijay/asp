@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { apiCall, Spacing, useApiCall } from '@/src/utils';
+import { apiCall, Spacing, useApiCall, useMemoizedParameters } from '@/src/utils';
 import { Types } from 'mongoose';
 import { Box, Button } from '@mui/material';
 import { CustomIcon } from '../CustomIcon.component';
@@ -12,12 +12,18 @@ export const FilesComponent = () => {
     loading,
     error,
     data: response,
-  } = useApiCall('GetChildren', {
-    pathParams: {
-      parentId: parent ?? new Types.ObjectId('0'.repeat(24)),
-    },
-    queryParams: {},
-  });
+  } = useApiCall(
+    'GetChildren',
+    useMemoizedParameters(
+      () => ({
+        pathParams: {
+          parentId: parent ?? new Types.ObjectId('0'.repeat(24)),
+        },
+        queryParams: {},
+      }),
+      [parent]
+    )
+  );
 
   const uploadFile = async (file: File) => {
     const formData = new FormData();

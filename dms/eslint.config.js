@@ -13,5 +13,13 @@ module.exports = defineConfig([
   ...compat.config({
     extends: ['next/core-web-vitals', '@aswinsvijay/eslint-config'],
     ignorePatterns: ['dist/**/*'],
+    rules: {
+      'react-hooks/exhaustive-deps': [
+        'warn',
+        {
+          additionalHooks: '(useMemoizedParameters)',
+        },
+      ],
+    },
   }),
 ]);
