@@ -33,7 +33,7 @@ export class MyServerStreamResponse extends MyServerResponse<Readable> {
   constructor(data: Readable, args?: { status?: number; contentType?: ContentType }) {
     super(data, {
       status: args?.status ?? HttpStatusCode.Ok,
-      contentType: 'application/octet-stream',
+      contentType: args?.contentType ?? 'application/octet-stream',
     });
   }
 }
