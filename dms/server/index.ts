@@ -30,7 +30,7 @@ koaApp.use(errorHandler);
 koaApp.use(bodyParser());
 koaApp.use(
   koaMulter({
-    dest: './file_storage',
+    dest: environment.FILE_STORAGE_PATH,
     limits: { fileSize: 5 * 1024 * 1024 },
   }).fields([
     {
