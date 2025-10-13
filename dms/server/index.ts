@@ -49,7 +49,7 @@ const compiledRoutes = Object.entries(compiledRouterConfig).map(([operationId, o
 
   const queryValidator = ajv.compile(operationInfo.queryParams);
 
-  const requestBodyValidator = ajv.compile(operationInfo.requestBody);
+  const requestBodyValidator = ajv.compile(operationInfo.requestBody?.schema ?? {});
   const responseValidator = ajv.compile(operationInfo.response);
 
   return {
