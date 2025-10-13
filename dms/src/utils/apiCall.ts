@@ -1,7 +1,7 @@
 import axios from 'axios';
 import compiledRouterConfig from '../../server/routerConfig/compiledRouterConfig.out';
 import { CompiledOperations } from '../../server/routerConfig/compiledRouterTypes.out';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { assertUnreachable, UNSAFE_CAST } from './typeUtils';
 import { getToken } from './auth';
 import { Types } from 'mongoose';
@@ -10,6 +10,8 @@ type ApiParameters<T extends keyof CompiledOperations> = Pick<
   CompiledOperations[T],
   'pathParams' | 'queryParams' | 'requestBody'
 >;
+
+type ApiResponse<T extends keyof CompiledOperations> = CompiledOperations[T]['response'];
 
 function convertPathParams(pathParams: Record<string, Types.ObjectId | null>) {
   const convertedPathParams = Object.fromEntries(
@@ -59,7 +61,7 @@ export async function apiCall<T extends keyof CompiledOperations>(operation: T, 
     ...(parameters.requestBody ? { data: parameters.requestBody } : {}),
   });
 
-  return response.data as CompiledOperations[T]['response'];
+  return response.data as ApiResponse<T>;
 }
 
 export async function tryApiCall<T extends keyof CompiledOperations>(operation: T, parameters: ApiParameters<T>) {
@@ -72,7 +74,7 @@ export async function tryApiCall<T extends keyof CompiledOperations>(operation: 
   }
 }
 
-type UseApiCallResult<T> =
+type UseApiCallResult<T extends keyof CompiledOperations> =
   | {
       loading: true;
       data: null;
@@ -80,7 +82,7 @@ type UseApiCallResult<T> =
     }
   | {
       loading: false;
-      data: T;
+      data: ApiResponse<T>;
       error: null;
     }
   | {
@@ -92,41 +94,49 @@ type UseApiCallResult<T> =
 export const useApiCall = <T extends keyof CompiledOperations>(
   operation: T,
   parameters: ApiParameters<T>
-): UseApiCallResult<CompiledOperations[T]['response']> => {
-  const [result, setResult] = useState<UseApiCallResult<CompiledOperations[T]['response']>>({
-    loading: true,
-    data: null,
-    error: null,
-  });
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setResult({
+): UseApiCallResult<T> & {
+  reset: () => void;
+} => {
+  const defaultState = useMemo(
+    () =>
+      ({
         loading: true,
         data: null,
         error: null,
+      }) as const satisfies UseApiCallResult<T>,
+    []
+  );
+
+  const [result, setResult] = useState<UseApiCallResult<T>>(defaultState);
+
+  const fetchData = useCallback(async () => {
+    setResult(defaultState);
+
+    // TODO: ESLint rule for variable shadowing
+    const [apiResponse, apiError] = await tryApiCall(operation, parameters);
+
+    if (apiResponse) {
+      setResult({
+        loading: false,
+        data: apiResponse,
+        error: null,
       });
-
-      // TODO: ESLint rule for variable shadowing
-      const [apiResponse, apiError] = await tryApiCall(operation, parameters);
-
-      if (apiResponse) {
-        setResult({
-          loading: false,
-          data: apiResponse,
-          error: null,
-        });
-      } else {
-        setResult({
-          loading: false,
-          data: null,
-          error: apiError,
-        });
-      }
-    };
-
-    void fetchData();
+    } else {
+      setResult({
+        loading: false,
+        data: null,
+        error: apiError,
+      });
+    }
   }, [operation, JSON.stringify(parameters)]);
 
-  return result;
+  const reset = useCallback(() => {
+    void fetchData();
+  }, [fetchData]);
+
+  useEffect(() => {
+    reset();
+  }, [reset]);
+
+  return { ...result, reset };
 };
