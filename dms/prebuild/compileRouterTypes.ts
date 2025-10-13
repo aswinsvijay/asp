@@ -25,7 +25,7 @@ export default async function compileRouterTypes() {
           },
           pathParams: operationInfo.pathParams,
           queryParams: operationInfo.queryParams,
-          requestBody: operationInfo.requestBody,
+          requestBody: operationInfo.requestBody?.schema ?? {},
           response: operationInfo.response,
         },
         required: ['path', 'method', 'controller', 'pathParams', 'queryParams', 'response'],
