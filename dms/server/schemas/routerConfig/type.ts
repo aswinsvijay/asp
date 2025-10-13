@@ -133,10 +133,10 @@ export interface HttpJsonSchemaOrgDraft04Schema {
    */
   enum?: [unknown, ...unknown[]];
   type?:
-    | ("array" | "boolean" | "integer" | "null" | "number" | "object" | "string")
+    | ('array' | 'boolean' | 'integer' | 'null' | 'number' | 'object' | 'string')
     | [
-        "array" | "boolean" | "integer" | "null" | "number" | "object" | "string",
-        ...("array" | "boolean" | "integer" | "null" | "number" | "object" | "string")[]
+        'array' | 'boolean' | 'integer' | 'null' | 'number' | 'object' | 'string',
+        ...('array' | 'boolean' | 'integer' | 'null' | 'number' | 'object' | 'string')[]
       ];
   format?: string;
   allOf?: SchemaArray;
