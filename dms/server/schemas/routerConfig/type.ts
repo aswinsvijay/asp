@@ -38,9 +38,16 @@ export type PostMethodConfig = ControllerInfo & {
       [k: string]: HttpJsonSchemaOrgDraft04Schema;
     };
   };
-  requestBody?: HttpJsonSchemaOrgDraft04Schema;
+  requestBody?: RequestBody;
   response: HttpJsonSchemaOrgDraft04Schema;
 };
+export type ContentType =
+  | 'application/json'
+  | 'text/plain'
+  | 'text/html'
+  | 'image/png'
+  | 'application/octet-stream'
+  | 'multipart/form-data';
 export type PatchMethodConfig = ControllerInfo & {
   pathParams?: {
     properties?: {
@@ -52,7 +59,7 @@ export type PatchMethodConfig = ControllerInfo & {
       [k: string]: HttpJsonSchemaOrgDraft04Schema;
     };
   };
-  requestBody?: HttpJsonSchemaOrgDraft04Schema;
+  requestBody?: RequestBody;
   response: HttpJsonSchemaOrgDraft04Schema;
 };
 
@@ -133,10 +140,10 @@ export interface HttpJsonSchemaOrgDraft04Schema {
    */
   enum?: [unknown, ...unknown[]];
   type?:
-    | ("array" | "boolean" | "integer" | "null" | "number" | "object" | "string")
+    | ('array' | 'boolean' | 'integer' | 'null' | 'number' | 'object' | 'string')
     | [
-        "array" | "boolean" | "integer" | "null" | "number" | "object" | "string",
-        ...("array" | "boolean" | "integer" | "null" | "number" | "object" | "string")[]
+        'array' | 'boolean' | 'integer' | 'null' | 'number' | 'object' | 'string',
+        ...('array' | 'boolean' | 'integer' | 'null' | 'number' | 'object' | 'string')[]
       ];
   format?: string;
   allOf?: SchemaArray;
@@ -144,4 +151,8 @@ export interface HttpJsonSchemaOrgDraft04Schema {
   oneOf?: SchemaArray;
   not?: HttpJsonSchemaOrgDraft04Schema;
   [k: string]: unknown;
+}
+export interface RequestBody {
+  contentType: ContentType;
+  schema: HttpJsonSchemaOrgDraft04Schema;
 }

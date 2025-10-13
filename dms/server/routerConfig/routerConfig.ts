@@ -1,26 +1,16 @@
 import { RouterConfig } from '../schemas/routerConfig/type';
 import { narrowedValue } from '../../src/utils/typeUtils';
 
-const filesControllers = 'files.controllers';
-
-const mongoId = {
-  allOf: [
-    {
-      type: 'string',
-      'x-mongo-id': true,
-    },
-  ],
+export const mongoId = {
+  type: 'string',
+  'x-mongo-id': true,
   tsType: 'import("mongoose").Types.ObjectId',
 } as const;
 
-const stringNull = {
-  allOf: [
-    {
-      type: 'string',
-      enum: ['null'],
-      'x-string-null': true,
-    },
-  ],
+export const stringNull = {
+  type: 'string',
+  enum: ['null'],
+  'x-string-null': true,
   tsType: 'null',
 } as const;
 
@@ -29,13 +19,11 @@ export default narrowedValue({
     '/:parentId/children': {
       methods: {
         get: {
-          controller: filesControllers,
+          controller: 'files.controllers',
           operationId: 'GetChildren',
           pathParams: {
             properties: {
-              parentId: {
-                oneOf: [mongoId, stringNull],
-              },
+              parentId: mongoId,
             },
           },
           requestBody: null,
@@ -73,10 +61,13 @@ export default narrowedValue({
     '/files': {
       methods: {
         post: {
-          controller: filesControllers,
+          controller: 'files.controllers',
           operationId: 'UploadFile',
           queryParams: {},
-          requestBody: {},
+          requestBody: {
+            contentType: 'multipart/form-data',
+            schema: {},
+          },
           response: {
             type: 'object',
             properties: {
@@ -95,7 +86,7 @@ export default narrowedValue({
         '/:fileId': {
           methods: {
             patch: {
-              controller: filesControllers,
+              controller: 'files.controllers',
               operationId: 'UpdateFile',
               pathParams: {
                 properties: {
@@ -120,7 +111,7 @@ export default narrowedValue({
             '/download': {
               methods: {
                 get: {
-                  controller: filesControllers,
+                  controller: 'files.controllers',
                   operationId: 'DownloadFile',
                   pathParams: {
                     properties: {
