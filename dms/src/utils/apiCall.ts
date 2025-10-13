@@ -91,9 +91,15 @@ type UseApiCallResult<T extends keyof CompiledOperations> =
       error: Error;
     };
 
+type MemoizedParameters<T> = T & { readonly _: unique symbol };
+
+export const useMemoizedParameters = useMemo as <T>(
+  ...args: NoInfer<Parameters<typeof useMemo<T>>>
+) => MemoizedParameters<T>;
+
 export const useApiCall = <T extends keyof CompiledOperations>(
   operation: T,
-  parameters: ApiParameters<T>
+  parameters: MemoizedParameters<ApiParameters<T>>
 ): UseApiCallResult<T> & {
   reset: () => void;
 } => {
@@ -128,7 +134,7 @@ export const useApiCall = <T extends keyof CompiledOperations>(
         error: apiError,
       });
     }
-  }, [operation, JSON.stringify(parameters)]);
+  }, [defaultState, operation, parameters]);
 
   const reset = useCallback(() => {
     void fetchData();
