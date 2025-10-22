@@ -1,23 +1,33 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Button, Stack, TextField, Typography } from '@mui/material';
-import { AuthUtils, Colors } from '@/src/utils';
+import { AuthUtils, Colors, UNSAFE_CAST } from '@/src/utils';
 import { useRouter } from 'next/router';
+import { AxiosError } from 'axios';
 
 const Login: React.FC = () => {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [, setError] = React.useState<string | null>(null);
+  const [error, setError] = React.useState<string | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    setError(null);
+  }, [username, password]);
 
   const handleSubmit = async () => {
     // TODO: ESLint to enforce spacing
-    setError(null);
     try {
       await AuthUtils.login(username, password);
       await router.push('/dashboard');
     } catch (error) {
+      let errorMessage = '';
+
+      if (error instanceof AxiosError) {
+        errorMessage = UNSAFE_CAST<{ message: string } | undefined>(error.response?.data)?.message ?? '';
+      }
+
       console.error(error);
-      setError('Failed to login');
+      setError(errorMessage || 'Failed to login');
     }
   };
 
@@ -50,13 +60,14 @@ const Login: React.FC = () => {
             required
           />
           <Button
+            color={error ? 'error' : 'primary'}
             variant="contained"
             fullWidth
             onClick={() => {
               void handleSubmit();
             }}
           >
-            Login
+            {error ?? 'Login'}
           </Button>
         </Stack>
       </Box>
