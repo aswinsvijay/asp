@@ -1,7 +1,12 @@
 import { Schema, Types } from 'mongoose';
 import { controllerGroup } from '.';
-import { createStoredDocument, getStoredDocuments } from '../db';
-import { MyServerJSONResponse, MyServerUnauthorizedError } from '../objects';
+import { createStoredDocument, getStoredDocumentById, getStoredDocuments } from '../db';
+import {
+  MyServerBadRequestError,
+  MyServerJSONResponse,
+  MyServerNotFoundError,
+  MyServerUnauthorizedError,
+} from '../objects';
 
 const rootFolder = new Types.ObjectId('0'.repeat(24));
 
@@ -10,6 +15,7 @@ controllerGroup.add('GetChildren', async (ctx) => {
 
   const mappedDocuments = documents.map((document) => ({
     ...document,
+    id: document._id.toString(),
     type: 'document' as const,
   }));
 
@@ -52,6 +58,18 @@ controllerGroup.add('UpdateFile', (ctx) => {
   return Promise.resolve(new MyServerJSONResponse({ data: {} }));
 });
 
-controllerGroup.add('DownloadFile', () => {
-  return Promise.resolve(new MyServerJSONResponse({ data: {} }));
+controllerGroup.add('DownloadFile', async (ctx) => {
+  const documentId = ctx.pathParams.fileId;
+
+  if (!documentId) {
+    throw new MyServerBadRequestError('fileId is required');
+  }
+
+  const document = await getStoredDocumentById(documentId);
+
+  if (!document) {
+    throw new MyServerNotFoundError('Document not found');
+  }
+
+  return Promise.resolve(new MyServerJSONResponse({ data: document }));
 });

@@ -36,6 +36,9 @@ export default narrowedValue({
                   type: 'object',
                   title: 'ItemInfo',
                   properties: {
+                    id: {
+                      type: 'string',
+                    },
                     name: {
                       type: 'string',
                     },
