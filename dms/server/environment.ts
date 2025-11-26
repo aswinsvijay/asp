@@ -1,6 +1,10 @@
 import { loadEnvConfig } from '@next/env';
 
-const requiredEnvironmentVariables = ['MONGODB_CONNECTION_STRING', 'FILE_STORAGE_PATH'] as const satisfies string[];
+const requiredEnvironmentVariables = [
+  'MONGODB_CONNECTION_STRING',
+  'FILE_STORAGE_PATH',
+  'REDACT_SERVER_URL',
+] as const satisfies string[];
 
 type Environment = Record<(typeof requiredEnvironmentVariables)[number], string>;
 
