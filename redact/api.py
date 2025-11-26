@@ -9,6 +9,7 @@ import os
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 import tempfile
+import traceback
 
 app = FastAPI(title="PII Redaction API")
 
@@ -112,7 +113,36 @@ async def redact_pdf(file: UploadFile = File(...)):
         )
     
     except Exception as e:
-        print(e.__traceback__.s)
+        print(traceback.format_exc())
+        return JSONResponse(
+            status_code=500,
+            content={"status": "error", "message": str(e)}
+        )
+
+@app.post("/redact-txt")
+async def redact_txt(file: UploadFile = File(...)):
+    try:
+        # Read PDF file
+        text = (await file.read()).decode('utf-8')
+
+        # Detect PII entities
+        entities = ner_pipeline(text)
+
+        
+        # Redact PII
+        redacted_text = redact_pii(text, entities)
+
+        # Return the redacted text as stream
+        return StreamingResponse(
+            io.BytesIO(redacted_text.encode('utf-8')),
+            media_type="text/plain",
+            headers={
+                "Content-Disposition": "attachment; filename=redacted_document.txt"
+            }
+        )
+    
+    except Exception as e:
+        print(traceback.format_exc())
         return JSONResponse(
             status_code=500,
             content={"status": "error", "message": str(e)}
