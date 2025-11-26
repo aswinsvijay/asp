@@ -2,9 +2,9 @@ import { Filter } from 'mongodb';
 import { StoredDocument } from './models';
 import { Types } from 'mongoose';
 
-export const getStoredDocuments = async (parent: Types.ObjectId | null) => {
+export const getStoredDocuments = async (parent: Types.ObjectId) => {
   const filter = {
-    ...(parent ? { parent } : { parent: { $exists: false } }),
+    parent,
   } satisfies Filter<StoredDocument>;
 
   return await StoredDocument.find(filter).lean();

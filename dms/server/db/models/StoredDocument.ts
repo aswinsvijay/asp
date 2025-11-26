@@ -5,7 +5,7 @@ const StoredDocumentSchema = new Schema({
   owner: { type: Schema.Types.ObjectId, required: true },
   path: { type: String, required: true },
   mimetype: { type: String, required: true },
-  parent: { type: Schema.Types.ObjectId, required: false },
+  parent: { type: Schema.Types.ObjectId, required: true },
 });
 
 export const StoredDocument = model('StoredDocument', StoredDocumentSchema);

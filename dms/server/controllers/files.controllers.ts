@@ -3,8 +3,10 @@ import { controllerGroup } from '.';
 import { createStoredDocument, getStoredDocuments } from '../db';
 import { MyServerJSONResponse, MyServerUnauthorizedError } from '../objects';
 
+const rootFolder = new Types.ObjectId('0'.repeat(24));
+
 controllerGroup.add('GetChildren', async (ctx) => {
-  const documents = await getStoredDocuments(ctx.pathParams.parentId ?? null);
+  const documents = await getStoredDocuments(ctx.pathParams.parentId ?? rootFolder);
 
   const mappedDocuments = documents.map((document) => ({
     ...document,
@@ -34,6 +36,7 @@ controllerGroup.add('UploadFile', async (ctx) => {
     path: uploadedFile.path,
     mimetype: uploadedFile.mimetype,
     owner: ctx.state.user._id,
+    parent: rootFolder,
   });
 
   return new MyServerJSONResponse({ data: document });
