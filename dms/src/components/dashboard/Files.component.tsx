@@ -51,24 +51,44 @@ export const FilesComponent = () => {
     fileInputRef.current?.click();
   };
 
-  const handleView = (item: ItemInfo) => {
-    console.log('View file:', item);
-    // TODO: Implement view functionality
+  const getDocumentBlob = async (item: ItemInfo) => {
+    const blob = await apiCall('DownloadFile', {
+      pathParams: {
+        fileId: new Types.ObjectId(item.id),
+      },
+      queryParams: {},
+      requestConfig: {
+        responseType: 'blob',
+      },
+    });
+
+    if (!(blob instanceof Blob)) {
+      return null;
+    }
+
+    return blob;
+  };
+
+  const handleView = async (item: ItemInfo) => {
+    try {
+      const blob = await getDocumentBlob(item);
+
+      if (!blob) {
+        return;
+      }
+
+      const fileText = await blob.text();
+      console.log('View file content:', fileText);
+    } catch (viewError) {
+      console.error('Error viewing file:', viewError);
+    }
   };
 
   const handleDownload = async (item: ItemInfo) => {
     try {
-      const blob = await apiCall('DownloadFile', {
-        pathParams: {
-          fileId: new Types.ObjectId(item.id),
-        },
-        queryParams: {},
-        requestConfig: {
-          responseType: 'blob',
-        },
-      });
+      const blob = await getDocumentBlob(item);
 
-      if (!(blob instanceof Blob)) {
+      if (!blob) {
         return;
       }
 
@@ -130,7 +150,7 @@ export const FilesComponent = () => {
                     size="small"
                     variant="outlined"
                     onClick={() => {
-                      handleView(item);
+                      void handleView(item);
                     }}
                     className="flex-1"
                   >
