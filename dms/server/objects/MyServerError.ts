@@ -52,6 +52,15 @@ export class MyServerForbiddenError extends MyServer4xxError {
   }
 }
 
+export class MyServerNotFoundError extends MyServer4xxError {
+  constructor(message: string, args?: { data?: NonNullable<unknown> }) {
+    super(message, {
+      status: HttpStatusCode.NotFound,
+      data: args?.data ?? {},
+    });
+  }
+}
+
 export class MyServerConflictError extends MyServer4xxError {
   constructor(message: string, args?: { data?: NonNullable<unknown> }) {
     super(message, {
