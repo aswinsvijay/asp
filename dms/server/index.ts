@@ -148,6 +148,7 @@ compiledRoutes.forEach((operationInfo) => {
       throw new Error('Invalid response data');
     }
 
+    ctx.set('Content-Type', response.contentType);
     ctx.status = response.status;
     ctx.body = response.data;
   });
