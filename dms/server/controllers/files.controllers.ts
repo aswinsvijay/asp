@@ -6,7 +6,10 @@ import {
   MyServerJSONResponse,
   MyServerNotFoundError,
   MyServerUnauthorizedError,
+  MyServerInternalError,
+  MyServerStreamResponse,
 } from '../objects';
+import { createReadStream, existsSync } from 'fs';
 
 const rootFolder = new Types.ObjectId('0'.repeat(24));
 
@@ -71,5 +74,11 @@ controllerGroup.add('DownloadFile', async (ctx) => {
     throw new MyServerNotFoundError('Document not found');
   }
 
-  return Promise.resolve(new MyServerJSONResponse({ data: document }));
+  if (!existsSync(document.path)) {
+    throw new MyServerInternalError('Document does not exist on the specified path', { data: {} });
+  }
+
+  const stream = createReadStream(document.path);
+
+  return Promise.resolve(new MyServerStreamResponse(stream));
 });
