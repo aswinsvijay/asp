@@ -50,6 +50,21 @@ export const FilesComponent = () => {
     fileInputRef.current?.click();
   };
 
+  const handleView = (item: { name: string; path: string; type: string }) => {
+    console.log('View file:', item);
+    // TODO: Implement view functionality
+  };
+
+  const handleDownload = (item: { name: string; path: string; type: string }) => {
+    console.log('Download file:', item);
+    // TODO: Implement download functionality
+  };
+
+  const handleRedact = (item: { name: string; path: string; type: string }) => {
+    console.log('Redact file:', item);
+    // TODO: Implement redact functionality
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -81,9 +96,43 @@ export const FilesComponent = () => {
           {response.data.map((item, index) => (
             <div
               key={index}
-              className="p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200"
+              className="p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 flex flex-col gap-1"
             >
               <div className="text-sm font-medium text-gray-900 truncate">{item.name}</div>
+              {item.type === 'document' && (
+                <div className="flex flex-col gap-2">
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() => {
+                      handleView(item);
+                    }}
+                    className="flex-1"
+                  >
+                    View
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() => {
+                      handleDownload(item);
+                    }}
+                    className="flex-1"
+                  >
+                    <CustomIcon name="Download" />
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() => {
+                      handleRedact(item);
+                    }}
+                    className="flex-1"
+                  >
+                    Redact
+                  </Button>
+                </div>
+              )}
             </div>
           ))}
         </div>
