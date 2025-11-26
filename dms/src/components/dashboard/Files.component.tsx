@@ -3,6 +3,7 @@ import { apiCall, Spacing, useApiCall, useMemoizedParameters } from '@/src/utils
 import { Types } from 'mongoose';
 import { Box, Button } from '@mui/material';
 import { CustomIcon } from '../CustomIcon.component';
+import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
 
 export const FilesComponent = () => {
   const [parent] = useState<Types.ObjectId | null>(null);
@@ -50,17 +51,17 @@ export const FilesComponent = () => {
     fileInputRef.current?.click();
   };
 
-  const handleView = (item: { name: string; path: string; type: string }) => {
+  const handleView = (item: ItemInfo) => {
     console.log('View file:', item);
     // TODO: Implement view functionality
   };
 
-  const handleDownload = (item: { name: string; path: string; type: string }) => {
+  const handleDownload = (item: ItemInfo) => {
     console.log('Download file:', item);
     // TODO: Implement download functionality
   };
 
-  const handleRedact = (item: { name: string; path: string; type: string }) => {
+  const handleRedact = (item: ItemInfo) => {
     console.log('Redact file:', item);
     // TODO: Implement redact functionality
   };
