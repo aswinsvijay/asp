@@ -50,7 +50,7 @@ export default narrowedValue({
                       enum: ['document', 'folder'],
                     },
                   },
-                  required: ['name', 'path', 'type'],
+                  required: ['id', 'name', 'path', 'type'],
                   additionalProperties: false,
                 },
               },
