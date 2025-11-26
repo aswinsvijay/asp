@@ -56,9 +56,33 @@ export const FilesComponent = () => {
     // TODO: Implement view functionality
   };
 
-  const handleDownload = (item: ItemInfo) => {
-    console.log('Download file:', item);
-    // TODO: Implement download functionality
+  const handleDownload = async (item: ItemInfo) => {
+    try {
+      const blob = await apiCall('DownloadFile', {
+        pathParams: {
+          fileId: new Types.ObjectId(item.id),
+        },
+        queryParams: {},
+        requestConfig: {
+          responseType: 'blob',
+        },
+      });
+
+      if (!(blob instanceof Blob)) {
+        return;
+      }
+
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = item.name;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (downloadError) {
+      console.error('Error downloading file:', downloadError);
+    }
   };
 
   const handleRedact = (item: ItemInfo) => {
@@ -116,7 +140,7 @@ export const FilesComponent = () => {
                     size="small"
                     variant="outlined"
                     onClick={() => {
-                      handleDownload(item);
+                      void handleDownload(item);
                     }}
                     className="flex-1"
                   >

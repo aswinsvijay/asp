@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { type AxiosRequestConfig } from 'axios';
 import compiledRouterConfig from '../../server/routerConfig/compiledRouterConfig.out';
 import { CompiledOperations } from '../../server/routerConfig/compiledRouterTypes.out';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -9,7 +9,9 @@ import { Types } from 'mongoose';
 type ApiParameters<T extends keyof CompiledOperations> = Pick<
   CompiledOperations[T],
   'pathParams' | 'queryParams' | 'requestBody'
->;
+> & {
+  requestConfig?: AxiosRequestConfig;
+};
 
 type ApiResponse<T extends keyof CompiledOperations> = CompiledOperations[T]['response'];
 
@@ -50,7 +52,10 @@ export async function apiCall<T extends keyof CompiledOperations>(operation: T, 
     url = url.replace(`:${key}`, value);
   });
 
+  const { requestConfig } = parameters;
+
   const response = await axios({
+    ...requestConfig,
     url,
     method: operationInfo.method,
     params: parameters.queryParams,
