@@ -125,6 +125,20 @@ export default narrowedValue({
                 },
               },
             },
+            '/redaction-entities': {
+              methods: {
+                get: {
+                  controller: 'files.controllers',
+                  operationId: 'GetRedactionEntities',
+                  pathParams: {
+                    properties: {
+                      fileId: mongoId,
+                    },
+                  },
+                  response: {},
+                },
+              },
+            },
           },
         },
       },

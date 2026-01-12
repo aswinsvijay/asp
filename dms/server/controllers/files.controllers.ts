@@ -82,3 +82,21 @@ controllerGroup.add('DownloadFile', async (ctx) => {
 
   return Promise.resolve(new MyServerStreamResponse(stream));
 });
+
+controllerGroup.add('GetRedactionEntities', async (ctx) => {
+  const documentId = ctx.pathParams.fileId;
+
+  if (!documentId) {
+    throw new MyServerBadRequestError('fileId is required');
+  }
+
+  const document = await getStoredDocumentById(documentId);
+
+  if (!document) {
+    throw new MyServerNotFoundError('Document not found');
+  }
+
+  if (!existsSync(document.path)) {
+    throw new MyServerInternalError('Document does not exist on the specified path', { data: {} });
+  }
+});

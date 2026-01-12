@@ -4,6 +4,28 @@ import { Types } from 'mongoose';
 import { Box, Button } from '@mui/material';
 import { CustomIcon } from '../CustomIcon.component';
 import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
+import axios from 'axios';
+
+const uploadFile = async (file: File) => {
+  const formData = new FormData();
+
+  formData.append('file', file);
+
+  await apiCall('UploadFile', {
+    pathParams: {},
+    queryParams: {},
+    requestBody: formData,
+  });
+};
+
+const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0];
+  if (file) {
+    console.log('File selected:', file.name, file.size, file.type);
+
+    void uploadFile(file);
+  }
+};
 
 export const FilesComponent = () => {
   const [parent] = useState<Types.ObjectId | null>(null);
@@ -25,27 +47,6 @@ export const FilesComponent = () => {
       [parent]
     )
   );
-
-  const uploadFile = async (file: File) => {
-    const formData = new FormData();
-
-    formData.append('file', file);
-
-    await apiCall('UploadFile', {
-      pathParams: {},
-      queryParams: {},
-      requestBody: formData,
-    });
-  };
-
-  const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      console.log('File selected:', file.name, file.size, file.type);
-
-      void uploadFile(file);
-    }
-  };
 
   const handleFileUpload = () => {
     fileInputRef.current?.click();
@@ -105,9 +106,28 @@ export const FilesComponent = () => {
     }
   };
 
-  const handleRedact = (item: ItemInfo) => {
-    console.log('Redact file:', item);
-    // TODO: Implement redact functionality
+  const handleRedact = async (item: ItemInfo) => {
+    try {
+      const blob = await getDocumentBlob(item);
+
+      if (!blob) {
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', blob, item.name);
+
+      const response = await axios({
+        url: 'http://localhost:8000/redact-txt',
+        method: 'POST',
+        headers: {},
+        data: formData,
+      });
+
+      console.log('Redacted file:', response.data);
+    } catch (redactError) {
+      console.error('Error redacting file:', redactError);
+    }
   };
 
   if (loading) {
@@ -170,7 +190,7 @@ export const FilesComponent = () => {
                     size="small"
                     variant="outlined"
                     onClick={() => {
-                      handleRedact(item);
+                      void handleRedact(item);
                     }}
                     className="flex-1"
                   >
