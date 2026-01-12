@@ -3,7 +3,9 @@ import spacy
 from spacy.util import minibatch
 import random
 from faker import Faker
-import config
+import pathlib
+
+MODEL_BASE_PATH = pathlib.Path('./models')
 
 class Annotations(TypedDict):
     entities: list[tuple[int, int, str]]
@@ -47,7 +49,7 @@ class Model(Protocol):
 
     @property
     def effective_path(self):
-        return config.MODEL_BASE_PATH / self.name
+        return MODEL_BASE_PATH / self.name
 
     def load_dataset(self) -> None:
         ...
