@@ -1,4 +1,4 @@
-from typing import Protocol, Any, Iterable
+from typing import Protocol, Any, Iterable, TypedDict
 import spacy
 from spacy.util import minibatch
 import random
@@ -76,7 +76,7 @@ class SpacyModel(Model):
         self.dataset = []
 
     def load_dataset(self) -> None:
-        self.dataset = FakeDataGenerator().generate(100)
+        self.dataset = FakeDataGenerator().generate(1000)
 
         for _, annotations in self.dataset:
             for _, _, label in annotations["entities"]:
@@ -107,11 +107,9 @@ class SpacyModel(Model):
     def load_model(self):
         self.nlp.from_disk(self.effective_path)
 
-class BertModel(Model):
-    name: str = 'checkpoint-2334'
+if __name__ == "__main__":
+    model = SpacyModel()
 
-model = SpacyModel()
-
-model.load_dataset()
-model.train()
-model.save_model()
+    model.load_dataset()
+    model.train()
+    model.save_model()
