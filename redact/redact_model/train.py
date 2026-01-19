@@ -3,9 +3,11 @@ import spacy
 from spacy.util import minibatch
 import random
 from faker import Faker
+import os
 import pathlib
 
-MODEL_BASE_PATH = pathlib.Path('./models')
+dir = os.path.dirname(os.path.realpath(__file__))
+MODEL_BASE_PATH = pathlib.Path(dir) / 'models'
 
 class Annotations(TypedDict):
     entities: list[tuple[int, int, str]]
@@ -85,7 +87,7 @@ class SpacyModel(Model):
     def train(self) -> None:
         self.nlp.begin_training() # type: ignore
 
-        for i in range(30):
+        for i in range(10):
             random.shuffle(self.dataset)
             losses: dict[str, float] = {}
             batches: Iterable[list[tuple[str, Annotations]]] = minibatch(self.dataset, size=20)
@@ -105,7 +107,16 @@ class SpacyModel(Model):
         self.nlp.to_disk(self.effective_path)
 
     def load_model(self):
-        self.nlp.from_disk(self.effective_path)
+        self.nlp = spacy.load(self.effective_path)
+        self.ner = self.nlp.get_pipe("ner")
+
+    def redact(self, text: str):
+        doc = self.nlp(text)
+        for ent in doc.ents:
+            if ent.label_ in ["PERSON", "ADDRESS", "PHONE", "SSN", "CREDIT_CARD", "EMAIL"]:
+                text = text.replace(ent.text, f"[{ent.label_}]")
+
+        return text
 
 if __name__ == "__main__":
     model = SpacyModel()

@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse, StreamingResponse
 import PyPDF2
+from redact_model.train import SpacyModel
 from transformers import pipeline
 import io
 import re
@@ -25,6 +26,9 @@ ner_pipeline = pipeline(
     aggregation_strategy="simple"
 )
 
+spacy_model = SpacyModel()
+spacy_model.load_model()
+
 # def extract_text_from_pdf(pdf_file: bytes) -> str:
 #     """Extract text from PDF file."""
 #     pdf_reader = PyPDF2.PdfReader(io.BytesIO(pdf_file))
@@ -45,79 +49,6 @@ def redact_pii(text: str, entities: List[dict]) -> str:
                 redacted_text
             )
     return redacted_text
-
-# def create_redacted_pdf(original_pdf: PyPDF2.PdfReader, redacted_text: str) -> bytes:
-#     """Create a new PDF with redacted text while preserving formatting."""
-#     output = io.BytesIO()
-#     writer = PyPDF2.PdfWriter()
-    
-#     # Create a temporary PDF with the redacted text
-#     temp_pdf = tempfile.NamedTemporaryFile(delete=False, suffix='.pdf')
-#     c = canvas.Canvas(temp_pdf.name, pagesize=letter)
-    
-#     # Split text into lines and add to PDF
-#     lines = redacted_text.split('\n')
-#     y = 750  # Starting y position
-#     for line in lines:
-#         if y < 50:  # Start new page if we're near the bottom
-#             c.showPage()
-#             y = 750
-#         c.drawString(50, y, line)
-#         y -= 15  # Move to next line
-    
-#     c.save()
-    
-#     # Merge the original PDF's formatting with the redacted text
-#     temp_reader = PyPDF2.PdfReader(temp_pdf.name)
-#     for i in range(len(original_pdf.pages)):
-#         page = original_pdf.pages[i]
-#         if i < len(temp_reader.pages):
-#             ...
-#             page = (temp_reader.pages[i])
-#         writer.add_page(page)
-    
-#     writer.write(output)
-#     output.seek(0)
-    
-#     # Clean up temporary file
-#     # os.unlink(temp_pdf.name)
-    
-#     return output.getvalue()
-
-# @app.post("/redact")
-# async def redact_pdf(file: UploadFile = File(...)):
-#     try:
-#         # Read PDF file
-#         pdf_content = await file.read()
-        
-#         # Extract text from PDF
-#         text, pdf_reader = extract_text_from_pdf(pdf_content)
-        
-#         # Detect PII entities
-#         entities = ner_pipeline(text)
-
-        
-#         # Redact PII
-#         redacted_text = redact_pii(text, entities)
-        
-#         # Create redacted PDF
-#         redacted_pdf = create_redacted_pdf(pdf_reader, redacted_text)
-        
-#         # Return the redacted PDF file
-#         return StreamingResponse(
-#             io.BytesIO(redacted_pdf),
-#             media_type="application/pdf",
-#             headers={
-#                 "Content-Disposition": "attachment; filename=redacted_document.pdf"
-#             }
-#         )
-    
-#     except Exception as e:
-#         print(traceback.format_exc())
-#         return JSONResponse(
-#             status_code=500,
-#             content={"status": "error", "message": str(e)}
-#         )
 
 @app.get("/redaction-entities")
 async def get_redaction_entities(file: UploadFile = File(...)):
