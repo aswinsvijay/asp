@@ -43,3 +43,6 @@ file_storage
 n8n
 dist
 *.out.ts
+
+models
+pii-model.zip
