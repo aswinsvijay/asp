@@ -4,6 +4,7 @@ import { Types } from 'mongoose';
 import { Box, Button } from '@mui/material';
 import { CustomIcon } from '../CustomIcon.component';
 import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
+import { FileViewerModal } from './FileViewerModal.component';
 
 const uploadFile = async (file: File) => {
   const formData = new FormData();
@@ -15,6 +16,24 @@ const uploadFile = async (file: File) => {
     queryParams: {},
     requestBody: formData,
   });
+};
+
+const getDocumentBlob = async (item: ItemInfo) => {
+  const blob = await apiCall('DownloadFile', {
+    pathParams: {
+      fileId: new Types.ObjectId(item.id),
+    },
+    queryParams: {},
+    requestConfig: {
+      responseType: 'blob',
+    },
+  });
+
+  if (!(blob instanceof Blob)) {
+    return null;
+  }
+
+  return blob;
 };
 
 const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,6 +48,7 @@ const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
 export const FilesComponent = () => {
   const [parent] = useState<Types.ObjectId | null>(null);
   const [widget, setWidget] = useState<'view' | 'redact' | null>(null);
+  const [selectedFile, setSelectedFile] = useState<ItemInfo | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
@@ -52,34 +72,10 @@ export const FilesComponent = () => {
     fileInputRef.current?.click();
   };
 
-  const getDocumentBlob = async (item: ItemInfo) => {
-    const blob = await apiCall('DownloadFile', {
-      pathParams: {
-        fileId: new Types.ObjectId(item.id),
-      },
-      queryParams: {},
-      requestConfig: {
-        responseType: 'blob',
-      },
-    });
-
-    if (!(blob instanceof Blob)) {
-      return null;
-    }
-
-    return blob;
-  };
-
-  const handleView = async (item: ItemInfo) => {
+  const handleView = (item: ItemInfo) => {
     try {
-      const blob = await getDocumentBlob(item);
-
-      if (!blob) {
-        return;
-      }
-
-      const fileContent = await blob.text();
-      console.log('View file content:', fileContent);
+      setSelectedFile(item);
+      setWidget('view');
     } catch (viewError) {
       console.error('Error viewing file:', viewError);
     }
@@ -147,6 +143,20 @@ export const FilesComponent = () => {
     <div className="flex flex-col h-full">
       <input ref={fileInputRef} type="file" onChange={handleFileSelected} style={{ display: 'none' }} accept="*/*" />
 
+      {selectedFile && (
+        <>
+          {widget === 'view' ? (
+            <FileViewerModal
+              selectedFile={selectedFile}
+              onClose={() => {
+                setWidget(null);
+              }}
+            />
+          ) : null}
+          {widget === 'redact' ? null : null}
+        </>
+      )}
+
       <Box p={Spacing.SMALL} className="flex-shrink-0 p-4 border-b border-gray-200">
         <Button startIcon={<CustomIcon name="Upload" />} variant="contained" onClick={handleFileUpload}>
           Upload File
@@ -167,7 +177,7 @@ export const FilesComponent = () => {
                     size="small"
                     variant="outlined"
                     onClick={() => {
-                      void handleView(item);
+                      handleView(item);
                     }}
                     className="flex-1"
                   >
