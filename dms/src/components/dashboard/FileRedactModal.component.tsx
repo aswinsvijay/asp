@@ -113,6 +113,15 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ selectedFile, 
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} variant="contained">
+          Redact all
+        </Button>
+        <Button onClick={handleClose} variant="contained">
+          Clear all
+        </Button>
+        <Button onClick={handleClose} variant="contained" color="success">
+          Save as new
+        </Button>
+        <Button onClick={handleClose} variant="outlined" color="error">
           Close
         </Button>
       </DialogActions>
