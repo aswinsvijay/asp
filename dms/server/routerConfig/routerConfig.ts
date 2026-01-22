@@ -165,5 +165,92 @@ export default narrowedValue({
         },
       },
     },
+    '/workflows': {
+      methods: {
+        post: {
+          controller: 'workflows.controllers',
+          operationId: 'CreateWorkflow',
+          requestBody: {
+            contentType: 'application/json',
+            schema: {
+              type: 'object',
+              properties: {
+                name: {
+                  type: 'string',
+                },
+                callback_url: {
+                  type: 'string',
+                },
+                parameters: {},
+              },
+              required: ['name', 'callback_url'],
+              additionalProperties: false,
+            },
+          },
+          response: {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  id: {
+                    type: 'string',
+                  },
+                },
+                required: ['id'],
+                additionalProperties: false,
+              },
+            },
+            required: ['data'],
+            additionalProperties: false,
+          },
+        },
+        get: {
+          controller: 'workflows.controllers',
+          operationId: 'GetWorkflows',
+          response: {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    id: {
+                      type: 'string',
+                    },
+                    name: {
+                      type: 'string',
+                    },
+                  },
+                  required: ['id', 'name'],
+                  additionalProperties: false,
+                },
+              },
+            },
+            required: ['data'],
+            additionalProperties: false,
+          },
+        },
+      },
+    },
+    '/workflows/:workflowId': {
+      methods: {
+        post: {
+          controller: 'workflows.controllers',
+          operationId: 'RunWorkflow',
+          pathParams: {
+            properties: {
+              workflowId: mongoId,
+            },
+          },
+          response: {
+            type: 'object',
+            properties: {},
+            additionalProperties: false,
+          },
+        },
+      },
+    },
   },
 }) satisfies RouterConfig;
