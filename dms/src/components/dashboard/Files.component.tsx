@@ -85,22 +85,10 @@ export const FilesComponent = () => {
     }
   };
 
-  const handleRedact = async (item: ItemInfo) => {
+  const handleRedact = (item: ItemInfo) => {
     try {
-      const blob = await getDocumentBlob(item);
-
-      if (!blob) {
-        return;
-      }
-
-      const fileContent = await blob.text();
-
-      const response = await apiCall('GetRedactionEntities', {
-        pathParams: { fileId: new Types.ObjectId(item.id) },
-        queryParams: {},
-      });
-
-      console.log('Redacted file:', { fileContent, entities: response.data });
+      setSelectedFile(item);
+      setWidget('redact');
     } catch (redactError) {
       console.error('Error redacting file:', redactError);
     }
@@ -187,7 +175,7 @@ export const FilesComponent = () => {
                     size="small"
                     variant="outlined"
                     onClick={() => {
-                      void handleRedact(item);
+                      handleRedact(item);
                     }}
                     className="flex-1"
                   >
