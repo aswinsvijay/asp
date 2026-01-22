@@ -5,6 +5,7 @@ import { Box, Button } from '@mui/material';
 import { CustomIcon } from '../CustomIcon.component';
 import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
 import { FileViewerModal } from './FileViewerModal.component';
+import { FileRedactModal } from './FileRedactModal.component';
 
 const uploadFile = async (file: File) => {
   const formData = new FormData();
@@ -135,7 +136,14 @@ export const FilesComponent = () => {
               }}
             />
           ) : null}
-          {widget === 'redact' ? null : null}
+          {widget === 'redact' ? (
+            <FileRedactModal
+              selectedFile={selectedFile}
+              onClose={() => {
+                setWidget(null);
+              }}
+            />
+          ) : null}
         </>
       )}
 
