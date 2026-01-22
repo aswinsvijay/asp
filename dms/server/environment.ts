@@ -4,6 +4,7 @@ const requiredEnvironmentVariables = [
   'MONGODB_CONNECTION_STRING',
   'FILE_STORAGE_PATH',
   'REDACT_SERVER_URL',
+  'N8N_HOST',
 ] as const satisfies string[];
 
 type Environment = Record<(typeof requiredEnvironmentVariables)[number], string>;
