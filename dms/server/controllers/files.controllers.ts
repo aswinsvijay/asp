@@ -10,8 +10,13 @@ import {
   MyServerStreamResponse,
 } from '../objects';
 import { createReadStream, existsSync } from 'fs';
+import axios from 'axios';
+import { environment } from '../environment';
 
 const rootFolder = new Types.ObjectId('0'.repeat(24));
+const redactionAxiosInstance = axios.create({
+  baseURL: environment.REDACT_SERVER_URL,
+});
 
 controllerGroup.add('GetChildren', async (ctx) => {
   const documents = await getStoredDocuments(ctx.pathParams.parentId ?? rootFolder);
@@ -80,7 +85,7 @@ controllerGroup.add('DownloadFile', async (ctx) => {
 
   const stream = createReadStream(document.path);
 
-  return Promise.resolve(new MyServerStreamResponse(stream));
+  return new MyServerStreamResponse(stream);
 });
 
 controllerGroup.add('GetRedactionEntities', async (ctx) => {
@@ -99,4 +104,10 @@ controllerGroup.add('GetRedactionEntities', async (ctx) => {
   if (!existsSync(document.path)) {
     throw new MyServerInternalError('Document does not exist on the specified path', { data: {} });
   }
+
+  const stream = createReadStream(document.path);
+
+  const response = await redactionAxiosInstance({});
+
+  return new MyServerJSONResponse({ data: {} });
 });
