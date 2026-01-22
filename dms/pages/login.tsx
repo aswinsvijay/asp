@@ -76,7 +76,84 @@ const Login: React.FC = () => {
 };
 
 const Register: React.FC = () => {
-  return <></>;
+  const [name, setName] = React.useState('');
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
+  const [error, setError] = React.useState<string | null>(null);
+
+  useEffect(() => {
+    setError(null);
+  }, [name, username, password, confirmPassword]);
+
+  const handleSubmit = () => {
+    // Placeholder handler function
+    console.log('Register submitted:', { name, username, password, confirmPassword });
+    // TODO: Implement registration logic
+  };
+
+  return (
+    <>
+      <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
+        Sign up
+      </Typography>
+      <Box>
+        <Stack spacing={2}>
+          <TextField
+            label="Name"
+            type="text"
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
+            fullWidth
+            required
+            autoFocus
+          />
+          <TextField
+            label="Username"
+            type="text"
+            value={username}
+            onChange={(e) => {
+              setUsername(e.target.value);
+            }}
+            fullWidth
+            required
+          />
+          <TextField
+            label="Password"
+            type="password"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+            fullWidth
+            required
+          />
+          <TextField
+            label="Confirm Password"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+            }}
+            fullWidth
+            required
+          />
+          <Button
+            color={error ? 'error' : 'primary'}
+            variant="contained"
+            fullWidth
+            onClick={() => {
+              handleSubmit();
+            }}
+          >
+            {error ?? 'Register'}
+          </Button>
+        </Stack>
+      </Box>
+    </>
+  );
 };
 
 const views = [
