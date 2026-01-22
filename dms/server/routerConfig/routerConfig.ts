@@ -135,7 +135,18 @@ export default narrowedValue({
               fileId: mongoId,
             },
           },
-          response: {},
+          response: {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {},
+                additionalProperties: false,
+              },
+            },
+            required: ['data'],
+            additionalProperties: false,
+          },
         },
       },
     },

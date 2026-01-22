@@ -4,7 +4,6 @@ import { Types } from 'mongoose';
 import { Box, Button } from '@mui/material';
 import { CustomIcon } from '../CustomIcon.component';
 import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
-import axios from 'axios';
 
 const uploadFile = async (file: File) => {
   const formData = new FormData();
@@ -117,11 +116,9 @@ export const FilesComponent = () => {
       const formData = new FormData();
       formData.append('file', blob, item.name);
 
-      const response = await axios({
-        url: 'http://localhost:8000/redact-txt',
-        method: 'POST',
-        headers: {},
-        data: formData,
+      const response = await apiCall('GetRedactionEntities', {
+        pathParams: { fileId: new Types.ObjectId(item.id) },
+        queryParams: {},
       });
 
       console.log('Redacted file:', response.data);

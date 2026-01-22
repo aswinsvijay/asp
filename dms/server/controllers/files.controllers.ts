@@ -11,6 +11,7 @@ import {
 } from '../objects';
 import { createReadStream, existsSync } from 'fs';
 import axios from 'axios';
+import FormData from 'form-data';
 import { environment } from '../environment';
 
 const rootFolder = new Types.ObjectId('0'.repeat(24));
@@ -108,7 +109,12 @@ controllerGroup.add('GetRedactionEntities', async (ctx) => {
   const stream = createReadStream(document.path);
 
   try {
-    const response = await redactionAxiosInstance.post('/redaction-entities');
+    const formData = new FormData();
+    formData.append('file', stream, document.name);
+
+    const response = await redactionAxiosInstance.post('/redaction-entities', formData, {
+      headers: formData.getHeaders(),
+    });
 
     return new MyServerJSONResponse({ data: response.data as Record<string, unknown> });
   } catch {
