@@ -1,16 +1,14 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse, StreamingResponse
-import PyPDF2
 from redact_model.train import SpacyModel
 from transformers import pipeline
 import io
 import re
 from typing import List
 import os
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
-import tempfile
 import traceback
+import json
+import numpy as np
 
 app = FastAPI(title="PII Redaction API")
 
@@ -29,13 +27,12 @@ ner_pipeline = pipeline(
 spacy_model = SpacyModel()
 spacy_model.load_model()
 
-# def extract_text_from_pdf(pdf_file: bytes) -> str:
-#     """Extract text from PDF file."""
-#     pdf_reader = PyPDF2.PdfReader(io.BytesIO(pdf_file))
-#     text = ""
-#     for page in pdf_reader.pages:
-#         text += page.extract_text() + "\n"
-#     return text, pdf_reader
+# https://stackoverflow.com/questions/64154850/convert-dictionary-to-a-json-in-python
+class CustomEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.float32):
+            return float(obj)
+        return json.JSONEncoder.default(self, obj)
 
 def redact_pii(text: str, entities: List[dict]) -> str:
     """Redact PII entities from text."""
@@ -58,6 +55,10 @@ async def get_redaction_entities(file: UploadFile = File(...)):
 
         # Detect PII entities
         entities = ner_pipeline(text)
+
+        entities = json.loads(json.dumps(entities, cls=CustomEncoder))
+
+        print(entities)
 
         return JSONResponse(
             content={"data": entities}
