@@ -56,9 +56,14 @@ async def get_redaction_entities(file: UploadFile = File(...)):
         # Detect PII entities
         entities = ner_pipeline(text)
 
+        # replace np.float32 with python float
         entities = json.loads(json.dumps(entities, cls=CustomEncoder))
 
-        print(entities)
+        # do not include general text
+        entities = [*filter(
+            lambda entity: '0' not in entity['entity_group'],
+            entities
+        )]
 
         return JSONResponse(
             content={"data": entities}
