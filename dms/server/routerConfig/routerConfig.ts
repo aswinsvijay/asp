@@ -139,9 +139,10 @@ export default narrowedValue({
             type: 'object',
             properties: {
               data: {
-                type: 'object',
-                properties: {},
-                additionalProperties: false,
+                type: 'array',
+                items: {
+                  type: 'object',
+                },
               },
             },
             required: ['data'],

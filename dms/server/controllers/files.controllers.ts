@@ -116,7 +116,7 @@ controllerGroup.add('GetRedactionEntities', async (ctx) => {
       headers: formData.getHeaders(),
     });
 
-    return new MyServerJSONResponse({ data: response.data as Record<string, unknown> });
+    return new MyServerJSONResponse(response.data as { data: Record<string, unknown>[] });
   } catch {
     throw new Error('Upstream server error');
   }
