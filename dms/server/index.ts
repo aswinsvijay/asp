@@ -110,6 +110,34 @@ koaAuthRouter.post('/login', async (ctx) => {
   ctx.body = sessionData satisfies LoginResponse;
 });
 
+koaAuthRouter.post('/register', async (ctx) => {
+  const requestBody = (ctx.request.body as Record<string, unknown> | undefined) ?? {};
+  const { name, userId, password } = requestBody;
+
+  if (typeof name !== 'string' || typeof userId !== 'string' || typeof password !== 'string') {
+    throw new MyServerBadRequestError('name, userId and password and required and must be strings');
+  }
+
+  try {
+    await createUser({
+      name,
+      userId,
+      hashedPassword: hashPassword(password),
+    });
+  } catch (error) {
+    // TODO: Add ESLint rule `preserve-caught-error` to enforce passing `cause` property in the new error
+    if (!(error instanceof Error)) {
+      throw new Error();
+    }
+
+    if (error.message.includes('E11000')) {
+      throw new Error('Duplicate user');
+    }
+
+    throw new Error('Error creating user');
+  }
+});
+
 koaApiRouter.use(authenticator);
 
 compiledRoutes.forEach((operationInfo) => {
