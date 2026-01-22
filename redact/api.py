@@ -50,7 +50,7 @@ def redact_pii(text: str, entities: List[dict]) -> str:
             )
     return redacted_text
 
-@app.get("/redaction-entities")
+@app.post("/redaction-entities")
 async def get_redaction_entities(file: UploadFile = File(...)):
     try:
         # Read PDF file
