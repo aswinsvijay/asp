@@ -142,6 +142,20 @@ export default narrowedValue({
                 type: 'array',
                 items: {
                   type: 'object',
+                  title: 'EntitySpan',
+                  properties: {
+                    entity_group: {
+                      type: 'string',
+                    },
+                    start: {
+                      type: 'integer',
+                    },
+                    end: {
+                      type: 'integer',
+                    },
+                  },
+                  required: ['entity_group', 'start', 'end'],
+                  additionalProperties: false,
                 },
               },
             },
