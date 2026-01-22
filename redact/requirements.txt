@@ -9,3 +9,5 @@ reportlab==4.0.4
 datasets==3.6.0
 numpy<2
 faker
+pandas
+scikit-learn
