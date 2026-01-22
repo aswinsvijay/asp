@@ -9,6 +9,7 @@ import {
   MyServerInternalError,
   MyServerStreamResponse,
 } from '../objects';
+import { UNSAFE_CAST } from '../../src/utils';
 import { createReadStream, existsSync } from 'fs';
 import axios from 'axios';
 import FormData from 'form-data';
@@ -117,7 +118,7 @@ controllerGroup.add('GetRedactionEntities', async (ctx) => {
       headers: formData.getHeaders(),
     });
 
-    return new MyServerJSONResponse(response.data as { data: EntitySpan[] });
+    return new MyServerJSONResponse(UNSAFE_CAST<{ data: EntitySpan[] }>(response.data));
   } catch {
     throw new Error('Upstream server error');
   }
