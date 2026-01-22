@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { apiCall, Spacing, useApiCall, useMemoizedParameters } from '@/src/utils';
+import { apiCall, Spacing, useApiCall, useMemoizedParameters, getDocumentBlob } from '@/src/utils';
 import { Types } from 'mongoose';
 import { Box, Button } from '@mui/material';
 import { CustomIcon } from '../CustomIcon.component';
@@ -16,24 +16,6 @@ const uploadFile = async (file: File) => {
     queryParams: {},
     requestBody: formData,
   });
-};
-
-const getDocumentBlob = async (item: ItemInfo) => {
-  const blob = await apiCall('DownloadFile', {
-    pathParams: {
-      fileId: new Types.ObjectId(item.id),
-    },
-    queryParams: {},
-    requestConfig: {
-      responseType: 'blob',
-    },
-  });
-
-  if (!(blob instanceof Blob)) {
-    return null;
-  }
-
-  return blob;
 };
 
 const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {

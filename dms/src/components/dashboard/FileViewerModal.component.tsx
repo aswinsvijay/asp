@@ -9,8 +9,7 @@ import {
   Typography,
   CircularProgress,
 } from '@mui/material';
-import { apiCall } from '@/src/utils';
-import { Types } from 'mongoose';
+import { getDocumentBlob } from '@/src/utils';
 import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
 
 interface FileViewerModalProps {
@@ -31,17 +30,9 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
       setFileContent(null);
 
       try {
-        const blob = await apiCall('DownloadFile', {
-          pathParams: {
-            fileId: new Types.ObjectId(selectedFile.id),
-          },
-          queryParams: {},
-          requestConfig: {
-            responseType: 'blob',
-          },
-        });
+        const blob = await getDocumentBlob(selectedFile);
 
-        if (!(blob instanceof Blob)) {
+        if (!blob) {
           throw new Error('Invalid file response');
         }
 
@@ -57,7 +48,7 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
     };
 
     void fetchFileContent();
-  }, [selectedFile.id]);
+  }, [selectedFile]);
 
   const handleClose = () => {
     setFileContent(null);
