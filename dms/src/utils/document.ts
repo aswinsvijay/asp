@@ -1,6 +1,6 @@
-import { apiCall } from '@/src/utils';
+import { apiCall } from './apiCall';
 import { Types } from 'mongoose';
-import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
+import { ItemInfo } from '../../server/routerConfig/compiledRouterTypes.out';
 
 export const getDocumentBlob = async (item: ItemInfo) => {
   const blob = await apiCall('DownloadFile', {
