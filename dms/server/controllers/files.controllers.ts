@@ -107,7 +107,11 @@ controllerGroup.add('GetRedactionEntities', async (ctx) => {
 
   const stream = createReadStream(document.path);
 
-  const response = await redactionAxiosInstance({});
+  try {
+    const response = await redactionAxiosInstance.post('/redaction-entities');
 
-  return new MyServerJSONResponse({ data: {} });
+    return new MyServerJSONResponse({ data: response.data as Record<string, unknown> });
+  } catch {
+    throw new Error('Upstream server error');
+  }
 });
