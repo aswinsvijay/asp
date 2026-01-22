@@ -136,6 +136,8 @@ koaAuthRouter.post('/register', async (ctx) => {
 
     throw new Error('Error creating user');
   }
+
+  ctx.body = {};
 });
 
 koaApiRouter.use(authenticator);
