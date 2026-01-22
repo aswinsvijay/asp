@@ -1,5 +1,5 @@
 import { MappedOmit } from '@/src/utils';
-import { HashedPassword } from '../utils';
+import { HashedPassword } from '../../src/utils';
 import { User } from './models';
 
 export const createUser = async (args: { name: string; userId: string; hashedPassword: HashedPassword }) => {

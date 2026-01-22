@@ -11,7 +11,7 @@ import { controllerGroup, initialize } from './controllers';
 import { basicAuthenticator as authenticator, errorHandler } from './middlewares';
 import { MyServerBadRequestError, MyServerUnauthorizedError } from './objects';
 import { User, UserSession } from './db/models';
-import { hashPassword } from './utils';
+import { hashPassword } from '../src/utils';
 import { CustomState, LoginResponse } from './types';
 import { createUser } from './db';
 import { MappedOmit } from '@/src/utils';

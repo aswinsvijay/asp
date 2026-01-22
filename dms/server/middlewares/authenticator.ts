@@ -2,7 +2,7 @@ import { IMiddleware } from 'koa-router';
 import { MyServerUnauthorizedError } from '../objects';
 import { User, UserSession } from '../db/models';
 import { CustomState } from '../types';
-import { hashPassword } from '../utils/password';
+import { hashPassword } from '../../src/utils/password';
 
 const errorMessage = 'Un-authorized';
 
