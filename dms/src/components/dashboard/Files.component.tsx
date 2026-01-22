@@ -28,6 +28,7 @@ const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
 
 export const FilesComponent = () => {
   const [parent] = useState<Types.ObjectId | null>(null);
+  const [widget, setWidget] = useState<'view' | 'redact' | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
@@ -77,8 +78,8 @@ export const FilesComponent = () => {
         return;
       }
 
-      const fileText = await blob.text();
-      console.log('View file content:', fileText);
+      const fileContent = await blob.text();
+      console.log('View file content:', fileContent);
     } catch (viewError) {
       console.error('Error viewing file:', viewError);
     }
@@ -113,15 +114,14 @@ export const FilesComponent = () => {
         return;
       }
 
-      const formData = new FormData();
-      formData.append('file', blob, item.name);
+      const fileContent = await blob.text();
 
       const response = await apiCall('GetRedactionEntities', {
         pathParams: { fileId: new Types.ObjectId(item.id) },
         queryParams: {},
       });
 
-      console.log('Redacted file:', response.data);
+      console.log('Redacted file:', { fileContent, entities: response.data });
     } catch (redactError) {
       console.error('Error redacting file:', redactError);
     }
