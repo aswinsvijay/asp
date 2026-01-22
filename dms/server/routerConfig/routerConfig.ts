@@ -85,61 +85,57 @@ export default narrowedValue({
           },
         },
       },
-      paths: {
-        '/:fileId': {
-          methods: {
-            patch: {
-              controller: 'files.controllers',
-              operationId: 'UpdateFile',
-              pathParams: {
-                properties: {
-                  fileId: mongoId,
-                },
-              },
-              response: {
+    },
+    '/files/:fileId': {
+      methods: {
+        patch: {
+          controller: 'files.controllers',
+          operationId: 'UpdateFile',
+          pathParams: {
+            properties: {
+              fileId: mongoId,
+            },
+          },
+          response: {
+            type: 'object',
+            properties: {
+              data: {
                 type: 'object',
-                properties: {
-                  data: {
-                    type: 'object',
-                    properties: {},
-                    additionalProperties: false,
-                  },
-                },
-                required: ['data'],
+                properties: {},
                 additionalProperties: false,
               },
             },
+            required: ['data'],
+            additionalProperties: false,
           },
-          paths: {
-            '/download': {
-              methods: {
-                get: {
-                  controller: 'files.controllers',
-                  operationId: 'DownloadFile',
-                  pathParams: {
-                    properties: {
-                      fileId: mongoId,
-                    },
-                  },
-                  response: {},
-                },
-              },
-            },
-            '/redaction-entities': {
-              methods: {
-                get: {
-                  controller: 'files.controllers',
-                  operationId: 'GetRedactionEntities',
-                  pathParams: {
-                    properties: {
-                      fileId: mongoId,
-                    },
-                  },
-                  response: {},
-                },
-              },
+        },
+      },
+    },
+    '/files/:fileId/download': {
+      methods: {
+        get: {
+          controller: 'files.controllers',
+          operationId: 'DownloadFile',
+          pathParams: {
+            properties: {
+              fileId: mongoId,
             },
           },
+          response: {},
+        },
+      },
+    },
+    '/files/:fileId/redaction-entities': {
+      methods: {
+        get: {
+          controller: 'files.controllers',
+          operationId: 'GetRedactionEntities',
+          pathParams: {
+            properties: {
+              fileId: mongoId,
+            },
+          },
+          response: {},
         },
       },
     },
