@@ -9,8 +9,9 @@ import {
   Typography,
   CircularProgress,
 } from '@mui/material';
-import { getDocumentBlob } from '@/src/utils';
+import { apiCall, getDocumentBlob } from '@/src/utils';
 import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
+import { Types } from 'mongoose';
 
 interface FileRedactModalProps {
   selectedFile: ItemInfo;
@@ -39,6 +40,15 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ selectedFile, 
         // Try to get file name from blob if available
         const content = await blob.text();
         setFileContent(content);
+
+        const entitiesResponse = await apiCall('GetRedactionEntities', {
+          pathParams: { fileId: new Types.ObjectId(selectedFile.id) },
+          queryParams: {},
+        });
+
+        const entities = entitiesResponse.data;
+
+        console.log({ content, entities });
       } catch (err) {
         console.error('Error fetching file content:', err);
         setError(err instanceof Error ? err.message : 'Failed to load file content');
