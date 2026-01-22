@@ -13,6 +13,7 @@ import { createReadStream, existsSync } from 'fs';
 import axios from 'axios';
 import FormData from 'form-data';
 import { environment } from '../environment';
+import { EntitySpan } from '../routerConfig/compiledRouterTypes.out';
 
 const rootFolder = new Types.ObjectId('0'.repeat(24));
 const redactionAxiosInstance = axios.create({
@@ -116,7 +117,7 @@ controllerGroup.add('GetRedactionEntities', async (ctx) => {
       headers: formData.getHeaders(),
     });
 
-    return new MyServerJSONResponse(response.data as { data: Record<string, unknown>[] });
+    return new MyServerJSONResponse(response.data as { data: EntitySpan[] });
   } catch {
     throw new Error('Upstream server error');
   }
