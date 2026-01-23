@@ -165,6 +165,29 @@ export default narrowedValue({
         },
       },
     },
+    '/files/:fileId/classify': {
+      methods: {
+        post: {
+          controller: 'files.controllers',
+          operationId: 'ClassifyFile',
+          pathParams: {
+            properties: {
+              fileId: mongoId,
+            },
+          },
+          response: {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'string',
+              },
+            },
+            required: ['data'],
+            additionalProperties: false,
+          },
+        },
+      },
+    },
     '/workflows': {
       methods: {
         post: {

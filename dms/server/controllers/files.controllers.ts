@@ -123,3 +123,36 @@ controllerGroup.add('GetRedactionEntities', async (ctx) => {
     throw new Error('Upstream server error');
   }
 });
+
+controllerGroup.add('ClassifyFile', async (ctx) => {
+  const documentId = ctx.pathParams.fileId;
+
+  if (!documentId) {
+    throw new MyServerBadRequestError('fileId is required');
+  }
+
+  const document = await getStoredDocumentById(documentId);
+
+  if (!document) {
+    throw new MyServerNotFoundError('Document not found');
+  }
+
+  if (!existsSync(document.path)) {
+    throw new MyServerInternalError('Document does not exist on the specified path', { data: {} });
+  }
+
+  const stream = createReadStream(document.path);
+
+  try {
+    const formData = new FormData();
+    formData.append('file', stream, document.name);
+
+    const response = await redactionAxiosInstance.post('/classify', formData, {
+      headers: formData.getHeaders(),
+    });
+
+    return new MyServerJSONResponse(UNSAFE_CAST<{ data: string }>(response.data));
+  } catch {
+    throw new Error('Upstream server error');
+  }
+});
