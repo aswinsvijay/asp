@@ -105,6 +105,26 @@ async def redact_txt(file: UploadFile = File(...)):
             content={"status": "error", "message": str(e)}
         )
 
+@app.post("/classify")
+async def classify(file: UploadFile = File(...)):
+    try:
+        # Read PDF file
+        text = (await file.read()).decode('utf-8')
+
+        # TODO: run categorizer here
+        category = "misc"
+
+        return JSONResponse(
+            content={"data": category}
+        )
+    
+    except Exception as e:
+        print(traceback.format_exc())
+        return JSONResponse(
+            status_code=500,
+            content={"status": "error", "message": str(e)}
+        )
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000) 
