@@ -30,7 +30,7 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
       setFileContent(null);
 
       try {
-        const blob = await getDocumentBlob(selectedFile);
+        const blob = await getDocumentBlob(selectedFile.id);
 
         if (!blob) {
           throw new Error('Invalid file response');
@@ -48,7 +48,7 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
     };
 
     void fetchFileContent();
-  }, [selectedFile]);
+  }, [selectedFile.id]);
 
   const handleClose = () => {
     setFileContent(null);

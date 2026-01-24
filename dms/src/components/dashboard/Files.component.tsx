@@ -66,7 +66,7 @@ export const FilesComponent = () => {
 
   const handleDownload = async (item: ItemInfo) => {
     try {
-      const blob = await getDocumentBlob(item);
+      const blob = await getDocumentBlob(item.id);
 
       if (!blob) {
         return;

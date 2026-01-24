@@ -32,7 +32,7 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ selectedFile, 
       setFileContent(null);
 
       try {
-        const blob = await getDocumentBlob(selectedFile);
+        const blob = await getDocumentBlob(selectedFile.id);
 
         if (!blob) {
           throw new Error('Invalid file response');
@@ -57,7 +57,7 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ selectedFile, 
     };
 
     void fetchFileContent();
-  }, [selectedFile]);
+  }, [selectedFile.id]);
 
   const handleClose = () => {
     setFileContent(null);
