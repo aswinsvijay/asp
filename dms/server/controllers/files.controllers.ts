@@ -21,6 +21,22 @@ const redactionAxiosInstance = axios.create({
   baseURL: environment.REDACT_SERVER_URL,
 });
 
+const getDocumentStream = async (documentId: Types.ObjectId) => {
+  const document = await getStoredDocumentById(documentId);
+
+  if (!document) {
+    throw new MyServerNotFoundError('Document not found');
+  }
+
+  if (!existsSync(document.path)) {
+    throw new MyServerInternalError('Document does not exist on the specified path', { data: {} });
+  }
+
+  const stream = createReadStream(document.path);
+
+  return stream;
+};
+
 controllerGroup.add('GetChildren', async (ctx) => {
   const documents = await getStoredDocuments(ctx.pathParams.parentId ?? rootFolder);
 
@@ -76,17 +92,7 @@ controllerGroup.add('DownloadFile', async (ctx) => {
     throw new MyServerBadRequestError('fileId is required');
   }
 
-  const document = await getStoredDocumentById(documentId);
-
-  if (!document) {
-    throw new MyServerNotFoundError('Document not found');
-  }
-
-  if (!existsSync(document.path)) {
-    throw new MyServerInternalError('Document does not exist on the specified path', { data: {} });
-  }
-
-  const stream = createReadStream(document.path);
+  const stream = await getDocumentStream(documentId);
 
   return new MyServerStreamResponse(stream);
 });
@@ -98,21 +104,11 @@ controllerGroup.add('GetRedactionEntities', async (ctx) => {
     throw new MyServerBadRequestError('fileId is required');
   }
 
-  const document = await getStoredDocumentById(documentId);
-
-  if (!document) {
-    throw new MyServerNotFoundError('Document not found');
-  }
-
-  if (!existsSync(document.path)) {
-    throw new MyServerInternalError('Document does not exist on the specified path', { data: {} });
-  }
-
-  const stream = createReadStream(document.path);
+  const stream = await getDocumentStream(documentId);
 
   try {
     const formData = new FormData();
-    formData.append('file', stream, document.name);
+    formData.append('file', stream);
 
     const response = await redactionAxiosInstance.post('/redaction-entities', formData, {
       headers: formData.getHeaders(),
@@ -131,21 +127,11 @@ controllerGroup.add('ClassifyFile', async (ctx) => {
     throw new MyServerBadRequestError('fileId is required');
   }
 
-  const document = await getStoredDocumentById(documentId);
-
-  if (!document) {
-    throw new MyServerNotFoundError('Document not found');
-  }
-
-  if (!existsSync(document.path)) {
-    throw new MyServerInternalError('Document does not exist on the specified path', { data: {} });
-  }
-
-  const stream = createReadStream(document.path);
+  const stream = await getDocumentStream(documentId);
 
   try {
     const formData = new FormData();
-    formData.append('file', stream, document.name);
+    formData.append('file', stream);
 
     const response = await redactionAxiosInstance.post('/classify', formData, {
       headers: formData.getHeaders(),
