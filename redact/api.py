@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse, StreamingResponse
 from redact_model.train import SpacyModel
+from summary_model.train import summarizer
 from transformers import pipeline
 import io
 import re
@@ -116,6 +117,26 @@ async def classify(file: UploadFile = File(...)):
 
         return JSONResponse(
             content={"data": category}
+        )
+    
+    except Exception as e:
+        print(traceback.format_exc())
+        return JSONResponse(
+            status_code=500,
+            content={"status": "error", "message": str(e)}
+        )
+
+@app.post("/summarize")
+async def summarize(file: UploadFile = File(...)):
+    try:
+        # Read PDF file
+        text = (await file.read()).decode('utf-8')
+
+        # TODO: run summarizer here
+        summary = summarizer(text)
+
+        return JSONResponse(
+            content={"data": summary}
         )
     
     except Exception as e:
