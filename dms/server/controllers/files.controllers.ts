@@ -1,4 +1,4 @@
-import { Schema, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { controllerGroup } from '.';
 import {
   createStoredDocument,
@@ -86,17 +86,23 @@ controllerGroup.add('UploadFile', async (ctx) => {
     parent: rootFolder,
   });
 
-  return new MyServerJSONResponse({ data: document });
+  return new MyServerJSONResponse({
+    data: {
+      id: document._id.toString(),
+    },
+  });
 });
 
 controllerGroup.add('UpdateFile', async (ctx) => {
+  if (!ctx.requestBody) {
+    throw new Error('Missing requestBody');
+  }
+
   const documentId = ctx.pathParams.fileId;
 
   if (!documentId) {
     throw new MyServerBadRequestError('fileId is required');
   }
-
-  console.log(documentId, documentId instanceof Types.ObjectId, documentId instanceof Schema.Types.ObjectId);
 
   const document = await getStoredDocumentById(documentId);
 
@@ -104,7 +110,9 @@ controllerGroup.add('UpdateFile', async (ctx) => {
     throw new MyServerNotFoundError('Document not found');
   }
 
-  const updatedDocument = await updateStoredDocumentById(documentId, {});
+  const updatedDocument = await updateStoredDocumentById(documentId, {
+    ...(ctx.requestBody.parentId ? { parent: ctx.requestBody.parentId } : {}),
+  });
 
   if (!updatedDocument) {
     throw new Error('Update document failed');

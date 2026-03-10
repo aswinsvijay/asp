@@ -8,15 +8,6 @@ import { FileViewerModal } from './FileViewerModal.component';
 import { FileRedactModal } from './FileRedactModal.component';
 import { CreateFolderModal } from './CreateFolderModal.component';
 
-const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
-  const file = event.target.files?.[0];
-  if (file) {
-    console.log('File selected:', file.name, file.size, file.type);
-
-    void uploadFile(file);
-  }
-};
-
 export const FilesComponent = () => {
   const [parent, setParent] = useState<Types.ObjectId>(rootFolder);
   const [widget, setWidget] = useState<'view' | 'redact' | null>(null);
@@ -40,6 +31,15 @@ export const FilesComponent = () => {
       [parent]
     )
   );
+
+  const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      console.log('File selected:', file.name, file.size, file.type);
+
+      void uploadFile(file, parent);
+    }
+  };
 
   const handleFileUpload = () => {
     fileInputRef.current?.click();
@@ -109,6 +109,7 @@ export const FilesComponent = () => {
       <input ref={fileInputRef} type="file" onChange={handleFileSelected} style={{ display: 'none' }} accept="*/*" />
 
       <CreateFolderModal
+        parentId={parent}
         open={createFolderOpen}
         onClose={() => {
           setCreateFolderOpen(false);

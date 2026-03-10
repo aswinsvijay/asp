@@ -19,14 +19,24 @@ export const getDocumentBlob = async (documentId: string) => {
   return blob;
 };
 
-export const uploadFile = async (file: File) => {
+export const uploadFile = async (file: File, parentId: Types.ObjectId) => {
   const formData = new FormData();
 
   formData.append('file', file);
 
-  await apiCall('UploadFile', {
+  const response = await apiCall('UploadFile', {
     pathParams: {},
     queryParams: {},
     requestBody: formData,
+  });
+
+  await apiCall('UpdateFile', {
+    pathParams: {
+      fileId: new Types.ObjectId(response.data.id),
+    },
+    queryParams: {},
+    requestBody: {
+      parentId,
+    },
   });
 };

@@ -76,7 +76,12 @@ export default narrowedValue({
             properties: {
               data: {
                 type: 'object',
-                properties: {},
+                properties: {
+                  id: {
+                    type: 'string',
+                  },
+                },
+                required: ['id'],
                 additionalProperties: false,
               },
             },
