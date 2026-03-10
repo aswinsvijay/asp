@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -18,6 +18,7 @@ interface FileViewerModalProps {
 }
 
 export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, onClose }) => {
+  const effectRanRef = useRef(false);
   const [fileContent, setFileContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +48,10 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
       }
     };
 
-    void fetchFileContent();
+    if (!effectRanRef.current) {
+      effectRanRef.current = true;
+      void fetchFileContent();
+    }
   }, [selectedFile.id]);
 
   const handleClose = () => {

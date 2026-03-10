@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -19,6 +19,7 @@ interface FileRedactModalProps {
 }
 
 export const FileRedactModal: React.FC<FileRedactModalProps> = ({ selectedFile, onClose }) => {
+  const effectRanRef = useRef(false);
   const [fileContent, setFileContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,7 +57,10 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ selectedFile, 
       }
     };
 
-    void fetchFileContent();
+    if (!effectRanRef.current) {
+      effectRanRef.current = true;
+      void fetchFileContent();
+    }
   }, [selectedFile.id]);
 
   const handleClose = () => {
