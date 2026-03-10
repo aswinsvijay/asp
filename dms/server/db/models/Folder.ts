@@ -2,6 +2,7 @@ import { Schema, model, InferSchemaType, Require_id } from 'mongoose';
 
 const FolderSchema = new Schema({
   name: { type: String, required: true },
+  owner: { type: Schema.Types.ObjectId, required: true },
   parent: { type: Schema.Types.ObjectId, required: true },
 });
 
