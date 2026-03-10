@@ -5,4 +5,5 @@ export * from './getFolders';
 export * from './createStoredDocument';
 export * from './getStoredDocuments';
 export * from './getStoredDocumentById';
+export * from './updateStoredDocumentById';
 export * from './createUser';
