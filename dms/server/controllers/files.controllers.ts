@@ -1,6 +1,6 @@
 import { Schema, Types } from 'mongoose';
 import { controllerGroup } from '.';
-import { createStoredDocument, getStoredDocumentById, getStoredDocuments } from '../db';
+import { createStoredDocument, getFolders, getStoredDocumentById, getStoredDocuments } from '../db';
 import {
   MyServerBadRequestError,
   MyServerJSONResponse,
@@ -9,14 +9,13 @@ import {
   MyServerInternalError,
   MyServerStreamResponse,
 } from '../objects';
-import { UNSAFE_CAST } from '../../src/utils';
+import { rootFolder, UNSAFE_CAST } from '../../src/utils';
 import { createReadStream, existsSync } from 'fs';
 import axios from 'axios';
 import FormData from 'form-data';
 import { environment } from '../environment';
 import { EntitySpan } from '../routerConfig/compiledRouterTypes.out';
 
-const rootFolder = new Types.ObjectId('0'.repeat(24));
 const redactionAxiosInstance = axios.create({
   baseURL: environment.REDACT_SERVER_URL,
 });
@@ -38,7 +37,16 @@ const getDocumentStream = async (documentId: Types.ObjectId) => {
 };
 
 controllerGroup.add('GetChildren', async (ctx) => {
-  const documents = await getStoredDocuments(ctx.pathParams.parentId ?? rootFolder);
+  const parentId = ctx.pathParams.parentId ?? rootFolder;
+  const folders = await getFolders(parentId);
+  const documents = await getStoredDocuments(parentId);
+
+  const mappedFolders = folders.map((folder) => ({
+    ...folder,
+    id: folder._id.toString(),
+    path: '',
+    type: 'folder' as const,
+  }));
 
   const mappedDocuments = documents.map((document) => ({
     ...document,
@@ -46,7 +54,7 @@ controllerGroup.add('GetChildren', async (ctx) => {
     type: 'document' as const,
   }));
 
-  return new MyServerJSONResponse({ data: mappedDocuments });
+  return new MyServerJSONResponse({ data: [...mappedFolders, ...mappedDocuments] });
 });
 
 controllerGroup.add('UploadFile', async (ctx) => {
