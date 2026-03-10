@@ -188,6 +188,45 @@ export default narrowedValue({
         },
       },
     },
+    '/folders': {
+      methods: {
+        post: {
+          controller: 'folders.controllers',
+          operationId: 'CreateFolder',
+          requestBody: {
+            contentType: 'application/json',
+            schema: {
+              type: 'object',
+              properties: {
+                name: {
+                  type: 'string',
+                },
+                parentId: mongoId,
+              },
+              required: ['name'],
+              additionalProperties: false,
+            },
+          },
+          response: {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  id: {
+                    type: 'string',
+                  },
+                },
+                required: ['id'],
+                additionalProperties: false,
+              },
+            },
+            required: ['data'],
+            additionalProperties: false,
+          },
+        },
+      },
+    },
     '/workflows': {
       methods: {
         post: {
