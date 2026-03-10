@@ -1,6 +1,12 @@
 import { Schema, Types } from 'mongoose';
 import { controllerGroup } from '.';
-import { createStoredDocument, getFolders, getStoredDocumentById, getStoredDocuments } from '../db';
+import {
+  createStoredDocument,
+  getFolders,
+  getStoredDocumentById,
+  getStoredDocuments,
+  updateStoredDocumentById,
+} from '../db';
 import {
   MyServerBadRequestError,
   MyServerJSONResponse,
@@ -83,14 +89,28 @@ controllerGroup.add('UploadFile', async (ctx) => {
   return new MyServerJSONResponse({ data: document });
 });
 
-controllerGroup.add('UpdateFile', (ctx) => {
-  console.log(
-    ctx.pathParams.fileId,
-    ctx.pathParams.fileId instanceof Types.ObjectId,
-    ctx.pathParams.fileId instanceof Schema.Types.ObjectId
-  );
+controllerGroup.add('UpdateFile', async (ctx) => {
+  const documentId = ctx.pathParams.fileId;
 
-  return Promise.resolve(new MyServerJSONResponse({ data: {} }));
+  if (!documentId) {
+    throw new MyServerBadRequestError('fileId is required');
+  }
+
+  console.log(documentId, documentId instanceof Types.ObjectId, documentId instanceof Schema.Types.ObjectId);
+
+  const document = await getStoredDocumentById(documentId);
+
+  if (!document) {
+    throw new MyServerNotFoundError('Document not found');
+  }
+
+  const updatedDocument = await updateStoredDocumentById(documentId, {});
+
+  if (!updatedDocument) {
+    throw new Error('Update document failed');
+  }
+
+  return new MyServerJSONResponse({ data: updatedDocument });
 });
 
 controllerGroup.add('DownloadFile', async (ctx) => {

@@ -96,6 +96,16 @@ export default narrowedValue({
               fileId: mongoId,
             },
           },
+          requestBody: {
+            contentType: 'application/json',
+            schema: {
+              type: 'object',
+              properties: {
+                parentId: mongoId,
+              },
+              additionalProperties: false,
+            },
+          },
           response: {
             type: 'object',
             properties: {
