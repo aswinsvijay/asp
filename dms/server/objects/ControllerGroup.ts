@@ -5,7 +5,10 @@ export class ControllerGroup<TParameterTypes extends Record<string, OperationInf
   public routerConfig: Record<string, OperationInfo>;
   public controllerMap: Map<
     string,
-    MyServerControllerFn<{ pathParams: NonNullable<unknown>; queryParams: NonNullable<unknown> }, NonNullable<unknown>>
+    MyServerControllerFn<
+      { pathParams: NonNullable<unknown>; queryParams: NonNullable<unknown>; requestBody: NonNullable<unknown> },
+      NonNullable<unknown>
+    >
   >;
 
   constructor(routerConfig: Record<string, OperationInfo>) {
@@ -19,6 +22,7 @@ export class ControllerGroup<TParameterTypes extends Record<string, OperationInf
       {
         pathParams: TParameterTypes[TOperation]['pathParams'];
         queryParams: TParameterTypes[TOperation]['queryParams'];
+        requestBody: TParameterTypes[TOperation]['requestBody'];
       },
       TParameterTypes[TOperation]['response']
     >

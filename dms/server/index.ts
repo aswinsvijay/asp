@@ -169,6 +169,7 @@ compiledRoutes.forEach((operationInfo) => {
       response: ctx.response,
       pathParams: ctx.params,
       queryParams: ctx.query,
+      requestBody: (ctx.request.body as unknown) ?? {},
       state: ctx.state,
     });
 
