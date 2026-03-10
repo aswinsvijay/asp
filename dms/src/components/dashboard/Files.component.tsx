@@ -6,6 +6,7 @@ import { CustomIcon } from '../CustomIcon.component';
 import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
 import { FileViewerModal } from './FileViewerModal.component';
 import { FileRedactModal } from './FileRedactModal.component';
+import { CreateFolderModal } from './CreateFolderModal.component';
 
 const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
   const file = event.target.files?.[0];
@@ -20,6 +21,7 @@ export const FilesComponent = () => {
   const [parent] = useState<Types.ObjectId | null>(null);
   const [widget, setWidget] = useState<'view' | 'redact' | null>(null);
   const [selectedFile, setSelectedFile] = useState<ItemInfo | null>(null);
+  const [createFolderOpen, setCreateFolderOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
@@ -82,6 +84,10 @@ export const FilesComponent = () => {
     }
   };
 
+  const openCreateFolderModal = () => {
+    setCreateFolderOpen(true);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -101,6 +107,13 @@ export const FilesComponent = () => {
   return (
     <div className="flex flex-col h-full">
       <input ref={fileInputRef} type="file" onChange={handleFileSelected} style={{ display: 'none' }} accept="*/*" />
+
+      <CreateFolderModal
+        open={createFolderOpen}
+        onClose={() => {
+          setCreateFolderOpen(false);
+        }}
+      />
 
       {selectedFile && (
         <>
@@ -123,9 +136,12 @@ export const FilesComponent = () => {
         </>
       )}
 
-      <Box p={Spacing.SMALL} className="flex-shrink-0 p-4 border-b border-gray-200">
+      <Box display={'flex'} p={Spacing.SMALL} gap={Spacing.SMALL} className="flex-shrink-0 border-b border-gray-200">
         <Button startIcon={<CustomIcon name="Upload" />} variant="contained" onClick={handleFileUpload}>
           Upload File
+        </Button>
+        <Button startIcon={<CustomIcon name="CreateNewFolder" />} variant="contained" onClick={openCreateFolderModal}>
+          Create Folder
         </Button>
       </Box>
 
