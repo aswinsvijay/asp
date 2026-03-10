@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Spacing, useApiCall, useMemoizedParameters, getDocumentBlob, uploadFile } from '@/src/utils';
+import { Spacing, useApiCall, useMemoizedParameters, getDocumentBlob, uploadFile, rootFolder } from '@/src/utils';
 import { Types } from 'mongoose';
 import { Box, Button } from '@mui/material';
 import { CustomIcon } from '../CustomIcon.component';
@@ -18,7 +18,7 @@ const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
 };
 
 export const FilesComponent = () => {
-  const [parent] = useState<Types.ObjectId | null>(null);
+  const [parent, setParent] = useState<Types.ObjectId>(rootFolder);
   const [widget, setWidget] = useState<'view' | 'redact' | null>(null);
   const [selectedFile, setSelectedFile] = useState<ItemInfo | null>(null);
   const [createFolderOpen, setCreateFolderOpen] = useState(false);
@@ -33,7 +33,7 @@ export const FilesComponent = () => {
     useMemoizedParameters(
       () => ({
         pathParams: {
-          parentId: parent ?? new Types.ObjectId('0'.repeat(24)),
+          parentId: parent,
         },
         queryParams: {},
       }),
@@ -184,6 +184,20 @@ export const FilesComponent = () => {
                     className="flex-1"
                   >
                     Redact
+                  </Button>
+                </div>
+              )}
+              {item.type === 'folder' && (
+                <div className="flex flex-col gap-2">
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() => {
+                      setParent(new Types.ObjectId(item.id));
+                    }}
+                    className="flex-1"
+                  >
+                    Open
                   </Button>
                 </div>
               )}
