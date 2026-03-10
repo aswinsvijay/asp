@@ -47,7 +47,7 @@ const Dashboard: React.FC = () => {
             <CustomIcon name="Logout" />
           </Button>
         </Box>
-        <Box flex={'1'} bgcolor={Colors.BACKGROUND} borderRadius={Spacing.MEDIUM}>
+        <Box flex={'1'} overflow={'hidden'} bgcolor={Colors.BACKGROUND} borderRadius={Spacing.MEDIUM}>
           {DashboardViews.map(({ label, Component }) => {
             return currentView === label && <Component key={label} />;
           })}
