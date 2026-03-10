@@ -18,3 +18,15 @@ export const getDocumentBlob = async (documentId: string) => {
 
   return blob;
 };
+
+export const uploadFile = async (file: File) => {
+  const formData = new FormData();
+
+  formData.append('file', file);
+
+  await apiCall('UploadFile', {
+    pathParams: {},
+    queryParams: {},
+    requestBody: formData,
+  });
+};

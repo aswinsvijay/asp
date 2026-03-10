@@ -9,7 +9,7 @@ import {
   Typography,
   CircularProgress,
 } from '@mui/material';
-import { apiCall, getDocumentBlob } from '@/src/utils';
+import { apiCall, getDocumentBlob, uploadFile } from '@/src/utils';
 import { EntitySpan, ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
 import { Types } from 'mongoose';
 
@@ -25,6 +25,7 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ selectedFile, 
   const [error, setError] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>('');
   const [entities, setEntities] = useState<(EntitySpan & { redacted?: boolean })[]>([]);
+  const editorRef = useRef<HTMLPreElement>(null);
 
   useEffect(() => {
     const fetchFileContent = async () => {
@@ -70,6 +71,21 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ selectedFile, 
     onClose();
   };
 
+  const saveRedactedFile = async () => {
+    if (!editorRef.current) {
+      throw new Error('Editor element not found');
+    }
+
+    const content = editorRef.current.innerText;
+    const file = new File([content], `REDACTED - ${selectedFile.name}`, {
+      type: 'text/plain',
+    });
+
+    await uploadFile(file);
+
+    handleClose();
+  };
+
   return (
     <Dialog open onClose={handleClose} maxWidth="lg" fullWidth>
       <DialogTitle>
@@ -98,6 +114,7 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ selectedFile, 
             <>
               <Box
                 component="pre"
+                ref={editorRef}
                 sx={{
                   margin: 0,
                   padding: 2,
@@ -173,7 +190,13 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ selectedFile, 
         >
           Reset all
         </Button>
-        <Button onClick={handleClose} variant="contained" color="success">
+        <Button
+          onClick={() => {
+            void saveRedactedFile();
+          }}
+          variant="contained"
+          color="success"
+        >
           Save as new
         </Button>
         <Button onClick={handleClose} variant="outlined" color="error">

@@ -1,23 +1,11 @@
 import React, { useState, useRef } from 'react';
-import { apiCall, Spacing, useApiCall, useMemoizedParameters, getDocumentBlob } from '@/src/utils';
+import { Spacing, useApiCall, useMemoizedParameters, getDocumentBlob, uploadFile } from '@/src/utils';
 import { Types } from 'mongoose';
 import { Box, Button } from '@mui/material';
 import { CustomIcon } from '../CustomIcon.component';
 import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
 import { FileViewerModal } from './FileViewerModal.component';
 import { FileRedactModal } from './FileRedactModal.component';
-
-const uploadFile = async (file: File) => {
-  const formData = new FormData();
-
-  formData.append('file', file);
-
-  await apiCall('UploadFile', {
-    pathParams: {},
-    queryParams: {},
-    requestBody: formData,
-  });
-};
 
 const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
   const file = event.target.files?.[0];
