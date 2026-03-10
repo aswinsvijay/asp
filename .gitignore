@@ -44,5 +44,5 @@ n8n
 dist
 *.out.ts
 
-models
+redact/redact_model/models
 pii-model.zip
