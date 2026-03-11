@@ -88,10 +88,6 @@ const Register: React.FC = () => {
   }, [name, username, password, confirmPassword]);
 
   const handleSubmit = async () => {
-    // Placeholder handler function
-    console.log('Register submitted:', { name, username, password, confirmPassword });
-    // TODO: Implement registration logic
-
     try {
       await AuthUtils.register(name, username, password);
       router.reload();
