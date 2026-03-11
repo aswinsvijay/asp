@@ -221,7 +221,7 @@ const Landing: React.FC = () => {
           })}
         </Box>
         {views.map(({ id, Component }) => {
-          return currentView === id && <Component />;
+          return currentView === id && <Component key={id} />;
         })}
       </Box>
     </Box>
