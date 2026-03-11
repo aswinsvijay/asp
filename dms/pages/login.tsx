@@ -36,7 +36,13 @@ const Login: React.FC = () => {
       <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
         Sign in
       </Typography>
-      <Box>
+      <Box
+        component="form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void handleSubmit();
+        }}
+      >
         <Stack spacing={2}>
           <TextField
             label="Username"
@@ -59,14 +65,7 @@ const Login: React.FC = () => {
             fullWidth
             required
           />
-          <Button
-            color={error ? 'error' : 'primary'}
-            variant="contained"
-            fullWidth
-            onClick={() => {
-              void handleSubmit();
-            }}
-          >
+          <Button type="submit" color={error ? 'error' : 'primary'} variant="contained" fullWidth>
             {error ?? 'Login'}
           </Button>
         </Stack>
@@ -113,7 +112,13 @@ const Register: React.FC = () => {
       <Typography variant="h6" component="div" sx={{ textAlign: 'center' }}>
         Sign up
       </Typography>
-      <Box>
+      <Box
+        component="form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void handleSubmit();
+        }}
+      >
         <Stack spacing={2}>
           <TextField
             label="Name"
@@ -156,14 +161,7 @@ const Register: React.FC = () => {
             fullWidth
             required
           />
-          <Button
-            color={error ? 'error' : 'primary'}
-            variant="contained"
-            fullWidth
-            onClick={() => {
-              void handleSubmit();
-            }}
-          >
+          <Button type="submit" color={error ? 'error' : 'primary'} variant="contained" fullWidth>
             {error ?? 'Register'}
           </Button>
         </Stack>
