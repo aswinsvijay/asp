@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { Spacing, useApiCall, useMemoizedParameters, getDocumentBlob, uploadFile, rootFolder } from '@/src/utils';
 import { Types } from 'mongoose';
 import { Box, Button } from '@mui/material';
@@ -9,11 +9,15 @@ import { FileRedactModal } from './FileRedactModal.component';
 import { CreateFolderModal } from './CreateFolderModal.component';
 
 export const FilesComponent = () => {
-  const [parent, setParent] = useState<Types.ObjectId>(rootFolder);
+  const [path, setPath] = useState<Types.ObjectId[]>([]);
   const [widget, setWidget] = useState<'view' | 'redact' | null>(null);
   const [selectedFile, setSelectedFile] = useState<ItemInfo | null>(null);
   const [createFolderOpen, setCreateFolderOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const deepestParent = useMemo(() => {
+    return path.at(-1) ?? rootFolder;
+  }, [path]);
 
   const {
     loading,
@@ -25,11 +29,11 @@ export const FilesComponent = () => {
     useMemoizedParameters(
       () => ({
         pathParams: {
-          parentId: parent,
+          parentId: deepestParent,
         },
         queryParams: {},
       }),
-      [parent]
+      [deepestParent]
     )
   );
 
@@ -38,7 +42,7 @@ export const FilesComponent = () => {
     if (file) {
       console.log('File selected:', file.name, file.size, file.type);
 
-      void uploadFile(file, parent).then(reset);
+      void uploadFile(file, deepestParent).then(reset);
     }
   };
 
@@ -110,7 +114,7 @@ export const FilesComponent = () => {
       <input ref={fileInputRef} type="file" onChange={handleFileSelected} style={{ display: 'none' }} accept="*/*" />
 
       <CreateFolderModal
-        parentId={parent}
+        parentId={deepestParent}
         open={createFolderOpen}
         onClose={() => {
           setCreateFolderOpen(false);
@@ -196,7 +200,7 @@ export const FilesComponent = () => {
                     size="small"
                     variant="outlined"
                     onClick={() => {
-                      setParent(new Types.ObjectId(item.id));
+                      setPath((prev) => [...prev, new Types.ObjectId(item.id)]);
                     }}
                     className="flex-1"
                   >
