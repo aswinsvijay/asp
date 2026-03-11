@@ -11,6 +11,18 @@ interface AuthCookieValue {
   token: string;
 }
 
+export async function register(name: string, userId: string, password: string) {
+  await axios({
+    url: '/auth/register',
+    method: 'post',
+    data: {
+      name,
+      userId,
+      password,
+    },
+  });
+}
+
 export async function login(userId: string, password: string) {
   const response = await axios({
     url: '/auth/login',
