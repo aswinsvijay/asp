@@ -9,14 +9,14 @@ import { FileRedactModal } from './FileRedactModal.component';
 import { CreateFolderModal } from './CreateFolderModal.component';
 
 export const FilesComponent = () => {
-  const [path, setPath] = useState<Types.ObjectId[]>([]);
+  const [path, setPath] = useState<ItemInfo[]>([]);
   const [widget, setWidget] = useState<'view' | 'redact' | null>(null);
   const [selectedFile, setSelectedFile] = useState<ItemInfo | null>(null);
   const [createFolderOpen, setCreateFolderOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const deepestParent = useMemo(() => {
-    return path.at(-1) ?? rootFolder;
+    return new Types.ObjectId(path.at(-1)?.id ?? rootFolder);
   }, [path]);
 
   const {
@@ -166,8 +166,8 @@ export const FilesComponent = () => {
             >
               <CustomIcon name="Home" />
             </Link>
-            {path.map((folderId, index) => {
-              const label = folderId.toString();
+            {path.map((item, index) => {
+              const label = item.name;
 
               return (
                 <Link
@@ -233,7 +233,7 @@ export const FilesComponent = () => {
                     size="small"
                     variant="outlined"
                     onClick={() => {
-                      setPath((prev) => [...prev, new Types.ObjectId(item.id)]);
+                      setPath((prev) => [...prev, item]);
                     }}
                     className="flex-1"
                   >
