@@ -1,7 +1,7 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { Spacing, useApiCall, useMemoizedParameters, getDocumentBlob, uploadFile, rootFolder } from '@/src/utils';
 import { Types } from 'mongoose';
-import { Box, Button } from '@mui/material';
+import { Box, Breadcrumbs, Button, Link } from '@mui/material';
 import { CustomIcon } from '../CustomIcon.component';
 import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
 import { FileViewerModal } from './FileViewerModal.component';
@@ -153,6 +153,39 @@ export const FilesComponent = () => {
       </Box>
 
       <div className="flex-1 p-4 overflow-auto">
+        <Box pb={Spacing.SMALL}>
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link
+              component="button"
+              underline="hover"
+              color="inherit"
+              onClick={() => {
+                setPath([]);
+              }}
+              sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}
+            >
+              <CustomIcon name="Home" />
+            </Link>
+            {path.map((folderId, index) => {
+              const label = folderId.toString();
+
+              return (
+                <Link
+                  key={label}
+                  component="button"
+                  underline="hover"
+                  color="inherit"
+                  onClick={() => {
+                    setPath((prev) => prev.slice(0, index + 1));
+                  }}
+                >
+                  {label}
+                </Link>
+              );
+            })}
+          </Breadcrumbs>
+        </Box>
+
         <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4">
           {response.data.map((item, index) => (
             <div
