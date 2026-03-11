@@ -140,11 +140,11 @@ export const FilesComponent = () => {
       )}
 
       <Box display={'flex'} p={Spacing.SMALL} gap={Spacing.SMALL} className="flex-shrink-0 border-b border-gray-200">
-        <Button startIcon={<CustomIcon name="Upload" />} variant="contained" onClick={handleFileUpload}>
-          Upload File
+        <Button variant="contained" onClick={handleFileUpload} title="Upload File">
+          <CustomIcon name="Upload" />
         </Button>
-        <Button startIcon={<CustomIcon name="CreateNewFolder" />} variant="contained" onClick={openCreateFolderModal}>
-          Create Folder
+        <Button variant="contained" onClick={openCreateFolderModal} title="Create Folder">
+          <CustomIcon name="CreateNewFolder" />
         </Button>
       </Box>
 
