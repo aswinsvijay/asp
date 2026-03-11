@@ -88,6 +88,11 @@ const Register: React.FC = () => {
   }, [name, username, password, confirmPassword]);
 
   const handleSubmit = async () => {
+    if (password !== confirmPassword) {
+      setError('Password and Confirm password do not match');
+      return;
+    }
+
     try {
       await AuthUtils.register(name, username, password);
       router.reload();
