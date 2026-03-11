@@ -152,8 +152,8 @@ export const FilesComponent = () => {
         </Button>
       </Box>
 
-      <div className="flex-1 p-4 overflow-auto">
-        <Box pb={Spacing.SMALL}>
+      <div className="flex flex-col flex-1 px-4 py-2 gap-2 overflow-auto">
+        <Box>
           <Breadcrumbs aria-label="breadcrumb">
             <Link
               component="button"
