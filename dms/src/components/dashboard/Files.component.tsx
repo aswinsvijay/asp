@@ -19,6 +19,7 @@ export const FilesComponent = () => {
     loading,
     error,
     data: response,
+    reset,
   } = useApiCall(
     'GetChildren',
     useMemoizedParameters(
@@ -37,7 +38,7 @@ export const FilesComponent = () => {
     if (file) {
       console.log('File selected:', file.name, file.size, file.type);
 
-      void uploadFile(file, parent);
+      void uploadFile(file, parent).then(reset);
     }
   };
 
@@ -113,6 +114,7 @@ export const FilesComponent = () => {
         open={createFolderOpen}
         onClose={() => {
           setCreateFolderOpen(false);
+          reset();
         }}
       />
 
