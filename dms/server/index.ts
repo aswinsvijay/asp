@@ -85,7 +85,7 @@ koaAuthRouter.post('/login', async (ctx) => {
 
   const { userId, password } = requestBody;
 
-  if (typeof userId !== 'string' || typeof password !== 'string') {
+  if (typeof userId !== 'string' || !userId.trim() || typeof password !== 'string' || !password.trim()) {
     throw new MyServerBadRequestError('userId and password and required and must be strings');
   }
 
@@ -114,7 +114,14 @@ koaAuthRouter.post('/register', async (ctx) => {
   const requestBody = (ctx.request.body as Record<string, unknown> | undefined) ?? {};
   const { name, userId, password } = requestBody;
 
-  if (typeof name !== 'string' || typeof userId !== 'string' || typeof password !== 'string') {
+  if (
+    typeof name !== 'string' ||
+    !name.trim() ||
+    typeof userId !== 'string' ||
+    !userId.trim() ||
+    typeof password !== 'string' ||
+    !password.trim()
+  ) {
     throw new MyServerBadRequestError('name, userId and password and required and must be strings');
   }
 
