@@ -81,15 +81,30 @@ const Register: React.FC = () => {
   const [password, setPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
   const [error, setError] = React.useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     setError(null);
   }, [name, username, password, confirmPassword]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Placeholder handler function
     console.log('Register submitted:', { name, username, password, confirmPassword });
     // TODO: Implement registration logic
+
+    try {
+      await AuthUtils.register(name, username, password);
+      router.reload();
+    } catch (error) {
+      let errorMessage = '';
+
+      if (error instanceof AxiosError) {
+        errorMessage = UNSAFE_CAST<{ message: string } | undefined>(error.response?.data)?.message ?? '';
+      }
+
+      console.error(error);
+      setError(errorMessage || 'Failed to login');
+    }
   };
 
   return (
@@ -145,7 +160,7 @@ const Register: React.FC = () => {
             variant="contained"
             fullWidth
             onClick={() => {
-              handleSubmit();
+              void handleSubmit();
             }}
           >
             {error ?? 'Register'}
