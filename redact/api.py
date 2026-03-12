@@ -1,6 +1,5 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse, StreamingResponse
-from redact_model.train import SpacyModel
 from summary_model.train import summarizer
 from transformers import pipeline
 import io
@@ -25,8 +24,17 @@ ner_pipeline = pipeline(
     aggregation_strategy="simple"
 )
 
-spacy_model = SpacyModel()
-spacy_model.load_model()
+classify_model_path = "./classify_model/models/classify_model"
+if not os.path.exists(classify_model_path):
+    raise FileNotFoundError("Model not found")
+
+classify_pipeline = pipeline(
+    task="text-classification",
+    model=str(classify_model_path),
+    tokenizer=str(classify_model_path),
+    truncation=True,
+    max_length=512,
+)
 
 # https://stackoverflow.com/questions/64154850/convert-dictionary-to-a-json-in-python
 class CustomEncoder(json.JSONEncoder):
