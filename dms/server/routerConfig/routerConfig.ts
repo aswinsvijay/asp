@@ -91,6 +91,15 @@ export default narrowedValue({
         },
       },
     },
+    '/files/stats': {
+      methods: {
+        get: {
+          controller: 'files.controllers',
+          operationId: 'GetFileStats',
+          response: {},
+        },
+      },
+    },
     '/files/:fileId': {
       methods: {
         patch: {
@@ -239,6 +248,15 @@ export default narrowedValue({
             required: ['data'],
             additionalProperties: false,
           },
+        },
+      },
+    },
+    '/folders/:folderId/summarize': {
+      methods: {
+        post: {
+          controller: 'folders.controllers',
+          operationId: 'SummarizeFolder',
+          response: {},
         },
       },
     },
