@@ -6,16 +6,8 @@
  */
 
 export type GetMethodConfig = ControllerInfo & {
-  pathParams?: {
-    properties?: {
-      [k: string]: HttpJsonSchemaOrgDraft04Schema;
-    };
-  };
-  queryParams?: {
-    properties?: {
-      [k: string]: HttpJsonSchemaOrgDraft04Schema;
-    };
-  };
+  pathParams?: PathOrQueryParams;
+  queryParams?: PathOrQueryParams;
   requestBody?: null;
   response: HttpJsonSchemaOrgDraft04Schema;
 };
@@ -28,16 +20,8 @@ export type SchemaArray = [HttpJsonSchemaOrgDraft04Schema, ...HttpJsonSchemaOrgD
  */
 export type StringArray = [string, ...string[]];
 export type PostMethodConfig = ControllerInfo & {
-  pathParams?: {
-    properties?: {
-      [k: string]: HttpJsonSchemaOrgDraft04Schema;
-    };
-  };
-  queryParams?: {
-    properties?: {
-      [k: string]: HttpJsonSchemaOrgDraft04Schema;
-    };
-  };
+  pathParams?: PathOrQueryParams;
+  queryParams?: PathOrQueryParams;
   requestBody?: RequestBody;
   response: HttpJsonSchemaOrgDraft04Schema;
 };
@@ -49,16 +33,8 @@ export type ContentType =
   | 'application/octet-stream'
   | 'multipart/form-data';
 export type PatchMethodConfig = ControllerInfo & {
-  pathParams?: {
-    properties?: {
-      [k: string]: HttpJsonSchemaOrgDraft04Schema;
-    };
-  };
-  queryParams?: {
-    properties?: {
-      [k: string]: HttpJsonSchemaOrgDraft04Schema;
-    };
-  };
+  pathParams?: PathOrQueryParams;
+  queryParams?: PathOrQueryParams;
   requestBody?: RequestBody;
   response: HttpJsonSchemaOrgDraft04Schema;
 };
@@ -78,23 +54,13 @@ export interface PathMethods {
 export interface ControllerInfo {
   operationId: string;
 }
+export interface PathOrQueryParams {
+  properties?: {
+    [k: string]: HttpJsonSchemaOrgDraft04Schema;
+  };
+}
 /**
  * Core schema meta-schema
- *
- * This interface was referenced by `undefined`'s JSON-Schema definition
- * via the `patternProperty` "*".
- *
- * This interface was referenced by `undefined`'s JSON-Schema definition
- * via the `patternProperty` "*".
- *
- * This interface was referenced by `undefined`'s JSON-Schema definition
- * via the `patternProperty` "*".
- *
- * This interface was referenced by `undefined`'s JSON-Schema definition
- * via the `patternProperty` "*".
- *
- * This interface was referenced by `undefined`'s JSON-Schema definition
- * via the `patternProperty` "*".
  *
  * This interface was referenced by `undefined`'s JSON-Schema definition
  * via the `patternProperty` "*".

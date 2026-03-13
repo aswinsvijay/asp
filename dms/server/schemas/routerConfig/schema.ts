@@ -49,32 +49,10 @@ const schema = {
           type: 'object',
           properties: {
             pathParams: {
-              type: 'object',
-              properties: {
-                properties: {
-                  type: 'object',
-                  patternProperties: {
-                    '*': {
-                      $ref: jsonSchemaPath,
-                    },
-                  },
-                },
-              },
-              additionalProperties: false,
+              $ref: '#/definitions/PathOrQueryParams',
             },
             queryParams: {
-              type: 'object',
-              properties: {
-                properties: {
-                  type: 'object',
-                  patternProperties: {
-                    '*': {
-                      $ref: jsonSchemaPath,
-                    },
-                  },
-                },
-              },
-              additionalProperties: false,
+              $ref: '#/definitions/PathOrQueryParams',
             },
             requestBody: {
               type: 'null',
@@ -97,32 +75,10 @@ const schema = {
           type: 'object',
           properties: {
             pathParams: {
-              type: 'object',
-              properties: {
-                properties: {
-                  type: 'object',
-                  patternProperties: {
-                    '*': {
-                      $ref: jsonSchemaPath,
-                    },
-                  },
-                },
-              },
-              additionalProperties: false,
+              $ref: '#/definitions/PathOrQueryParams',
             },
             queryParams: {
-              type: 'object',
-              properties: {
-                properties: {
-                  type: 'object',
-                  patternProperties: {
-                    '*': {
-                      $ref: jsonSchemaPath,
-                    },
-                  },
-                },
-              },
-              additionalProperties: false,
+              $ref: '#/definitions/PathOrQueryParams',
             },
             requestBody: {
               $ref: '#/definitions/RequestBody',
@@ -145,32 +101,10 @@ const schema = {
           type: 'object',
           properties: {
             pathParams: {
-              type: 'object',
-              properties: {
-                properties: {
-                  type: 'object',
-                  patternProperties: {
-                    '*': {
-                      $ref: jsonSchemaPath,
-                    },
-                  },
-                },
-              },
-              additionalProperties: false,
+              $ref: '#/definitions/PathOrQueryParams',
             },
             queryParams: {
-              type: 'object',
-              properties: {
-                properties: {
-                  type: 'object',
-                  patternProperties: {
-                    '*': {
-                      $ref: jsonSchemaPath,
-                    },
-                  },
-                },
-              },
-              additionalProperties: false,
+              $ref: '#/definitions/PathOrQueryParams',
             },
             requestBody: {
               $ref: '#/definitions/RequestBody',
@@ -192,6 +126,20 @@ const schema = {
         },
       },
       required: ['operationId'],
+      additionalProperties: false,
+    },
+    PathOrQueryParams: {
+      type: 'object',
+      properties: {
+        properties: {
+          type: 'object',
+          patternProperties: {
+            '*': {
+              $ref: jsonSchemaPath,
+            },
+          },
+        },
+      },
       additionalProperties: false,
     },
     RequestBody: {
