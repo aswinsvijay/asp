@@ -144,6 +144,14 @@ export default narrowedValue({
         },
       },
     },
+    '/files/:fileId/summarize': {
+      methods: {
+        post: {
+          operationId: 'SummarizeFile',
+          response: {},
+        },
+      },
+    },
     '/files/:fileId/redaction-entities': {
       methods: {
         get: {
