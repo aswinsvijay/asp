@@ -8,9 +8,7 @@ export const controllerGroup = new ControllerGroup<CompiledOperations & Record<s
 );
 
 export async function initialize() {
-  const uniqueFiles = [
-    ...new Set(Object.values(compiledRouterConfig).map((operationInfo) => operationInfo.controller)),
-  ];
+  const uniqueFiles = ['files.controllers', 'folders.controllers', 'workflows.controllers'];
 
   await Promise.all(
     uniqueFiles.map(async (file) => {

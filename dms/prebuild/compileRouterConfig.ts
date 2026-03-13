@@ -14,7 +14,6 @@ function* compileRouterGenerator(
     {
       path: string;
       method: keyof PathMethods;
-      controller: string;
       response: NonNullable<PathMethods[keyof PathMethods]>['response'];
     } & typeof ctx
   >,
@@ -45,7 +44,6 @@ function* compileRouterGenerator(
     compiledOperations[operationInfo.operationId] = {
       path,
       method,
-      controller: operationInfo.controller,
       pathParams: {
         type: 'object',
         properties: { ...ctx.pathParams?.properties, ...operationInfo.pathParams?.properties },

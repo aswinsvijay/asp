@@ -19,7 +19,6 @@ export default narrowedValue({
     '/:parentId/children': {
       methods: {
         get: {
-          controller: 'files.controllers',
           operationId: 'GetChildren',
           pathParams: {
             properties: {
@@ -64,7 +63,6 @@ export default narrowedValue({
     '/files': {
       methods: {
         post: {
-          controller: 'files.controllers',
           operationId: 'UploadFile',
           queryParams: {},
           requestBody: {
@@ -94,7 +92,6 @@ export default narrowedValue({
     '/files/stats': {
       methods: {
         get: {
-          controller: 'files.controllers',
           operationId: 'GetFileStats',
           response: {},
         },
@@ -103,7 +100,6 @@ export default narrowedValue({
     '/files/:fileId': {
       methods: {
         patch: {
-          controller: 'files.controllers',
           operationId: 'UpdateFile',
           pathParams: {
             properties: {
@@ -138,7 +134,6 @@ export default narrowedValue({
     '/files/:fileId/download': {
       methods: {
         get: {
-          controller: 'files.controllers',
           operationId: 'DownloadFile',
           pathParams: {
             properties: {
@@ -152,7 +147,6 @@ export default narrowedValue({
     '/files/:fileId/redaction-entities': {
       methods: {
         get: {
-          controller: 'files.controllers',
           operationId: 'GetRedactionEntities',
           pathParams: {
             properties: {
@@ -192,7 +186,6 @@ export default narrowedValue({
     '/files/:fileId/classify': {
       methods: {
         post: {
-          controller: 'files.controllers',
           operationId: 'ClassifyFile',
           pathParams: {
             properties: {
@@ -215,7 +208,6 @@ export default narrowedValue({
     '/folders': {
       methods: {
         post: {
-          controller: 'folders.controllers',
           operationId: 'CreateFolder',
           requestBody: {
             contentType: 'application/json',
@@ -254,7 +246,6 @@ export default narrowedValue({
     '/folders/:folderId/summarize': {
       methods: {
         post: {
-          controller: 'folders.controllers',
           operationId: 'SummarizeFolder',
           response: {},
         },
@@ -263,7 +254,6 @@ export default narrowedValue({
     '/workflows': {
       methods: {
         post: {
-          controller: 'workflows.controllers',
           operationId: 'CreateWorkflow',
           requestBody: {
             contentType: 'application/json',
@@ -301,7 +291,6 @@ export default narrowedValue({
           },
         },
         get: {
-          controller: 'workflows.controllers',
           operationId: 'GetWorkflows',
           response: {
             type: 'object',
@@ -332,7 +321,6 @@ export default narrowedValue({
     '/workflows/:workflowId': {
       methods: {
         post: {
-          controller: 'workflows.controllers',
           operationId: 'RunWorkflow',
           pathParams: {
             properties: {

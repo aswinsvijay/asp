@@ -187,14 +187,11 @@ const schema = {
     ControllerInfo: {
       type: 'object',
       properties: {
-        controller: {
-          type: 'string',
-        },
         operationId: {
           type: 'string',
         },
       },
-      required: ['controller', 'operationId'],
+      required: ['operationId'],
       additionalProperties: false,
     },
     RequestBody: {

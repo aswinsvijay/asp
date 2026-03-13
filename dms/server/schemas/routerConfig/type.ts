@@ -76,7 +76,6 @@ export interface PathMethods {
   patch?: PatchMethodConfig;
 }
 export interface ControllerInfo {
-  controller: string;
   operationId: string;
 }
 /**
