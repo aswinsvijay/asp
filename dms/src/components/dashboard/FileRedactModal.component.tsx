@@ -14,11 +14,12 @@ import { EntitySpan, ItemInfo } from '@/server/routerConfig/compiledRouterTypes.
 import { Types } from 'mongoose';
 
 interface FileRedactModalProps {
+  parent: Types.ObjectId;
   selectedFile: ItemInfo;
   onClose: () => void;
 }
 
-export const FileRedactModal: React.FC<FileRedactModalProps> = ({ selectedFile, onClose }) => {
+export const FileRedactModal: React.FC<FileRedactModalProps> = ({ parent, selectedFile, onClose }) => {
   const effectRanRef = useRef(false);
   const [fileContent, setFileContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -81,7 +82,7 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ selectedFile, 
       type: 'text/plain',
     });
 
-    await uploadFile(file);
+    await uploadFile(file, parent);
 
     handleClose();
   };

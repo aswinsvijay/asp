@@ -134,6 +134,7 @@ export const FilesComponent = () => {
           ) : null}
           {widget === 'redact' ? (
             <FileRedactModal
+              parent={deepestParent}
               selectedFile={selectedFile}
               onClose={() => {
                 setWidget(null);
