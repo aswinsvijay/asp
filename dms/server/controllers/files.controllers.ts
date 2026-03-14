@@ -16,7 +16,7 @@ import {
   MyServerStreamResponse,
 } from '../objects';
 import { rootFolder, UNSAFE_CAST } from '../../src/utils';
-import { createReadStream, existsSync } from 'fs';
+import { createReadStream, existsSync, ReadStream } from 'fs';
 import axios from 'axios';
 import FormData from 'form-data';
 import { environment } from '../environment';
@@ -47,6 +47,21 @@ const getDocumentStream = async (
   const stream = createReadStream(document.path);
 
   return stream;
+};
+
+const classifyDocumentFromStream = async (stream: ReadStream) => {
+  try {
+    const formData = new FormData();
+    formData.append('file', stream);
+
+    const response = await redactionAxiosInstance.post('/classify', formData, {
+      headers: formData.getHeaders(),
+    });
+
+    return UNSAFE_CAST<{ data: string }>(response.data).data;
+  } catch {
+    throw new Error('Upstream server error');
+  }
 };
 
 controllerGroup.add('GetChildren', async (ctx) => {
@@ -195,19 +210,9 @@ controllerGroup.add('ClassifyFile', async (ctx) => {
   }
 
   const stream = await getDocumentStream(documentId, { owner: ctx.state.user._id });
+  const documentClass = await classifyDocumentFromStream(stream);
 
-  try {
-    const formData = new FormData();
-    formData.append('file', stream);
-
-    const response = await redactionAxiosInstance.post('/classify', formData, {
-      headers: formData.getHeaders(),
-    });
-
-    return new MyServerJSONResponse(UNSAFE_CAST<{ data: string }>(response.data));
-  } catch {
-    throw new Error('Upstream server error');
-  }
+  return new MyServerJSONResponse({ data: documentClass });
 });
 
 controllerGroup.add('SummarizeFile', async (ctx) => {
