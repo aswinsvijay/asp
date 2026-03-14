@@ -148,6 +148,11 @@ export default narrowedValue({
       methods: {
         post: {
           operationId: 'SummarizeFile',
+          pathParams: {
+            properties: {
+              fileId: mongoId,
+            },
+          },
           response: {},
         },
       },

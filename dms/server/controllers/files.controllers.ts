@@ -209,3 +209,30 @@ controllerGroup.add('ClassifyFile', async (ctx) => {
     throw new Error('Upstream server error');
   }
 });
+
+controllerGroup.add('SummarizeFile', async (ctx) => {
+  if (!ctx.state.user) {
+    throw new MyServerUnauthorizedError('Un-authorized');
+  }
+
+  const documentId = ctx.pathParams.fileId;
+
+  if (!documentId) {
+    throw new MyServerBadRequestError('fileId is required');
+  }
+
+  const stream = await getDocumentStream(documentId, { owner: ctx.state.user._id });
+
+  try {
+    const formData = new FormData();
+    formData.append('file', stream);
+
+    const response = await redactionAxiosInstance.post('/summarize', formData, {
+      headers: formData.getHeaders(),
+    });
+
+    return new MyServerJSONResponse(UNSAFE_CAST<{ data: string }>(response.data));
+  } catch {
+    throw new Error('Upstream server error');
+  }
+});
