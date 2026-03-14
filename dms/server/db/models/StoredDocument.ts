@@ -6,6 +6,7 @@ const StoredDocumentSchema = new Schema({
   path: { type: String, required: true },
   mimetype: { type: String, required: true },
   parent: { type: Schema.Types.ObjectId, required: true },
+  class: { type: String, required: true },
 });
 
 export const StoredDocument = model('StoredDocument', StoredDocumentSchema);

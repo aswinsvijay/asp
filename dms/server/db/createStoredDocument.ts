@@ -16,6 +16,7 @@ export const createStoredDocument = async (args: {
     mimetype: args.mimetype,
     owner: args.owner,
     parent: args.parent,
+    class: '',
   };
 
   const dataObject = new StoredDocument(insertData);
