@@ -64,6 +64,21 @@ const classifyDocumentFromStream = async (stream: ReadStream) => {
   }
 };
 
+const summarizeDocumentFromStream = async (stream: ReadStream) => {
+  try {
+    const formData = new FormData();
+    formData.append('file', stream);
+
+    const response = await redactionAxiosInstance.post('/summarize', formData, {
+      headers: formData.getHeaders(),
+    });
+
+    return UNSAFE_CAST<{ data: string }>(response.data).data;
+  } catch {
+    throw new Error('Upstream server error');
+  }
+};
+
 controllerGroup.add('GetChildren', async (ctx) => {
   if (!ctx.state.user) {
     throw new MyServerUnauthorizedError('Un-authorized');
@@ -227,17 +242,7 @@ controllerGroup.add('SummarizeFile', async (ctx) => {
   }
 
   const stream = await getDocumentStream(documentId, { owner: ctx.state.user._id });
+  const documentSummary = await summarizeDocumentFromStream(stream);
 
-  try {
-    const formData = new FormData();
-    formData.append('file', stream);
-
-    const response = await redactionAxiosInstance.post('/summarize', formData, {
-      headers: formData.getHeaders(),
-    });
-
-    return new MyServerJSONResponse(UNSAFE_CAST<{ data: string }>(response.data));
-  } catch {
-    throw new Error('Upstream server error');
-  }
+  return new MyServerJSONResponse({ data: documentSummary });
 });
