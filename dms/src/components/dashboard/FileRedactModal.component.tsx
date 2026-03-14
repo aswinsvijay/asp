@@ -9,7 +9,7 @@ import {
   Typography,
   CircularProgress,
 } from '@mui/material';
-import { apiCall, getDocumentBlob, uploadFile } from '@/src/utils';
+import { apiCall, downloadDocument, uploadFile } from '@/src/utils';
 import { EntitySpan, ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
 import { Types } from 'mongoose';
 
@@ -34,7 +34,7 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ selectedFile, 
       setFileContent(null);
 
       try {
-        const blob = await getDocumentBlob(selectedFile.id);
+        const blob = await downloadDocument(selectedFile.id);
 
         if (!blob) {
           throw new Error('Invalid file response');

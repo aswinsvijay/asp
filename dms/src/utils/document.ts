@@ -1,7 +1,7 @@
 import { apiCall } from './apiCall';
 import { Types } from 'mongoose';
 
-export const getDocumentBlob = async (documentId: string) => {
+export const downloadDocument = async (documentId: string) => {
   const blob = await apiCall('DownloadFile', {
     pathParams: {
       fileId: new Types.ObjectId(documentId),

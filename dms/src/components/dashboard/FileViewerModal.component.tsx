@@ -9,7 +9,7 @@ import {
   Typography,
   CircularProgress,
 } from '@mui/material';
-import { getDocumentBlob } from '@/src/utils';
+import { downloadDocument } from '@/src/utils';
 import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
 
 interface FileViewerModalProps {
@@ -31,7 +31,7 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
       setFileContent(null);
 
       try {
-        const blob = await getDocumentBlob(selectedFile.id);
+        const blob = await downloadDocument(selectedFile.id);
 
         if (!blob) {
           throw new Error('Invalid file response');

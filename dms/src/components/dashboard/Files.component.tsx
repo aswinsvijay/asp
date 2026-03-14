@@ -1,5 +1,5 @@
 import React, { useState, useRef, useMemo } from 'react';
-import { Spacing, useApiCall, useMemoizedParameters, getDocumentBlob, uploadFile, rootFolder } from '@/src/utils';
+import { Spacing, useApiCall, useMemoizedParameters, downloadDocument, uploadFile, rootFolder } from '@/src/utils';
 import { Types } from 'mongoose';
 import { Box, Breadcrumbs, Button, Link } from '@mui/material';
 import { CustomIcon } from '../CustomIcon.component';
@@ -61,7 +61,7 @@ export const FilesComponent = () => {
 
   const handleDownload = async (item: ItemInfo) => {
     try {
-      const blob = await getDocumentBlob(item.id);
+      const blob = await downloadDocument(item.id);
 
       if (!blob) {
         return;
