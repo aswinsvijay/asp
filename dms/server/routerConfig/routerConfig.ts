@@ -1,18 +1,61 @@
-import { RouterConfig } from '../schemas/routerConfig/type';
+import { HttpJsonSchemaOrgDraft04Schema, RouterConfig } from '../schemas/routerConfig/type';
 import { narrowedValue } from '../../src/utils/typeUtils';
 
 export const mongoId = {
   type: 'string',
   'x-mongo-id': true,
   tsType: 'import("mongoose").Types.ObjectId',
-} as const;
+} as const satisfies HttpJsonSchemaOrgDraft04Schema;
 
 export const stringNull = {
   type: 'string',
   enum: ['null'],
   'x-string-null': true,
   tsType: 'null',
-} as const;
+} as const satisfies HttpJsonSchemaOrgDraft04Schema;
+
+const itemInfo = {
+  title: 'ItemInfo',
+  oneOf: [
+    {
+      type: 'object',
+      properties: {
+        type: {
+          type: 'string',
+          enum: ['document'],
+        },
+        id: {
+          type: 'string',
+        },
+        name: {
+          type: 'string',
+        },
+        path: {
+          type: 'string',
+        },
+      },
+      required: ['id', 'name', 'path', 'type'],
+      additionalProperties: false,
+    },
+    {
+      type: 'object',
+      properties: {
+        type: {
+          type: 'string',
+          enum: ['folder'],
+        },
+        id: {
+          type: 'string',
+        },
+        name: {
+          type: 'string',
+        },
+      },
+      required: ['id', 'name', 'type'],
+      additionalProperties: false,
+    },
+  ],
+} as const satisfies HttpJsonSchemaOrgDraft04Schema;
 
 export default narrowedValue({
   paths: {
@@ -31,27 +74,7 @@ export default narrowedValue({
             properties: {
               data: {
                 type: 'array',
-                items: {
-                  type: 'object',
-                  title: 'ItemInfo',
-                  properties: {
-                    id: {
-                      type: 'string',
-                    },
-                    name: {
-                      type: 'string',
-                    },
-                    path: {
-                      type: 'string',
-                    },
-                    type: {
-                      type: 'string',
-                      enum: ['document', 'folder'],
-                    },
-                  },
-                  required: ['id', 'name', 'path', 'type'],
-                  additionalProperties: false,
-                },
+                items: itemInfo,
               },
             },
             required: ['data'],

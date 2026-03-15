@@ -15,7 +15,7 @@ import {
 } from '../objects';
 import { rootFolder, UNSAFE_CAST } from '../../src/utils';
 import FormData from 'form-data';
-import { EntitySpan } from '../routerConfig/compiledRouterTypes.out';
+import { EntitySpan, ItemInfo } from '../routerConfig/compiledRouterTypes.out';
 import {
   classifyDocumentFromStream,
   getDocumentStream,
@@ -32,18 +32,21 @@ controllerGroup.add('GetChildren', async (ctx) => {
   const folders = await getFolders({ parent: parentId, owner: ctx.state.user._id });
   const documents = await getStoredDocuments({ parent: parentId, owner: ctx.state.user._id });
 
-  const mappedFolders = folders.map((folder) => ({
-    ...folder,
-    id: folder._id.toString(),
-    path: '',
-    type: 'folder' as const,
-  }));
+  const mappedFolders = folders.map(
+    (folder): ItemInfo => ({
+      ...folder,
+      id: folder._id.toString(),
+      type: 'folder' as const,
+    })
+  );
 
-  const mappedDocuments = documents.map((document) => ({
-    ...document,
-    id: document._id.toString(),
-    type: 'document' as const,
-  }));
+  const mappedDocuments = documents.map(
+    (document): ItemInfo => ({
+      ...document,
+      id: document._id.toString(),
+      type: 'document' as const,
+    })
+  );
 
   return new ServerJSONResponse({ data: [...mappedFolders, ...mappedDocuments] });
 });
