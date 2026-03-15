@@ -1,4 +1,3 @@
-import { Types } from 'mongoose';
 import { controllerGroup } from '.';
 import {
   createStoredDocument,
@@ -12,72 +11,17 @@ import {
   MyServerJSONResponse,
   MyServerNotFoundError,
   MyServerUnauthorizedError,
-  MyServerInternalError,
   MyServerStreamResponse,
 } from '../objects';
 import { rootFolder, UNSAFE_CAST } from '../../src/utils';
-import { createReadStream, existsSync, ReadStream } from 'fs';
-import axios from 'axios';
 import FormData from 'form-data';
-import { environment } from '../environment';
 import { EntitySpan } from '../routerConfig/compiledRouterTypes.out';
-
-const redactionAxiosInstance = axios.create({
-  baseURL: environment.REDACT_SERVER_URL,
-});
-
-const getDocumentStream = async (
-  documentId: Types.ObjectId,
-  args: {
-    owner: Types.ObjectId;
-  }
-) => {
-  const document = await getStoredDocumentById(documentId, {
-    owner: args.owner,
-  });
-
-  if (!document) {
-    throw new MyServerNotFoundError('Document not found');
-  }
-
-  if (!existsSync(document.path)) {
-    throw new MyServerInternalError('Document does not exist on the specified path', { data: {} });
-  }
-
-  const stream = createReadStream(document.path);
-
-  return stream;
-};
-
-const classifyDocumentFromStream = async (stream: ReadStream) => {
-  try {
-    const formData = new FormData();
-    formData.append('file', stream);
-
-    const response = await redactionAxiosInstance.post('/classify', formData, {
-      headers: formData.getHeaders(),
-    });
-
-    return UNSAFE_CAST<{ data: string }>(response.data).data;
-  } catch {
-    throw new Error('Upstream server error');
-  }
-};
-
-const summarizeDocumentFromStream = async (stream: ReadStream) => {
-  try {
-    const formData = new FormData();
-    formData.append('file', stream);
-
-    const response = await redactionAxiosInstance.post('/summarize', formData, {
-      headers: formData.getHeaders(),
-    });
-
-    return UNSAFE_CAST<{ data: string }>(response.data).data;
-  } catch {
-    throw new Error('Upstream server error');
-  }
-};
+import {
+  classifyDocumentFromStream,
+  getDocumentStream,
+  redactionAxiosInstance,
+  summarizeDocumentFromStream,
+} from '../utils';
 
 controllerGroup.add('GetChildren', async (ctx) => {
   if (!ctx.state.user) {
