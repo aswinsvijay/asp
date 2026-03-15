@@ -22,6 +22,7 @@ import {
   redactionAxiosInstance,
   summarizeDocumentFromStream,
 } from '../utils';
+import { createReadStream } from 'fs';
 
 controllerGroup.add('GetChildren', async (ctx) => {
   if (!ctx.state.user) {
@@ -56,6 +57,8 @@ controllerGroup.add('UploadFile', async (ctx) => {
     throw new ServerUnauthorizedError('Un-authorized');
   }
 
+  const userId = ctx.state.user._id;
+
   if (Array.isArray(ctx.request.files)) {
     throw new Error('Files should be object');
   }
@@ -70,9 +73,16 @@ controllerGroup.add('UploadFile', async (ctx) => {
     name: uploadedFile.originalname,
     path: uploadedFile.path,
     mimetype: uploadedFile.mimetype,
-    owner: ctx.state.user._id,
+    owner: userId,
     parent: rootFolder,
   });
+
+  void (async () => {
+    const stream = createReadStream(uploadedFile.path);
+    const documentClass = await classifyDocumentFromStream(stream);
+
+    await updateStoredDocumentById(document._id, { owner: userId }, { class: documentClass });
+  })();
 
   return new ServerJSONResponse({
     data: {
@@ -173,6 +183,8 @@ controllerGroup.add('ClassifyFile', async (ctx) => {
 
   const stream = await getDocumentStream(documentId, { owner: ctx.state.user._id });
   const documentClass = await classifyDocumentFromStream(stream);
+
+  await updateStoredDocumentById(documentId, { owner: ctx.state.user._id }, { class: documentClass });
 
   return new ServerJSONResponse({ data: documentClass });
 });
