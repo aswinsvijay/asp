@@ -1,8 +1,17 @@
 import { rootFolder } from '../../src/utils';
 import { controllerGroup } from '.';
 import { createFolder } from '../db';
-import { ServerBadRequestError, ServerJSONResponse, ServerNotFoundError, ServerUnauthorizedError } from '../objects';
+import {
+  ServerBadRequestError,
+  ServerInternalError,
+  ServerJSONResponse,
+  ServerNotFoundError,
+  ServerUnauthorizedError,
+} from '../objects';
 import { getStoredDocumentsRecursive } from '../db/getStoredDocumentsRecursive';
+import { createReadStream, existsSync } from 'fs';
+import { Readable } from 'stream';
+import { summarizeDocumentFromStream } from '../utils';
 
 controllerGroup.add('CreateFolder', async (ctx) => {
   if (!ctx.state.user) {
@@ -46,7 +55,24 @@ controllerGroup.add('SummarizeFolder', async (ctx) => {
     throw new ServerNotFoundError('No documents to summarize');
   }
 
-  return new ServerJSONResponse({
-    data: '',
+  const documentStreams = recursiveDocuments.map((document) => {
+    if (!existsSync(document.path)) {
+      throw new ServerInternalError('Document does not exist on the specified path', { data: {} });
+    }
+    return createReadStream(document.path);
   });
+
+  async function* concatStreams() {
+    for (const s of documentStreams) {
+      for await (const chunk of s) {
+        yield chunk;
+      }
+
+      yield '\n\n';
+    }
+  }
+
+  const summary = await summarizeDocumentFromStream(Readable.from(concatStreams()));
+
+  return new ServerJSONResponse({ data: summary });
 });

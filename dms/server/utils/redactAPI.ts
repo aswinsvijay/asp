@@ -1,6 +1,6 @@
 import { UNSAFE_CAST } from '../../src/utils';
 import axios from 'axios';
-import { ReadStream } from 'fs';
+import { Readable } from 'stream';
 import FormData from 'form-data';
 import { environment } from '../environment';
 
@@ -8,7 +8,7 @@ export const redactionAxiosInstance = axios.create({
   baseURL: environment.REDACT_SERVER_URL,
 });
 
-export const classifyDocumentFromStream = async (stream: ReadStream) => {
+export const classifyDocumentFromStream = async (stream: Readable) => {
   try {
     const formData = new FormData();
     formData.append('file', stream);
@@ -23,7 +23,7 @@ export const classifyDocumentFromStream = async (stream: ReadStream) => {
   }
 };
 
-export const summarizeDocumentFromStream = async (stream: ReadStream) => {
+export const summarizeDocumentFromStream = async (stream: Readable) => {
   try {
     const formData = new FormData();
     formData.append('file', stream);
