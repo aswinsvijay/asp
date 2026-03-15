@@ -9,7 +9,7 @@ import Ajv from 'ajv';
 import { mongoId, stringNull } from './keywords';
 import { controllerGroup, initialize } from './controllers';
 import { basicAuthenticator as authenticator, errorHandler } from './middlewares';
-import { MyServerBadRequestError, MyServerUnauthorizedError } from './objects';
+import { ServerBadRequestError, ServerUnauthorizedError } from './objects';
 import { User, UserSession } from './db/models';
 import { hashPassword } from '../src/utils';
 import { CustomState, LoginResponse } from './types';
@@ -86,7 +86,7 @@ koaAuthRouter.post('/login', async (ctx) => {
   const { userId, password } = requestBody;
 
   if (typeof userId !== 'string' || !userId.trim() || typeof password !== 'string' || !password.trim()) {
-    throw new MyServerBadRequestError('userId and password and required and must be strings');
+    throw new ServerBadRequestError('userId and password and required and must be strings');
   }
 
   const hashedPassword = hashPassword(password);
@@ -97,7 +97,7 @@ koaAuthRouter.post('/login', async (ctx) => {
   });
 
   if (!user) {
-    throw new MyServerUnauthorizedError('Invalid userId or password');
+    throw new ServerUnauthorizedError('Invalid userId or password');
   }
 
   const sessionData: MappedOmit<UserSession, '_id'> = {
@@ -122,7 +122,7 @@ koaAuthRouter.post('/register', async (ctx) => {
     typeof password !== 'string' ||
     !password.trim()
   ) {
-    throw new MyServerBadRequestError('name, userId and password and required and must be strings');
+    throw new ServerBadRequestError('name, userId and password and required and must be strings');
   }
 
   try {

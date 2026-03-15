@@ -7,11 +7,11 @@ import {
   updateStoredDocumentById,
 } from '../db';
 import {
-  MyServerBadRequestError,
-  MyServerJSONResponse,
-  MyServerNotFoundError,
-  MyServerUnauthorizedError,
-  MyServerStreamResponse,
+  ServerBadRequestError,
+  ServerJSONResponse,
+  ServerNotFoundError,
+  ServerUnauthorizedError,
+  ServerStreamResponse,
 } from '../objects';
 import { rootFolder, UNSAFE_CAST } from '../../src/utils';
 import FormData from 'form-data';
@@ -25,7 +25,7 @@ import {
 
 controllerGroup.add('GetChildren', async (ctx) => {
   if (!ctx.state.user) {
-    throw new MyServerUnauthorizedError('Un-authorized');
+    throw new ServerUnauthorizedError('Un-authorized');
   }
 
   const parentId = ctx.pathParams.parentId ?? rootFolder;
@@ -45,12 +45,12 @@ controllerGroup.add('GetChildren', async (ctx) => {
     type: 'document' as const,
   }));
 
-  return new MyServerJSONResponse({ data: [...mappedFolders, ...mappedDocuments] });
+  return new ServerJSONResponse({ data: [...mappedFolders, ...mappedDocuments] });
 });
 
 controllerGroup.add('UploadFile', async (ctx) => {
   if (!ctx.state.user) {
-    throw new MyServerUnauthorizedError('Un-authorized');
+    throw new ServerUnauthorizedError('Un-authorized');
   }
 
   if (Array.isArray(ctx.request.files)) {
@@ -71,7 +71,7 @@ controllerGroup.add('UploadFile', async (ctx) => {
     parent: rootFolder,
   });
 
-  return new MyServerJSONResponse({
+  return new ServerJSONResponse({
     data: {
       id: document._id.toString(),
     },
@@ -80,7 +80,7 @@ controllerGroup.add('UploadFile', async (ctx) => {
 
 controllerGroup.add('UpdateFile', async (ctx) => {
   if (!ctx.state.user) {
-    throw new MyServerUnauthorizedError('Un-authorized');
+    throw new ServerUnauthorizedError('Un-authorized');
   }
 
   if (!ctx.requestBody) {
@@ -90,13 +90,13 @@ controllerGroup.add('UpdateFile', async (ctx) => {
   const documentId = ctx.pathParams.fileId;
 
   if (!documentId) {
-    throw new MyServerBadRequestError('fileId is required');
+    throw new ServerBadRequestError('fileId is required');
   }
 
   const document = await getStoredDocumentById(documentId, { owner: ctx.state.user._id });
 
   if (!document) {
-    throw new MyServerNotFoundError('Document not found');
+    throw new ServerNotFoundError('Document not found');
   }
 
   const updatedDocument = await updateStoredDocumentById(
@@ -111,34 +111,34 @@ controllerGroup.add('UpdateFile', async (ctx) => {
     throw new Error('Update document failed');
   }
 
-  return new MyServerJSONResponse({ data: updatedDocument });
+  return new ServerJSONResponse({ data: updatedDocument });
 });
 
 controllerGroup.add('DownloadFile', async (ctx) => {
   if (!ctx.state.user) {
-    throw new MyServerUnauthorizedError('Un-authorized');
+    throw new ServerUnauthorizedError('Un-authorized');
   }
 
   const documentId = ctx.pathParams.fileId;
 
   if (!documentId) {
-    throw new MyServerBadRequestError('fileId is required');
+    throw new ServerBadRequestError('fileId is required');
   }
 
   const stream = await getDocumentStream(documentId, { owner: ctx.state.user._id });
 
-  return new MyServerStreamResponse(stream);
+  return new ServerStreamResponse(stream);
 });
 
 controllerGroup.add('GetRedactionEntities', async (ctx) => {
   if (!ctx.state.user) {
-    throw new MyServerUnauthorizedError('Un-authorized');
+    throw new ServerUnauthorizedError('Un-authorized');
   }
 
   const documentId = ctx.pathParams.fileId;
 
   if (!documentId) {
-    throw new MyServerBadRequestError('fileId is required');
+    throw new ServerBadRequestError('fileId is required');
   }
 
   const stream = await getDocumentStream(documentId, { owner: ctx.state.user._id });
@@ -151,7 +151,7 @@ controllerGroup.add('GetRedactionEntities', async (ctx) => {
       headers: formData.getHeaders(),
     });
 
-    return new MyServerJSONResponse(UNSAFE_CAST<{ data: EntitySpan[] }>(response.data));
+    return new ServerJSONResponse(UNSAFE_CAST<{ data: EntitySpan[] }>(response.data));
   } catch {
     throw new Error('Upstream server error');
   }
@@ -159,34 +159,34 @@ controllerGroup.add('GetRedactionEntities', async (ctx) => {
 
 controllerGroup.add('ClassifyFile', async (ctx) => {
   if (!ctx.state.user) {
-    throw new MyServerUnauthorizedError('Un-authorized');
+    throw new ServerUnauthorizedError('Un-authorized');
   }
 
   const documentId = ctx.pathParams.fileId;
 
   if (!documentId) {
-    throw new MyServerBadRequestError('fileId is required');
+    throw new ServerBadRequestError('fileId is required');
   }
 
   const stream = await getDocumentStream(documentId, { owner: ctx.state.user._id });
   const documentClass = await classifyDocumentFromStream(stream);
 
-  return new MyServerJSONResponse({ data: documentClass });
+  return new ServerJSONResponse({ data: documentClass });
 });
 
 controllerGroup.add('SummarizeFile', async (ctx) => {
   if (!ctx.state.user) {
-    throw new MyServerUnauthorizedError('Un-authorized');
+    throw new ServerUnauthorizedError('Un-authorized');
   }
 
   const documentId = ctx.pathParams.fileId;
 
   if (!documentId) {
-    throw new MyServerBadRequestError('fileId is required');
+    throw new ServerBadRequestError('fileId is required');
   }
 
   const stream = await getDocumentStream(documentId, { owner: ctx.state.user._id });
   const documentSummary = await summarizeDocumentFromStream(stream);
 
-  return new MyServerJSONResponse({ data: documentSummary });
+  return new ServerJSONResponse({ data: documentSummary });
 });

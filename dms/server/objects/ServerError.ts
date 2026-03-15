@@ -1,6 +1,6 @@
 import { HttpStatusCode } from 'axios';
 
-export abstract class MyServerError extends Error {
+export abstract class ServerError extends Error {
   data: NonNullable<unknown>;
   status: number;
 
@@ -12,9 +12,9 @@ export abstract class MyServerError extends Error {
   }
 }
 
-export abstract class MyServer5xxError extends MyServerError {}
+export abstract class Server5xxError extends ServerError {}
 
-export class MyServerInternalError extends MyServer5xxError {
+export class ServerInternalError extends Server5xxError {
   constructor(message: string, args: { data: NonNullable<unknown> }) {
     super(message, {
       status: HttpStatusCode.InternalServerError,
@@ -23,9 +23,9 @@ export class MyServerInternalError extends MyServer5xxError {
   }
 }
 
-export abstract class MyServer4xxError extends MyServerError {}
+export abstract class Server4xxError extends ServerError {}
 
-export class MyServerBadRequestError extends MyServer4xxError {
+export class ServerBadRequestError extends Server4xxError {
   constructor(message: string, args?: { data?: NonNullable<unknown> }) {
     super(message, {
       status: HttpStatusCode.BadRequest,
@@ -34,7 +34,7 @@ export class MyServerBadRequestError extends MyServer4xxError {
   }
 }
 
-export class MyServerUnauthorizedError extends MyServer4xxError {
+export class ServerUnauthorizedError extends Server4xxError {
   constructor(message: string, args?: { data?: NonNullable<unknown> }) {
     super(message, {
       status: HttpStatusCode.Unauthorized,
@@ -43,7 +43,7 @@ export class MyServerUnauthorizedError extends MyServer4xxError {
   }
 }
 
-export class MyServerForbiddenError extends MyServer4xxError {
+export class ServerForbiddenError extends Server4xxError {
   constructor(message: string, args?: { data?: NonNullable<unknown> }) {
     super(message, {
       status: HttpStatusCode.Forbidden,
@@ -52,7 +52,7 @@ export class MyServerForbiddenError extends MyServer4xxError {
   }
 }
 
-export class MyServerNotFoundError extends MyServer4xxError {
+export class ServerNotFoundError extends Server4xxError {
   constructor(message: string, args?: { data?: NonNullable<unknown> }) {
     super(message, {
       status: HttpStatusCode.NotFound,
@@ -61,7 +61,7 @@ export class MyServerNotFoundError extends MyServer4xxError {
   }
 }
 
-export class MyServerConflictError extends MyServer4xxError {
+export class ServerConflictError extends Server4xxError {
   constructor(message: string, args?: { data?: NonNullable<unknown> }) {
     super(message, {
       status: HttpStatusCode.Conflict,

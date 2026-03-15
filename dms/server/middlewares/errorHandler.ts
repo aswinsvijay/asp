@@ -1,5 +1,5 @@
 import { IMiddleware } from 'koa-router';
-import { MyServerError } from '../objects';
+import { ServerError } from '../objects';
 
 export const errorHandler: IMiddleware = async (ctx, next) => {
   try {
@@ -15,7 +15,7 @@ export const errorHandler: IMiddleware = async (ctx, next) => {
       data: {},
     };
 
-    if (err instanceof MyServerError) {
+    if (err instanceof ServerError) {
       errorInfo.status = err.status;
       errorInfo.message = err.message || 'Internal server error';
       errorInfo.data = err.data;

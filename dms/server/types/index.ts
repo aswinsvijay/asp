@@ -1,4 +1,4 @@
 export * from './CustomState';
 export * from './LoginResponse';
-export * from './MyServerControllerFn';
+export * from './ServerControllerFn';
 export * from './OperationInfo';

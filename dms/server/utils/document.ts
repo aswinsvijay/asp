@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import { getStoredDocumentById } from '../db';
-import { MyServerInternalError, MyServerNotFoundError } from '../objects';
+import { ServerInternalError, ServerNotFoundError } from '../objects';
 import { createReadStream, existsSync } from 'fs';
 
 export const getDocumentStream = async (
@@ -14,11 +14,11 @@ export const getDocumentStream = async (
   });
 
   if (!document) {
-    throw new MyServerNotFoundError('Document not found');
+    throw new ServerNotFoundError('Document not found');
   }
 
   if (!existsSync(document.path)) {
-    throw new MyServerInternalError('Document does not exist on the specified path', { data: {} });
+    throw new ServerInternalError('Document does not exist on the specified path', { data: {} });
   }
 
   const stream = createReadStream(document.path);

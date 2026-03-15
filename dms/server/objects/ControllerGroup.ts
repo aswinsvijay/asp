@@ -1,11 +1,11 @@
 import { RemoveIndexSignature } from '@/src/utils';
-import { MyServerControllerFn, OperationInfo } from '../types';
+import { ServerControllerFn, OperationInfo } from '../types';
 
 export class ControllerGroup<TParameterTypes extends Record<string, OperationInfo>> {
   public routerConfig: Record<string, OperationInfo>;
   public controllerMap: Map<
     string,
-    MyServerControllerFn<
+    ServerControllerFn<
       { pathParams: NonNullable<unknown>; queryParams: NonNullable<unknown>; requestBody: NonNullable<unknown> },
       NonNullable<unknown>
     >
@@ -18,7 +18,7 @@ export class ControllerGroup<TParameterTypes extends Record<string, OperationInf
 
   add<TOperation extends keyof RemoveIndexSignature<TParameterTypes>>(
     operation: string & TOperation,
-    controller: MyServerControllerFn<
+    controller: ServerControllerFn<
       {
         pathParams: TParameterTypes[TOperation]['pathParams'];
         queryParams: TParameterTypes[TOperation]['queryParams'];

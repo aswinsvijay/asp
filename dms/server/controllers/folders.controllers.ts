@@ -1,17 +1,12 @@
 import { rootFolder } from '../../src/utils';
 import { controllerGroup } from '.';
 import { createFolder } from '../db';
-import {
-  MyServerBadRequestError,
-  MyServerJSONResponse,
-  MyServerNotFoundError,
-  MyServerUnauthorizedError,
-} from '../objects';
+import { ServerBadRequestError, ServerJSONResponse, ServerNotFoundError, ServerUnauthorizedError } from '../objects';
 import { getStoredDocumentsRecursive } from '../db/getStoredDocumentsRecursive';
 
 controllerGroup.add('CreateFolder', async (ctx) => {
   if (!ctx.state.user) {
-    throw new MyServerUnauthorizedError('Un-authorized');
+    throw new ServerUnauthorizedError('Un-authorized');
   }
 
   if (!ctx.requestBody) {
@@ -24,7 +19,7 @@ controllerGroup.add('CreateFolder', async (ctx) => {
     parent: ctx.requestBody.parentId ?? rootFolder,
   });
 
-  return new MyServerJSONResponse({
+  return new ServerJSONResponse({
     data: {
       id: folder._id.toString(),
     },
@@ -33,13 +28,13 @@ controllerGroup.add('CreateFolder', async (ctx) => {
 
 controllerGroup.add('SummarizeFolder', async (ctx) => {
   if (!ctx.state.user) {
-    throw new MyServerUnauthorizedError('Un-authorized');
+    throw new ServerUnauthorizedError('Un-authorized');
   }
 
   const { folderId } = ctx.pathParams;
 
   if (!folderId) {
-    throw new MyServerBadRequestError('folderId is required');
+    throw new ServerBadRequestError('folderId is required');
   }
 
   const recursiveDocuments = await getStoredDocumentsRecursive({
@@ -48,10 +43,10 @@ controllerGroup.add('SummarizeFolder', async (ctx) => {
   });
 
   if (!recursiveDocuments.length) {
-    throw new MyServerNotFoundError('No documents to summarize');
+    throw new ServerNotFoundError('No documents to summarize');
   }
 
-  return new MyServerJSONResponse({
+  return new ServerJSONResponse({
     data: '',
   });
 });

@@ -1,9 +1,9 @@
 import { controllerGroup } from '.';
-import { MyServerJSONResponse } from '../objects';
+import { ServerJSONResponse } from '../objects';
 
 controllerGroup.add('CreateWorkflow', async () => {
   return Promise.resolve(
-    new MyServerJSONResponse({
+    new ServerJSONResponse({
       data: {
         id: '',
       },
@@ -13,12 +13,12 @@ controllerGroup.add('CreateWorkflow', async () => {
 
 controllerGroup.add('GetWorkflows', async () => {
   return Promise.resolve(
-    new MyServerJSONResponse({
+    new ServerJSONResponse({
       data: [],
     })
   );
 });
 
 controllerGroup.add('RunWorkflow', async () => {
-  return Promise.resolve(new MyServerJSONResponse({}));
+  return Promise.resolve(new ServerJSONResponse({}));
 });
