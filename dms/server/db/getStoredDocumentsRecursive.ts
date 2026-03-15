@@ -1,12 +1,19 @@
 import { Types } from 'mongoose';
 import { Folder, StoredDocument } from './models';
+import { rootFolder } from '../../src/utils';
 
 export const getStoredDocumentsRecursive = async (args: { parent: Types.ObjectId; owner: Types.ObjectId }) => {
   const foldersCollection = Folder.collection.name;
   const documentsCollection = StoredDocument.collection.name;
 
+  const isRootFolder = args.parent.toString() === rootFolder.toString();
+
   const results = await Folder.aggregate<{ documents: StoredDocument[] }>()
-    .match({ _id: args.parent, owner: args.owner })
+    .match({
+      // Get all folders if specified parent is the root folder
+      _id: isRootFolder ? { $exists: true } : args.parent,
+      owner: args.owner,
+    })
     .graphLookup({
       from: foldersCollection,
       startWith: '$_id',
@@ -34,7 +41,5 @@ export const getStoredDocumentsRecursive = async (args: { parent: Types.ObjectId
     })
     .project({ _id: 0, documents: 1 });
 
-  const documents = results[0]?.documents;
-
-  return documents ?? [];
+  return results.flatMap((res) => res.documents);
 };
