@@ -6,6 +6,7 @@ export const updateStoredDocumentById = async (
   args: { owner: Types.ObjectId },
   payload: {
     parent?: Types.ObjectId;
+    class?: string;
   }
 ) => {
   const dataObject = await StoredDocument.findOneAndUpdate({ _id: id, owner: args.owner }, payload, { lean: true });
