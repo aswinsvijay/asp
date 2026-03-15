@@ -260,7 +260,21 @@ export default narrowedValue({
       methods: {
         post: {
           operationId: 'SummarizeFolder',
-          response: {},
+          pathParams: {
+            properties: {
+              folderId: mongoId,
+            },
+          },
+          response: {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'string',
+              },
+            },
+            required: ['data'],
+            additionalProperties: false,
+          },
         },
       },
     },
