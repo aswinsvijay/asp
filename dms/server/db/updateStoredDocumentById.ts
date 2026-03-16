@@ -3,7 +3,9 @@ import { StoredDocument } from './models';
 
 export const updateStoredDocumentById = async (
   id: Types.ObjectId,
-  args: { owner: Types.ObjectId },
+  args: {
+    owner: Types.ObjectId | { $exists: true };
+  },
   payload: {
     parent?: Types.ObjectId;
     class?: string;
