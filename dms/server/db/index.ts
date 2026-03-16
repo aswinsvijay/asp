@@ -7,3 +7,4 @@ export * from './getStoredDocuments';
 export * from './getStoredDocumentById';
 export * from './updateStoredDocumentById';
 export * from './createUser';
+export * from './stats';

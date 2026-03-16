@@ -5,6 +5,7 @@ import {
   getStoredDocumentById,
   getStoredDocuments,
   updateStoredDocumentById,
+  getDocumentCountByClass,
 } from '../db';
 import {
   ServerBadRequestError,
@@ -204,4 +205,14 @@ controllerGroup.add('SummarizeFile', async (ctx) => {
   const documentSummary = await summarizeDocumentFromStream(stream);
 
   return new ServerJSONResponse({ data: documentSummary });
+});
+
+controllerGroup.add('GetFileStats', async (ctx) => {
+  if (!ctx.state.user) {
+    throw new ServerUnauthorizedError('Un-authorized');
+  }
+
+  return new ServerJSONResponse({
+    data: { documentClasses: await getDocumentCountByClass({ owner: ctx.state.user._id }) },
+  });
 });
