@@ -116,7 +116,29 @@ export default narrowedValue({
       methods: {
         get: {
           operationId: 'GetFileStats',
-          response: {},
+          response: {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  documentClasses: {
+                    type: 'object',
+                    patternProperties: {
+                      '.*': {
+                        type: 'integer',
+                        minimum: 0,
+                      },
+                    },
+                  },
+                },
+                required: ['documentClasses'],
+                additionalProperties: false,
+              },
+            },
+            required: ['data'],
+            additionalProperties: false,
+          },
         },
       },
     },
