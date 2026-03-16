@@ -7,7 +7,7 @@ import mongoose from 'mongoose';
 import compiledRouterConfig from './routerConfig/compiledRouterConfig.out';
 import Ajv from 'ajv';
 import { mongoId, stringNull } from './keywords';
-import { controllerGroup, initialize } from './controllers';
+import { controllerGroup } from './controllers';
 import { basicAuthenticator as authenticator, errorHandler } from './middlewares';
 import { ServerBadRequestError, ServerUnauthorizedError } from './objects';
 import { User, UserSession } from './db/models';
@@ -150,6 +150,8 @@ koaAuthRouter.post('/register', async (ctx) => {
 koaApiRouter.use(authenticator);
 
 compiledRoutes.forEach((operationInfo) => {
+  const controller = controllerGroup.get(operationInfo.operationId);
+
   koaApiRouter[operationInfo.method](operationInfo.path, async (ctx) => {
     const pathValidationResult = operationInfo.pathValidator(ctx.params);
 
@@ -168,8 +170,6 @@ compiledRoutes.forEach((operationInfo) => {
     if (!requestBodyValidationResult) {
       throw new Error('Invalid request body');
     }
-
-    const controller = controllerGroup.get(operationInfo.operationId);
 
     const response = await controller({
       request: ctx.request,
@@ -198,8 +198,6 @@ const handle = nextApp.getRequestHandler();
 
 async function main() {
   await nextApp.prepare();
-
-  await initialize();
 
   await mongoose.connect(environment.MONGODB_CONNECTION_STRING, {
     auth: { username: 'admin', password: 'password' },

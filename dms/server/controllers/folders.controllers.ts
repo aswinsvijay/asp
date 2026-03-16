@@ -1,5 +1,5 @@
 import { rootFolder } from '../../src/utils';
-import { controllerGroup } from '.';
+import { controllerGroup } from './controllerGroup';
 import { createFolder } from '../db';
 import {
   ServerBadRequestError,

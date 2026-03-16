@@ -1,4 +1,4 @@
-import { controllerGroup } from '.';
+import { controllerGroup } from './controllerGroup';
 import {
   createStoredDocument,
   getFolders,
