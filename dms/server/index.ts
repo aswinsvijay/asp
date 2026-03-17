@@ -16,6 +16,7 @@ import { CustomState, LoginResponse } from './types';
 import { createUser } from './db';
 import { MappedOmit } from '@/src/utils';
 import { environment } from './environment';
+import { initialize as initializeJobs } from './jobs';
 
 const koaApp = new Koa<CustomState>();
 const koaRouter = new KoaRouter<CustomState>();
@@ -204,6 +205,8 @@ async function main() {
 
   koaApp.listen(3000, () => {
     console.log('Server is running on port 3000');
+
+    initializeJobs();
   });
 }
 
