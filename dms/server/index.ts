@@ -44,25 +44,6 @@ koaApp.use(
   ])
 );
 
-const compiledRoutes = Object.entries(compiledRouterConfig).map(([operationId, operationInfo]) => {
-  const pathValidator = ajv.compile(operationInfo.pathParams);
-
-  const queryValidator = ajv.compile(operationInfo.queryParams);
-
-  const requestBodyValidator = ajv.compile(operationInfo.requestBody?.schema ?? {});
-  const responseValidator = ajv.compile(operationInfo.response);
-
-  return {
-    operationId,
-    path: operationInfo.path,
-    method: operationInfo.method,
-    pathValidator,
-    queryValidator,
-    requestBodyValidator,
-    responseValidator,
-  };
-});
-
 koaAuthRouter.post('/login', async (ctx) => {
   try {
     await createUser({
@@ -149,23 +130,28 @@ koaAuthRouter.post('/register', async (ctx) => {
 
 koaApiRouter.use(authenticator);
 
-compiledRoutes.forEach((operationInfo) => {
-  const controller = controllerGroup.get(operationInfo.operationId);
+Object.entries(compiledRouterConfig).forEach(([operationId, operationInfo]) => {
+  const pathValidator = ajv.compile(operationInfo.pathParams);
+  const queryValidator = ajv.compile(operationInfo.queryParams);
+  const requestBodyValidator = ajv.compile(operationInfo.requestBody?.schema ?? {});
+  const responseValidator = ajv.compile(operationInfo.response);
+
+  const controller = controllerGroup.get(operationId);
 
   koaApiRouter[operationInfo.method](operationInfo.path, async (ctx) => {
-    const pathValidationResult = operationInfo.pathValidator(ctx.params);
+    const pathValidationResult = pathValidator(ctx.params);
 
     if (!pathValidationResult) {
       throw new Error('Invalid path parameters');
     }
 
-    const queryValidationResult = operationInfo.queryValidator(ctx.query);
+    const queryValidationResult = queryValidator(ctx.query);
 
     if (!queryValidationResult) {
       throw new Error('Invalid query parameters');
     }
 
-    const requestBodyValidationResult = operationInfo.requestBodyValidator(ctx.request.body);
+    const requestBodyValidationResult = requestBodyValidator(ctx.request.body);
 
     if (!requestBodyValidationResult) {
       throw new Error('Invalid request body');
@@ -180,7 +166,7 @@ compiledRoutes.forEach((operationInfo) => {
       state: ctx.state,
     });
 
-    const responseValidationResult = operationInfo.responseValidator(response.data);
+    const responseValidationResult = responseValidator(response.data);
 
     if (!responseValidationResult) {
       throw new Error('Invalid response data');
