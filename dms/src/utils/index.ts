@@ -5,3 +5,4 @@ export * from './typeUtils';
 export * from './apiCall';
 export * as AuthUtils from './auth';
 export * from './password';
+export * from './strings';
