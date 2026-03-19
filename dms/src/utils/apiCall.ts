@@ -13,7 +13,7 @@ type ApiParameters<T extends keyof CompiledOperations> = Pick<
   requestConfig?: AxiosRequestConfig;
 };
 
-type ApiResponse<T extends keyof CompiledOperations> = CompiledOperations[T]['response'];
+export type ApiResponse<T extends keyof CompiledOperations> = CompiledOperations[T]['response'];
 
 function convertPathParams(pathParams: Record<string, Types.ObjectId | null>) {
   const convertedPathParams = Object.fromEntries(
