@@ -4,6 +4,7 @@ import { MappedOmit } from '@/src/utils';
 
 export const createStoredDocument = async (args: {
   name: string;
+  size: number;
   path: string;
   mimetype: string;
   owner: Types.ObjectId;
@@ -12,6 +13,7 @@ export const createStoredDocument = async (args: {
   // TODO: Add ESLint rule to enforce MappedOmit
   const insertData: MappedOmit<StoredDocument, '_id'> = {
     name: args.name,
+    size: args.size,
     path: args.path,
     mimetype: args.mimetype,
     owner: args.owner,

@@ -72,6 +72,7 @@ controllerGroup.add('UploadFile', async (ctx) => {
 
   const document = await createStoredDocument({
     name: uploadedFile.originalname,
+    size: uploadedFile.size,
     path: uploadedFile.path,
     mimetype: uploadedFile.mimetype,
     owner: userId,
