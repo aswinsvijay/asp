@@ -34,7 +34,7 @@ export const getDocumentCountBySize = async (args: { owner: Types.ObjectId }) =>
             case: { $lte: ['$size', range.max * ONE_MB] },
             then: { min: range.min, max: range.max, label: `${String(range.min)}-${String(range.max)} MB` },
           })),
-          default: '> 5 MB',
+          default: { min: 5, max: 1_000_000, label: '> 5 MB' },
         },
       },
       count: { $sum: 1 },
