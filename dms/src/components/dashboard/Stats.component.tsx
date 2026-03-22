@@ -6,8 +6,8 @@ interface ClassStat {
   value: number;
 }
 
-export const DocumentClassChart = ({ data }: { data: ApiResponse<'GetFileStats'>['data'] }) => {
-  const stats: ClassStat[] = Object.entries(data.documentClasses)
+export const DocumentClassChart = ({ data }: { data: ApiResponse<'GetFileStats'>['data']['documentClasses'] }) => {
+  const stats: ClassStat[] = Object.entries(data)
     .map(([label, value]) => ({
       label,
       value,
@@ -66,6 +66,10 @@ export const DocumentClassChart = ({ data }: { data: ApiResponse<'GetFileStats'>
   );
 };
 
+export const DocumentSizeChart = ({}: { data: ApiResponse<'GetFileStats'>['data']['documentSizes'] }) => {
+  return <></>;
+};
+
 export const StatsComponent = () => {
   const {
     loading,
@@ -109,10 +113,13 @@ export const StatsComponent = () => {
       overflow="hidden"
     >
       <Box border="1px solid #e5e7eb" borderRadius={Spacing.SMALL} minHeight={0}>
-        <DocumentClassChart data={response.data} />
+        <DocumentClassChart data={response.data.documentClasses} />
+      </Box>
+      <Box border="1px solid #e5e7eb" borderRadius={Spacing.SMALL} minHeight={0}>
+        <DocumentSizeChart data={response.data.documentSizes} />
       </Box>
 
-      {['Widget 2', 'Widget 3', 'Widget 4'].map((title) => (
+      {['Widget 3', 'Widget 4'].map((title) => (
         <Box
           key={title}
           border="1px solid #e5e7eb"
