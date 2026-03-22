@@ -148,6 +148,39 @@ export const FilesComponent = () => {
       )}
 
       <Box display={'flex'} p={Spacing.SMALL} gap={Spacing.SMALL} className="flex-shrink-0 border-b border-gray-200">
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link
+            component="button"
+            underline="hover"
+            color="inherit"
+            onClick={() => {
+              setPath([]);
+            }}
+            sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}
+          >
+            <CustomIcon name="Home" />
+          </Link>
+          {path.map((item, index) => {
+            const label = item.name;
+
+            return (
+              <Link
+                key={label}
+                component="button"
+                underline="hover"
+                color="inherit"
+                onClick={() => {
+                  setPath((prev) => prev.slice(0, index + 1));
+                }}
+              >
+                {label}
+              </Link>
+            );
+          })}
+        </Breadcrumbs>
+      </Box>
+
+      <Box display={'flex'} p={Spacing.SMALL} gap={Spacing.SMALL} className="flex-shrink-0 border-b border-gray-200">
         <Button variant="contained" onClick={handleFileUpload} title="Upload File">
           <CustomIcon name="Upload" />
         </Button>
@@ -157,39 +190,6 @@ export const FilesComponent = () => {
       </Box>
 
       <div className="flex flex-col flex-1 px-4 py-2 gap-2 overflow-auto">
-        <Box>
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link
-              component="button"
-              underline="hover"
-              color="inherit"
-              onClick={() => {
-                setPath([]);
-              }}
-              sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}
-            >
-              <CustomIcon name="Home" />
-            </Link>
-            {path.map((item, index) => {
-              const label = item.name;
-
-              return (
-                <Link
-                  key={label}
-                  component="button"
-                  underline="hover"
-                  color="inherit"
-                  onClick={() => {
-                    setPath((prev) => prev.slice(0, index + 1));
-                  }}
-                >
-                  {label}
-                </Link>
-              );
-            })}
-          </Breadcrumbs>
-        </Box>
-
         <div className="flex flex-col gap-6">
           {[
             { label: 'Folders', array: folders },
