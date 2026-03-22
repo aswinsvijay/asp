@@ -66,8 +66,60 @@ export const DocumentClassChart = ({ data }: { data: ApiResponse<'GetFileStats'>
   );
 };
 
-export const DocumentSizeChart = ({}: { data: ApiResponse<'GetFileStats'>['data']['documentSizes'] }) => {
-  return <></>;
+export const DocumentSizeChart = ({ data }: { data: ApiResponse<'GetFileStats'>['data']['documentSizes'] }) => {
+  const buckets = [...data].sort((a, b) => a.groupDetails.min - b.groupDetails.min);
+  const maxCount = Math.max(...buckets.map((b) => b.count), 0);
+  const total = buckets.reduce((sum, b) => sum + b.count, 0);
+
+  if (buckets.length === 0 || total === 0) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+        <Typography color="text.secondary">No documents yet</Typography>
+      </Box>
+    );
+  }
+
+  return (
+    <Box p={Spacing.MEDIUM} display="flex" flexDirection="column" gap={Spacing.SMALL} height="100%" overflow="auto">
+      <Typography variant="h6">Document Size Distribution</Typography>
+
+      <Box display="flex" flexDirection="column" gap={Spacing.SMALL}>
+        {buckets.map((bucket) => {
+          const widthPercent = maxCount === 0 ? 0 : (bucket.count / maxCount) * 100;
+          const label = bucket.groupDetails.label;
+
+          return (
+            <Box key={label} display="flex" flexDirection="column" gap={0.5}>
+              <Box display="flex" justifyContent="space-between" alignItems="center">
+                <Typography variant="body2">{label}</Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {bucket.count}
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  width: '100%',
+                  height: 24,
+                  backgroundColor: '#f3f4f6',
+                  borderRadius: 1,
+                  overflow: 'hidden',
+                }}
+              >
+                <Box
+                  sx={{
+                    height: '100%',
+                    width: `${widthPercent.toString()}%`,
+                    backgroundColor: '#1976d2',
+                    transition: 'width 250ms ease-in-out',
+                  }}
+                />
+              </Box>
+            </Box>
+          );
+        })}
+      </Box>
+    </Box>
+  );
 };
 
 export const StatsComponent = () => {
