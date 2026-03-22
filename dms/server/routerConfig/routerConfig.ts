@@ -131,8 +131,38 @@ export default narrowedValue({
                       },
                     },
                   },
+                  documentSizes: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        groupDetails: {
+                          type: 'object',
+                          properties: {
+                            min: {
+                              type: 'integer',
+                            },
+                            max: {
+                              type: 'integer',
+                            },
+                            label: {
+                              type: 'string',
+                            },
+                          },
+                          required: ['min', 'max', 'label'],
+                          additionalProperties: false,
+                        },
+                        count: {
+                          type: 'integer',
+                          minimum: 0,
+                        },
+                      },
+                      required: ['groupDetails', 'count'],
+                      additionalProperties: false,
+                    },
+                  },
                 },
-                required: ['documentClasses'],
+                required: ['documentClasses', 'documentSizes'],
                 additionalProperties: false,
               },
             },

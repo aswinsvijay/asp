@@ -6,6 +6,7 @@ import {
   getStoredDocuments,
   updateStoredDocumentById,
   getDocumentCountByClass,
+  getDocumentCountBySize,
 } from '../db';
 import {
   ServerBadRequestError,
@@ -214,6 +215,9 @@ controllerGroup.add('GetFileStats', async (ctx) => {
   }
 
   return new ServerJSONResponse({
-    data: { documentClasses: await getDocumentCountByClass({ owner: ctx.state.user._id }) },
+    data: {
+      documentClasses: await getDocumentCountByClass({ owner: ctx.state.user._id }),
+      documentSizes: await getDocumentCountBySize({ owner: ctx.state.user._id }),
+    },
   });
 });
