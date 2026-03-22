@@ -15,6 +15,14 @@ from transformers import (
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support, classification_report
 import numpy as np
 
+class_mapping = {
+    0: 'politics',
+    1: 'sport',
+    2: 'technology',
+    3: 'entertainment',
+    4: 'business',
+}
+
 dir = os.path.dirname(os.path.realpath(__file__))
 MODEL_BASE_PATH = pathlib.Path(dir) / 'models'
 dataset_path  = pathlib.Path(dir) / 'data' / 'dataset.csv'
@@ -260,7 +268,6 @@ def train(
     
     print(f"\nTraining complete! Model saved to {output_dir}")
     return trainer, model, tokenizer
-
 
 if __name__ == "__main__":
     train(
