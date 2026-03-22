@@ -1,7 +1,7 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { Spacing, useApiCall, useMemoizedParameters, downloadDocument, uploadFile, rootFolder } from '@/src/utils';
 import { Types } from 'mongoose';
-import { Box, Breadcrumbs, Button, Link } from '@mui/material';
+import { Box, Breadcrumbs, Button, Link, Typography } from '@mui/material';
 import { CustomIcon } from '../CustomIcon.component';
 import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
 import { FileViewerModal } from './FileViewerModal.component';
@@ -92,6 +92,9 @@ export const FilesComponent = () => {
   const openCreateFolderModal = () => {
     setCreateFolderOpen(true);
   };
+
+  const folders = useMemo(() => (response?.data ?? []).filter((item) => item.type === 'folder'), [response?.data]);
+  const documents = useMemo(() => (response?.data ?? []).filter((item) => item.type === 'document'), [response?.data]);
 
   if (loading) {
     return (
@@ -187,63 +190,85 @@ export const FilesComponent = () => {
           </Breadcrumbs>
         </Box>
 
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4">
-          {response.data.map((item, index) => (
-            <div
-              key={index}
-              className="p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 flex flex-col gap-1"
-            >
-              <div className="text-sm font-medium text-gray-900 truncate">{item.name}</div>
-              {item.type === 'document' && (
-                <div className="flex flex-col gap-2">
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={() => {
-                      handleView(item);
-                    }}
-                    className="flex-1"
-                  >
-                    View
-                  </Button>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={() => {
-                      void handleDownload(item);
-                    }}
-                    className="flex-1"
-                  >
-                    <CustomIcon name="Download" />
-                  </Button>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={() => {
-                      handleRedact(item);
-                    }}
-                    className="flex-1"
-                  >
-                    Redact
-                  </Button>
-                </div>
-              )}
-              {item.type === 'folder' && (
-                <div className="flex flex-col gap-2">
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={() => {
-                      setPath((prev) => [...prev, item]);
-                    }}
-                    className="flex-1"
-                  >
-                    Open
-                  </Button>
-                </div>
-              )}
-            </div>
-          ))}
+        <div className="flex flex-col gap-6">
+          {[
+            { label: 'Folders', array: folders },
+            { label: 'Files', array: documents },
+          ].map(({ label, array }) => {
+            return (
+              array.length > 0 && (
+                <Box key={label}>
+                  <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1.5 }}>
+                    {label}
+                  </Typography>
+                  <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4">
+                    {array.map((item) => (
+                      <div
+                        key={item.id}
+                        className="p-3 border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200 flex flex-col gap-1"
+                      >
+                        <div className="text-sm font-medium text-gray-900 truncate">{item.name}</div>
+                        {item.type === 'document' && (
+                          <div className="flex flex-col gap-2">
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              onClick={() => {
+                                handleView(item);
+                              }}
+                              className="flex-1"
+                            >
+                              View
+                            </Button>
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              onClick={() => {
+                                void handleDownload(item);
+                              }}
+                              className="flex-1"
+                            >
+                              <CustomIcon name="Download" />
+                            </Button>
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              onClick={() => {
+                                handleRedact(item);
+                              }}
+                              className="flex-1"
+                            >
+                              Redact
+                            </Button>
+                          </div>
+                        )}
+                        {item.type === 'folder' && (
+                          <div className="flex flex-col gap-2">
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              onClick={() => {
+                                setPath((prev) => [...prev, item]);
+                              }}
+                              className="flex-1"
+                            >
+                              Open
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </Box>
+              )
+            );
+          })}
+
+          {folders.length === 0 && documents.length === 0 && (
+            <Typography color="text.secondary" variant="body2">
+              No items in this folder.
+            </Typography>
+          )}
         </div>
       </div>
     </div>
