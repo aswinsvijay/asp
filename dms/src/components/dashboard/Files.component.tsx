@@ -218,7 +218,7 @@ export const FilesComponent = () => {
                               }}
                               className="flex-1"
                             >
-                              View
+                              <CustomIcon name="RemoveRedEye" />
                             </Button>
                             <Button
                               size="small"
