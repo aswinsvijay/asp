@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -9,19 +9,36 @@ import {
   Typography,
   CircularProgress,
 } from '@mui/material';
-import { downloadDocument } from '@/src/utils';
+import { apiCall, downloadDocument } from '@/src/utils';
 import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
+import { Types } from 'mongoose';
 
 interface FileViewerModalProps {
   selectedFile: ItemInfo;
   onClose: () => void;
 }
 
+const modalViews = [
+  { id: 'content', buttonLabel: 'Content' },
+  { id: 'summmary', buttonLabel: 'Summarize' },
+] as const satisfies { id: string; buttonLabel: string }[];
+
 export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, onClose }) => {
   const effectRanRef = useRef(false);
   const [fileContent, setFileContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [viewIndex, setViewIndex] = useState(0);
+
+  const getNextViewIndex = useCallback(() => (viewIndex + 1) % modalViews.length, [viewIndex]);
+
+  const setNextView = () => {
+    effectRanRef.current = false;
+    setViewIndex(getNextViewIndex());
+  };
+
+  const currentViewId = useMemo(() => modalViews[viewIndex]?.id, [viewIndex]);
 
   useEffect(() => {
     const fetchFileContent = async () => {
@@ -30,15 +47,30 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
       setFileContent(null);
 
       try {
-        const blob = await downloadDocument(selectedFile.id);
+        let contentToSet: string;
 
-        if (!blob) {
-          throw new Error('Invalid file response');
+        if (currentViewId === 'content') {
+          const blob = await downloadDocument(selectedFile.id);
+
+          if (!blob) {
+            throw new Error('Invalid file response');
+          }
+
+          contentToSet = await blob.text();
+        } else if (currentViewId === 'summmary') {
+          const data = await apiCall('SummarizeFile', {
+            pathParams: {
+              fileId: new Types.ObjectId(selectedFile.id),
+            },
+            queryParams: {},
+          });
+
+          contentToSet = JSON.stringify(data);
+        } else {
+          contentToSet = '';
         }
 
-        // Try to get file name from blob if available
-        const content = await blob.text();
-        setFileContent(content);
+        setFileContent(contentToSet);
       } catch (err) {
         console.error('Error fetching file content:', err);
         setError(err instanceof Error ? err.message : 'Failed to load file content');
@@ -51,7 +83,7 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
       effectRanRef.current = true;
       void fetchFileContent();
     }
-  }, [selectedFile.id]);
+  }, [currentViewId, selectedFile.id]);
 
   const handleClose = () => {
     setFileContent(null);
@@ -99,6 +131,9 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
         </Box>
       </DialogContent>
       <DialogActions>
+        <Button onClick={setNextView} variant="contained">
+          {modalViews[getNextViewIndex()]?.buttonLabel}
+        </Button>
         <Button onClick={handleClose} variant="contained">
           Close
         </Button>
