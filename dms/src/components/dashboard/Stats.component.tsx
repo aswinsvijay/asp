@@ -9,7 +9,7 @@ interface ClassStat {
 export const DocumentClassChart = ({ data }: { data: ApiResponse<'GetFileStats'>['data']['documentClasses'] }) => {
   const stats: ClassStat[] = Object.entries(data)
     .map(([label, value]) => ({
-      label,
+      label: label.toUpperCase(),
       value,
     }))
     .sort((a, b) => b.value - a.value);
@@ -54,6 +54,7 @@ export const DocumentClassChart = ({ data }: { data: ApiResponse<'GetFileStats'>
                     height: '100%',
                     width: `${widthPercent.toString()}%`,
                     backgroundColor: '#1976d2',
+                    borderRadius: 1,
                     transition: 'width 250ms ease-in-out',
                   }}
                 />
