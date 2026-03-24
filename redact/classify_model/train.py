@@ -2,7 +2,6 @@
 
 import os
 import pathlib
-from typing import Optional
 import pandas as pd
 from datasets import Dataset, DatasetDict
 from transformers import (
@@ -260,11 +259,6 @@ def train(
     print(f"\nSaving model to {output_dir}...")
     trainer.save_model()
     tokenizer.save_pretrained(output_dir)
-    
-    # Save label mappings
-    import json
-    with open(f"{output_dir}/label_mappings.json", "w") as f:
-        json.dump({"label2id": label2id, "id2label": id2label}, f, indent=2)
     
     print(f"\nTraining complete! Model saved to {output_dir}")
     return trainer, model, tokenizer

@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse, StreamingResponse
 from summary_model.train import summarizer
+from classify_model.train import class_mapping
 from transformers import pipeline
 import io
 import re
@@ -34,6 +35,7 @@ classify_pipeline = pipeline(
     tokenizer=str(classify_model_path),
     truncation=True,
     max_length=512,
+    return_token_type_ids=False,
 )
 
 # https://stackoverflow.com/questions/64154850/convert-dictionary-to-a-json-in-python
@@ -120,11 +122,15 @@ async def classify(file: UploadFile = File(...)):
         # Read PDF file
         text = (await file.read()).decode('utf-8')
 
-        # TODO: run categorizer here
-        category = "misc"
+        # Run document classification pipeline
+        result = classify_pipeline(text)
+        prediction = result[0] if result else {}
+        category_int = prediction.get("label", "unknown")
+        category = class_mapping.get(category_int, "unknown")
+        score = prediction.get("score")
 
         return JSONResponse(
-            content={"data": category}
+            content={"data": {"category": category, "score": score}}
         )
     
     except Exception as e:
