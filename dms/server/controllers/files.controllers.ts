@@ -82,7 +82,7 @@ controllerGroup.add('UploadFile', async (ctx) => {
 
   void (async () => {
     const stream = createReadStream(uploadedFile.path);
-    const documentClass = await classifyDocumentFromStream(stream);
+    const documentClass = (await classifyDocumentFromStream(stream)).category;
 
     await updateStoredDocumentById(document._id, { owner: userId }, { class: documentClass });
   })();
@@ -185,7 +185,7 @@ controllerGroup.add('ClassifyFile', async (ctx) => {
   }
 
   const stream = await getDocumentStream(documentId, { owner: ctx.state.user._id });
-  const documentClass = await classifyDocumentFromStream(stream);
+  const documentClass = (await classifyDocumentFromStream(stream)).category;
 
   await updateStoredDocumentById(documentId, { owner: ctx.state.user._id }, { class: documentClass });
 

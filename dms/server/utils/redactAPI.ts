@@ -17,7 +17,7 @@ export const classifyDocumentFromStream = async (stream: Readable) => {
       headers: formData.getHeaders(),
     });
 
-    return UNSAFE_CAST<{ data: string }>(response.data).data;
+    return UNSAFE_CAST<{ data: { category: string; score: number } }>(response.data).data;
   } catch {
     throw new Error('Upstream server error');
   }
