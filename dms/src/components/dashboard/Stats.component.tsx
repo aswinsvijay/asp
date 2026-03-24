@@ -16,7 +16,7 @@ export const DocumentClassChart = ({ data }: { data: ApiResponse<'GetFileStats'>
 
   const maxValue = Math.max(...stats.map((item) => item.value), 0);
 
-  if (stats.length === 0) {
+  if (stats.length === 0 || maxValue === 0) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100%">
         <Typography color="text.secondary">No classified documents yet</Typography>
@@ -30,7 +30,7 @@ export const DocumentClassChart = ({ data }: { data: ApiResponse<'GetFileStats'>
 
       <Box display="flex" flexDirection="column" gap={Spacing.SMALL}>
         {stats.map((item) => {
-          const widthPercent = maxValue === 0 ? 0 : (item.value / maxValue) * 100;
+          const widthPercent = (item.value / maxValue) * 100;
 
           return (
             <Box key={item.label} display="flex" flexDirection="column" gap={0.5}>
@@ -70,9 +70,8 @@ export const DocumentClassChart = ({ data }: { data: ApiResponse<'GetFileStats'>
 export const DocumentSizeChart = ({ data }: { data: ApiResponse<'GetFileStats'>['data']['documentSizes'] }) => {
   const buckets = [...data].sort((a, b) => a.groupDetails.min - b.groupDetails.min);
   const maxCount = Math.max(...buckets.map((b) => b.count), 0);
-  const total = buckets.reduce((sum, b) => sum + b.count, 0);
 
-  if (buckets.length === 0 || total === 0) {
+  if (buckets.length === 0 || maxCount === 0) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100%">
         <Typography color="text.secondary">No documents yet</Typography>
@@ -86,7 +85,7 @@ export const DocumentSizeChart = ({ data }: { data: ApiResponse<'GetFileStats'>[
 
       <Box display="flex" flexDirection="column" gap={Spacing.SMALL}>
         {buckets.map((bucket) => {
-          const widthPercent = maxCount === 0 ? 0 : (bucket.count / maxCount) * 100;
+          const widthPercent = (bucket.count / maxCount) * 100;
           const label = bucket.groupDetails.label;
 
           return (
@@ -111,6 +110,7 @@ export const DocumentSizeChart = ({ data }: { data: ApiResponse<'GetFileStats'>[
                     height: '100%',
                     width: `${widthPercent.toString()}%`,
                     backgroundColor: '#1976d2',
+                    borderRadius: 1,
                     transition: 'width 250ms ease-in-out',
                   }}
                 />
