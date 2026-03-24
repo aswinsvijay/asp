@@ -8,6 +8,7 @@ import {
   Box,
   Typography,
   CircularProgress,
+  Divider,
 } from '@mui/material';
 import { apiCall, downloadDocument, uploadFile } from '@/src/utils';
 import { EntitySpan, ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
@@ -100,19 +101,28 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ parent, select
         </Box>
       </DialogTitle>
       <DialogContent dividers>
-        <Box sx={{ minHeight: '400px', maxHeight: '70vh', overflow: 'auto' }}>
+        <Box sx={{ height: '70vh', overflow: 'hidden' }}>
           {loading && (
-            <Box display="flex" justifyContent="center" alignItems="center" sx={{ minHeight: '400px' }}>
+            <Box display="flex" justifyContent="center" alignItems="center" sx={{ height: '100%' }}>
               <CircularProgress />
             </Box>
           )}
           {error && (
-            <Box display="flex" justifyContent="center" alignItems="center" sx={{ minHeight: '400px' }}>
+            <Box display="flex" justifyContent="center" alignItems="center" sx={{ height: '100%' }}>
               <Typography color="error">{error}</Typography>
             </Box>
           )}
           {!loading && !error && fileContent !== null && (
-            <>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr', md: '3fr 1fr' },
+                gap: 2,
+                height: '100%',
+                minHeight: 0,
+                overflow: 'hidden',
+              }}
+            >
               <Box
                 component="pre"
                 ref={editorRef}
@@ -126,6 +136,8 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ parent, select
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'break-word',
                   overflow: 'auto',
+                  maxHeight: '100%',
+                  minHeight: 0,
                 }}
               >
                 {(() => {
@@ -142,7 +154,7 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ parent, select
                     toDisplay.push(
                       <span
                         key={index}
-                        style={{ color: entity.redacted ? 'green' : 'red' }}
+                        style={{ color: entity.redacted ? 'green' : 'red', cursor: 'pointer' }}
                         onClick={() => {
                           entity.redacted = !entity.redacted;
                           setEntities(JSON.parse(JSON.stringify(entities)) as typeof entities);
@@ -160,7 +172,57 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ parent, select
                   return toDisplay;
                 })()}
               </Box>
-            </>
+              <Box
+                sx={{
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  borderRadius: 1,
+                  backgroundColor: 'background.paper',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  maxHeight: '100%',
+                  minHeight: 0,
+                }}
+              >
+                <Box sx={{ p: 1.5 }}>
+                  <Typography variant="caption" color="text.secondary">
+                    Click any entity to toggle redaction
+                  </Typography>
+                </Box>
+                <Divider />
+                <Box sx={{ overflow: 'auto', p: 1, flex: 1, minHeight: 0 }}>
+                  {entities.length === 0 ? (
+                    <Typography variant="body2" color="text.secondary">
+                      No entities found.
+                    </Typography>
+                  ) : (
+                    entities.map((entity, index) => (
+                      <Box
+                        key={index}
+                        onClick={() => {
+                          entity.redacted = !entity.redacted;
+                          setEntities(JSON.parse(JSON.stringify(entities)) as typeof entities);
+                        }}
+                        sx={{
+                          p: 1,
+                          mb: 1,
+                          borderRadius: 1,
+                          border: '1px solid',
+                          borderColor: entity.redacted ? 'success.light' : 'error.light',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <Typography variant="body2" sx={{ fontFamily: 'monospace', wordBreak: 'break-word' }}>
+                          <span style={{ textDecoration: entity.redacted ? 'line-through' : 'none' }}>
+                            {fileContent.slice(entity.start, entity.end)}
+                          </span>
+                        </Typography>
+                      </Box>
+                    ))
+                  )}
+                </Box>
+              </Box>
+            </Box>
           )}
         </Box>
       </DialogContent>
