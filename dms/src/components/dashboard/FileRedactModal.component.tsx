@@ -25,7 +25,6 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ parent, select
   const [fileContent, setFileContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [fileName, setFileName] = useState<string>('');
   const [entities, setEntities] = useState<(EntitySpan & { redacted?: boolean })[]>([]);
   const editorRef = useRef<HTMLPreElement>(null);
 
@@ -69,7 +68,6 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ parent, select
   const handleClose = () => {
     setFileContent(null);
     setError(null);
-    setFileName('');
     onClose();
   };
 
@@ -93,11 +91,6 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ parent, select
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h6">{selectedFile.name}</Typography>
-          {fileName && (
-            <Typography variant="body2" color="text.secondary">
-              {fileName}
-            </Typography>
-          )}
         </Box>
       </DialogTitle>
       <DialogContent dividers>

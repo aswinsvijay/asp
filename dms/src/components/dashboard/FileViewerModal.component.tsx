@@ -22,7 +22,6 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
   const [fileContent, setFileContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [fileName, setFileName] = useState<string>('');
 
   useEffect(() => {
     const fetchFileContent = async () => {
@@ -57,7 +56,6 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
   const handleClose = () => {
     setFileContent(null);
     setError(null);
-    setFileName('');
     onClose();
   };
 
@@ -66,11 +64,6 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="h6">{selectedFile.name}</Typography>
-          {fileName && (
-            <Typography variant="body2" color="text.secondary">
-              {fileName}
-            </Typography>
-          )}
         </Box>
       </DialogTitle>
       <DialogContent dividers>
