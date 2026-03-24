@@ -147,7 +147,7 @@ async def summarize(file: UploadFile = File(...)):
         text = (await file.read()).decode('utf-8')
 
         # TODO: run summarizer here
-        summary = summarizer(text)
+        summary = summarizer(text)[0]['summary_text']
 
         return JSONResponse(
             content={"data": summary}
