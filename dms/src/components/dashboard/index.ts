@@ -3,12 +3,12 @@ import { FilesComponent } from './Files.component';
 
 export const DashboardViews = [
   {
-    label: 'Dashboard',
-    Component: StatsComponent,
-  },
-  {
     label: 'Files',
     Component: FilesComponent,
+  },
+  {
+    label: 'Stats',
+    Component: StatsComponent,
   },
   {
     label: 'Redact',

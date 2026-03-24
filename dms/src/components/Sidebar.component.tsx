@@ -2,9 +2,11 @@ import { Box, Button } from '@mui/material';
 import { Spacing } from '../utils';
 
 export const SidebarComponent = <T extends string>({
+  currentView,
   setCurrentView,
   items,
 }: {
+  currentView: T;
   setCurrentView: (value: T) => void;
   items: { label: T }[];
 }) => {
@@ -13,7 +15,7 @@ export const SidebarComponent = <T extends string>({
       {items.map((item) => (
         <Button
           key={item.label}
-          variant="outlined"
+          variant={item.label === currentView ? 'contained' : 'outlined'}
           onClick={() => {
             setCurrentView(item.label);
           }}

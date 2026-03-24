@@ -22,6 +22,7 @@ const Dashboard: React.FC = () => {
       <Box width={'250px'} height={'100%'} bgcolor={Colors.BACKGROUND}>
         <SidebarComponent
           items={DashboardViews}
+          currentView={currentView}
           setCurrentView={(value) => {
             setCurrentView(value);
           }}
