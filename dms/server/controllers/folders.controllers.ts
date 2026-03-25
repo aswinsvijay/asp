@@ -18,10 +18,6 @@ controllerGroup.add('CreateFolder', async (ctx) => {
     throw new ServerUnauthorizedError('Un-authorized');
   }
 
-  if (!ctx.requestBody) {
-    throw new Error('Missing requestBody');
-  }
-
   const folder = await createFolder({
     name: ctx.requestBody.name,
     owner: ctx.state.user._id,

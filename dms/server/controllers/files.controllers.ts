@@ -99,10 +99,6 @@ controllerGroup.add('UpdateFile', async (ctx) => {
     throw new ServerUnauthorizedError('Un-authorized');
   }
 
-  if (!ctx.requestBody) {
-    throw new Error('Missing requestBody');
-  }
-
   const documentId = ctx.pathParams.fileId;
 
   if (!documentId) {
