@@ -7,12 +7,12 @@ export class ControllerGroup<TParameterTypes extends Record<string, OperationInf
     ServerControllerFn<Pick<OperationInfo, 'pathParams' | 'queryParams' | 'requestBody'>, NonNullable<unknown>>
   >;
 
-  constructor(routerConfig: Record<string, OperationInfo>) {
+  constructor(routerConfig: Record<keyof TParameterTypes, OperationInfo>) {
     this.routerConfig = routerConfig;
     this.controllerMap = new Map();
   }
 
-  add<TOperation extends string & keyof TParameterTypes>(
+  add<TOperation extends keyof TParameterTypes & string>(
     operation: TOperation,
     controller: ServerControllerFn<
       Pick<TParameterTypes[TOperation], 'pathParams' | 'queryParams' | 'requestBody'>,
