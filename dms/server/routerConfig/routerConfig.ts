@@ -228,7 +228,16 @@ export default narrowedValue({
               fileId: mongoId,
             },
           },
-          response: {},
+          response: {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'string',
+              },
+            },
+            required: ['data'],
+            additionalProperties: false,
+          },
         },
       },
     },

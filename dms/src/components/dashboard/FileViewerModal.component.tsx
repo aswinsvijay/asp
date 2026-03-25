@@ -58,14 +58,14 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
 
           contentToSet = await blob.text();
         } else if (currentViewId === 'summmary') {
-          const data = await apiCall('SummarizeFile', {
+          const response = await apiCall('SummarizeFile', {
             pathParams: {
               fileId: new Types.ObjectId(selectedFile.id),
             },
             queryParams: {},
           });
 
-          contentToSet = JSON.stringify(data);
+          contentToSet = response.data;
         } else {
           contentToSet = '';
         }
