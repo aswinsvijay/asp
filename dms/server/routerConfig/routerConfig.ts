@@ -447,4 +447,4 @@ export default narrowedValue({
       },
     },
   },
-}) satisfies RouterConfig;
+} satisfies RouterConfig);
