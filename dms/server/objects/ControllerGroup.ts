@@ -1,4 +1,3 @@
-import { RemoveIndexSignature } from '@/src/utils';
 import { ServerControllerFn, OperationInfo } from '../types';
 
 export class ControllerGroup<TParameterTypes extends Record<string, OperationInfo>> {
@@ -13,8 +12,8 @@ export class ControllerGroup<TParameterTypes extends Record<string, OperationInf
     this.controllerMap = new Map();
   }
 
-  add<TOperation extends keyof RemoveIndexSignature<TParameterTypes>>(
-    operation: string & TOperation,
+  add<TOperation extends string & keyof TParameterTypes>(
+    operation: TOperation,
     controller: ServerControllerFn<
       Pick<TParameterTypes[TOperation], 'pathParams' | 'queryParams' | 'requestBody'>,
       TParameterTypes[TOperation]['response']
