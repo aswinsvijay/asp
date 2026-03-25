@@ -126,17 +126,17 @@ export const useApiCall = <T extends keyof CompiledOperations>(
     // TODO: ESLint rule for variable shadowing
     const [apiResponse, apiError] = await tryApiCall(operation, parameters);
 
-    if (apiResponse) {
-      setResult({
-        loading: false,
-        data: apiResponse,
-        error: null,
-      });
-    } else {
+    if (apiError) {
       setResult({
         loading: false,
         data: null,
         error: apiError,
+      });
+    } else {
+      setResult({
+        loading: false,
+        data: apiResponse,
+        error: null,
       });
     }
   }, [defaultState, operation, parameters]);

@@ -1,6 +1,8 @@
 import { HttpJsonSchemaOrgDraft04Schema, RouterConfig } from '../schemas/routerConfig/type';
 import { narrowedValue } from '../../src/utils/typeUtils';
 
+const tsNonNullable = { tsType: 'NonNullable<unknown>' } satisfies HttpJsonSchemaOrgDraft04Schema;
+
 export const mongoId = {
   type: 'string',
   'x-mongo-id': true,
@@ -90,7 +92,7 @@ export default narrowedValue({
           queryParams: {},
           requestBody: {
             contentType: 'multipart/form-data',
-            schema: {},
+            schema: tsNonNullable,
           },
           response: {
             type: 'object',
@@ -215,7 +217,7 @@ export default narrowedValue({
               fileId: mongoId,
             },
           },
-          response: {},
+          response: tsNonNullable,
         },
       },
     },
