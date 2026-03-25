@@ -48,6 +48,7 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ parent, select
         const entitiesResponse = await apiCall('GetRedactionEntities', {
           pathParams: { fileId: new Types.ObjectId(selectedFile.id) },
           queryParams: {},
+          requestBody: null,
         });
 
         setEntities(entitiesResponse.data);

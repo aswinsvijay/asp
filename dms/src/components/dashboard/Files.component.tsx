@@ -32,6 +32,7 @@ export const FilesComponent = () => {
           parentId: deepestParent,
         },
         queryParams: {},
+        requestBody: null,
       }),
       [deepestParent]
     )

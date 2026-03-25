@@ -63,6 +63,7 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
               fileId: new Types.ObjectId(selectedFile.id),
             },
             queryParams: {},
+            requestBody: null,
           });
 
           contentToSet = response.data;

@@ -21,10 +21,10 @@ export default async function compileRouterTypes() {
           },
           pathParams: operationInfo.pathParams,
           queryParams: operationInfo.queryParams,
-          requestBody: operationInfo.requestBody?.schema ?? {},
+          requestBody: operationInfo.requestBody?.schema ?? { type: 'null' },
           response: operationInfo.response,
         },
-        required: ['path', 'method', 'pathParams', 'queryParams', 'response'],
+        required: ['path', 'method', 'pathParams', 'queryParams', 'requestBody', 'response'],
         additionalProperties: false,
       };
 

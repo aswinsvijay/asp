@@ -7,6 +7,7 @@ export const downloadDocument = async (documentId: string) => {
       fileId: new Types.ObjectId(documentId),
     },
     queryParams: {},
+    requestBody: null,
     requestConfig: {
       responseType: 'blob',
     },

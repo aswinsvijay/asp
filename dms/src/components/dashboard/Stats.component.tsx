@@ -134,6 +134,7 @@ export const StatsComponent = () => {
       () => ({
         pathParams: {},
         queryParams: {},
+        requestBody: null,
       }),
       []
     )
