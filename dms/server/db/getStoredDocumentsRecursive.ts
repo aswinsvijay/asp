@@ -1,19 +1,17 @@
 import { Types } from 'mongoose';
 import { Folder, StoredDocument } from './models';
-import { rootFolder } from '../../src/utils';
 
 export const getStoredDocumentsRecursive = async (args: { parent: Types.ObjectId; owner: Types.ObjectId }) => {
   const foldersCollection = Folder.collection.name;
   const documentsCollection = StoredDocument.collection.name;
 
-  const isRootFolder = args.parent.toString() === rootFolder.toString();
-
   const results = await Folder.aggregate<{ documents: StoredDocument[] }>()
+    // Gets all child folders of given parent
     .match({
-      // Get all folders if specified parent is the root folder
-      _id: isRootFolder ? { $exists: true } : args.parent,
+      parent: args.parent,
       owner: args.owner,
     })
+    // Recursive lookup to get all subfolders
     .graphLookup({
       from: foldersCollection,
       startWith: '$_id',
@@ -25,6 +23,24 @@ export const getStoredDocumentsRecursive = async (args: { parent: Types.ObjectId
     .project({
       folderIds: { $concatArrays: [['$_id'], '$descendants._id'] },
     })
+    // Collect folder IDs into a single record
+    .group({
+      _id: null,
+      nestedFolderIds: { $push: '$folderIds' },
+    })
+    .project({
+      _id: 0,
+      folderIds: {
+        $reduce: {
+          input: '$nestedFolderIds',
+          // Also include the given parent, otherwise documents that
+          // are direct children are not included
+          initialValue: [args.parent],
+          in: { $concatArrays: ['$$value', '$$this'] },
+        },
+      },
+    })
+    // Find all documents under the given folder IDs
     .lookup({
       from: documentsCollection,
       let: { folderIds: '$folderIds' },
@@ -32,7 +48,14 @@ export const getStoredDocumentsRecursive = async (args: { parent: Types.ObjectId
         {
           $match: {
             $expr: {
-              $and: [{ $eq: ['$owner', args.owner] }, { $in: ['$parent', '$$folderIds'] }],
+              $and: [
+                {
+                  $in: ['$parent', '$$folderIds'],
+                },
+                {
+                  $eq: ['$owner', args.owner],
+                },
+              ],
             },
           },
         },
