@@ -5,10 +5,7 @@ export class ControllerGroup<TParameterTypes extends Record<string, OperationInf
   public routerConfig: Record<string, OperationInfo>;
   public controllerMap: Map<
     string,
-    ServerControllerFn<
-      { pathParams: NonNullable<unknown>; queryParams: NonNullable<unknown>; requestBody: NonNullable<unknown> },
-      NonNullable<unknown>
-    >
+    ServerControllerFn<Pick<OperationInfo, 'pathParams' | 'queryParams' | 'requestBody'>, NonNullable<unknown>>
   >;
 
   constructor(routerConfig: Record<string, OperationInfo>) {
@@ -19,11 +16,7 @@ export class ControllerGroup<TParameterTypes extends Record<string, OperationInf
   add<TOperation extends keyof RemoveIndexSignature<TParameterTypes>>(
     operation: string & TOperation,
     controller: ServerControllerFn<
-      {
-        pathParams: TParameterTypes[TOperation]['pathParams'];
-        queryParams: TParameterTypes[TOperation]['queryParams'];
-        requestBody: TParameterTypes[TOperation]['requestBody'];
-      },
+      Pick<TParameterTypes[TOperation], 'pathParams' | 'queryParams' | 'requestBody'>,
       TParameterTypes[TOperation]['response']
     >
   ) {

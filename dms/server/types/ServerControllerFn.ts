@@ -6,6 +6,7 @@ export type ServerControllerFn<
   T extends {
     pathParams: NonNullable<unknown>;
     queryParams: NonNullable<unknown>;
+    requestBody: NonNullable<unknown> | null;
   },
   TResponse extends NonNullable<unknown>,
 > = (
