@@ -1,5 +1,5 @@
 {
-  "name": "My workflow",
+  "name": "Bulk process email",
   "nodes": [
     {
       "parameters": {
@@ -64,7 +64,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "// Add a new field called 'myNewField' to the JSON of the item\nconst attach = ($input.item.binary ?? {});\n\nreturn {\n  sub: $input.item.json.subject,\n  attach,\n};"
+        "jsCode": "// Add a new field called 'myNewField' to the JSON of the item\nconst attach = ($input.item.binary ?? {});\n\nreturn Object.keys(attach).length ? {\n  sub: $input.item.json.subject,\n  attach,\n} : null;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -325,7 +325,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "75c33b32-e72e-4362-a9af-a884ff2e6aa1",
+  "versionId": "2de4075c-6cec-41dd-9cfb-53dac39d3358",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "716fb4239b9b454a4142ac7c148b16e88dcd29eb15d5ff4ba01c6fb846b20a03"
