@@ -140,20 +140,6 @@
     },
     {
       "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "// Add a new field called 'myNewField' to the JSON of the item\n$input.item.binary = Object.fromEntries([\n  ['file', $input.item.json.file]\n]);\n\nreturn $input.item;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1488,
-        0
-      ],
-      "id": "f2652226-65d1-4fd5-8556-93fd61cfb356",
-      "name": "Code in JavaScript"
-    },
-    {
-      "parameters": {
         "method": "POST",
         "url": "={{ $('Setup variables').first().json.dmsHost }}/api/files",
         "authentication": "genericCredentialType",
@@ -197,7 +183,7 @@
           "parameters": [
             {
               "name": "parentId",
-              "value": "={{ $('Code in JavaScript').item.json.folderId }}"
+              "value": "={{ $('Convert back to n8n binary property').item.json.folderId }}"
             }
           ]
         },
@@ -217,6 +203,20 @@
           "name": "DMS admin account"
         }
       }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Add a new field called 'myNewField' to the JSON of the item\n$input.item.binary = Object.fromEntries([\n  ['file', $input.item.json.file]\n]);\n\nreturn $input.item;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1488,
+        0
+      ],
+      "id": "f2652226-65d1-4fd5-8556-93fd61cfb356",
+      "name": "Convert back to n8n binary property"
     }
   ],
   "pinData": {},
@@ -291,18 +291,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code in JavaScript": {
-      "main": [
-        [
-          {
-            "node": "Upload files",
+            "node": "Convert back to n8n binary property",
             "type": "main",
             "index": 0
           }
@@ -319,13 +308,24 @@
           }
         ]
       ]
+    },
+    "Convert back to n8n binary property": {
+      "main": [
+        [
+          {
+            "node": "Upload files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "4632fb23-02c0-4f7a-b744-8f68ff56727c",
+  "versionId": "75c33b32-e72e-4362-a9af-a884ff2e6aa1",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "716fb4239b9b454a4142ac7c148b16e88dcd29eb15d5ff4ba01c6fb846b20a03"
