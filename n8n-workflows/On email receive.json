@@ -1,0 +1,258 @@
+{
+  "name": "On email receive",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "includeDrafts": true
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1e51ac3f-8f11-4169-8702-fa14c4c4ba47",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "V03vOlmxkDMD0Ler",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  dmsHost: 'http://host.docker.internal:3000',\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        0
+      ],
+      "id": "f1e5bf0c-6c1f-413a-a392-cc355d9b38a0",
+      "name": "Setup variables"
+    },
+    {
+      "parameters": {
+        "jsCode": "const attach = Object.values($('Gmail Trigger').item.binary ?? {});\nconst textAttach = attach.filter(x => x.fileExtension === 'txt');\n\nreturn textAttach.length ? {textAttach} : null;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        368,
+        0
+      ],
+      "id": "e601e59d-ab0a-4e52-bca4-e7b5d9eda721",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "jsCode": "const x = []\n\n// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $('Code in JavaScript').first().json.textAttach) {\n  x.push({binary: Object.fromEntries([['file', item]])})\n}\n\nreturn x;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        768,
+        0
+      ],
+      "id": "40c974d7-2c6b-475e-bd8d-6708f7f3d4d9",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Setup variables').item.json.dmsHost }}/api/folders",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ $('Gmail Trigger').item.json.subject }}"
+            },
+            {
+              "name": "parentId",
+              "value": "69c4ca3e8ba5dce101d085f9"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        560,
+        0
+      ],
+      "id": "9c503f0a-c3c6-49a9-9385-ec2faa3704d3",
+      "name": "Create folder",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "NKbWzhxUUO60xBYh",
+          "name": "DMS admin account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Setup variables').item.json.dmsHost }}/api/files",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "file"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        976,
+        0
+      ],
+      "id": "154fdfcb-4df6-4f13-b230-0e32aa5e91a7",
+      "name": "Upload files",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "NKbWzhxUUO60xBYh",
+          "name": "DMS admin account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $('Setup variables').item.json.dmsHost }}/api/files/{{ $json.data.id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "parentId",
+              "value": "={{ $('Create folder').item.json.data.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1184,
+        0
+      ],
+      "id": "5fc2ca1f-3485-460d-8c3f-1cfce1e2b145",
+      "name": "Move files to folder",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "NKbWzhxUUO60xBYh",
+          "name": "DMS admin account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Setup variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setup variables": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Create folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Upload files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create folder": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload files": {
+      "main": [
+        [
+          {
+            "node": "Move files to folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "aad31d5c-978a-4440-a511-4415386fc50f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "716fb4239b9b454a4142ac7c148b16e88dcd29eb15d5ff4ba01c6fb846b20a03"
+  },
+  "id": "agA4DlEtAK3yOLtA",
+  "tags": []
+}
