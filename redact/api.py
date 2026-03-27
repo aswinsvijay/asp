@@ -1,8 +1,7 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse, StreamingResponse
-from summary_model.no_train import summarizer
 from classify_model.train import class_mapping
-from transformers import pipeline
+from transformers import pipeline, AutoTokenizer, AutoModelForSeq2SeqLM
 import io
 import re
 from typing import List
@@ -38,9 +37,18 @@ classify_pipeline = pipeline(
     return_token_type_ids=False,
 )
 
-summary_model_path = "./summary_model/models/summary_model/checkpoint-250"
+summary_model_path = "./summary_model/models/summary_model"
 if not os.path.exists(summary_model_path):
     raise FileNotFoundError("Model not found")
+
+summary_tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-cnn")
+summary_model = AutoModelForSeq2SeqLM.from_pretrained("facebook/bart-large-cnn")
+
+summary_pipeline = pipeline(
+    task="summarization",
+    model=summary_model,
+    tokenizer=summary_tokenizer,
+)
 
 # https://stackoverflow.com/questions/64154850/convert-dictionary-to-a-json-in-python
 class CustomEncoder(json.JSONEncoder):
@@ -150,8 +158,7 @@ async def summarize(file: UploadFile = File(...)):
         # Read PDF file
         text = (await file.read()).decode('utf-8')
 
-        # TODO: run summarizer here
-        summary = summarizer(text)[0]['summary_text']
+        summary = summary_pipeline(text)[0]['summary_text']
 
         return JSONResponse(
             content={"data": summary}
