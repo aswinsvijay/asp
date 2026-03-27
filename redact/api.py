@@ -1,6 +1,6 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse, StreamingResponse
-from summary_model.train import old_summarizer as summarizer
+from summary_model.no_train import summarizer
 from classify_model.train import class_mapping
 from transformers import pipeline
 import io
