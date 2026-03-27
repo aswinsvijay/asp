@@ -209,6 +209,9 @@ export const FilesComponent = () => {
         >
           <CustomIcon name="DatasetLinked" />
         </Button>
+        <Button variant="contained" color="info" title="Summarize Folder">
+          <CustomIcon name="AutoAwesome" />
+        </Button>
       </Box>
 
       <div className="flex flex-col flex-1 px-4 py-2 gap-2 overflow-auto">
