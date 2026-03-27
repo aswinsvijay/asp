@@ -38,6 +38,10 @@ classify_pipeline = pipeline(
     return_token_type_ids=False,
 )
 
+summary_model_path = "./summary_model/models/summary_model/checkpoint-250"
+if not os.path.exists(summary_model_path):
+    raise FileNotFoundError("Model not found")
+
 # https://stackoverflow.com/questions/64154850/convert-dictionary-to-a-json-in-python
 class CustomEncoder(json.JSONEncoder):
     def default(self, obj):
