@@ -188,6 +188,16 @@ export const FilesComponent = () => {
         <Button variant="contained" onClick={openCreateFolderModal} title="Create Folder">
           <CustomIcon name="CreateNewFolder" />
         </Button>
+        <Button
+          variant="contained"
+          color="info"
+          onClick={() => {
+            void navigator.clipboard.writeText(deepestParent.toString());
+          }}
+          title="Copy Folder ID"
+        >
+          <CustomIcon name="DatasetLinked" />
+        </Button>
       </Box>
 
       <div className="flex flex-col flex-1 px-4 py-2 gap-2 overflow-auto">
