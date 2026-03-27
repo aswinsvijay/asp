@@ -12,6 +12,10 @@ from transformers import (
     Seq2SeqTrainingArguments,
 )
 
+from transformers import pipeline
+
+old_summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+
 
 MODEL_NAME = "facebook/bart-large-cnn"
 DATASET_NAME = "cnn_dailymail"
