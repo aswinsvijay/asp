@@ -11,7 +11,7 @@ from transformers import (
     Trainer,
     DataCollatorWithPadding
 )
-from sklearn.metrics import accuracy_score, precision_recall_fscore_support, classification_report
+from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 import numpy as np
 
 class_mapping = {
@@ -26,17 +26,9 @@ dir = os.path.dirname(os.path.realpath(__file__))
 MODEL_BASE_PATH = pathlib.Path(dir) / 'models'
 dataset_path  = pathlib.Path(dir) / 'data' / 'dataset.csv'
 
-def load_dataset_from_kaggle(
-    text_column: str = "text",
-    label_column: str = "label"
-) -> DatasetDict:
+def load_dataset() -> DatasetDict:
     """
-    Load dataset from Kaggle or local CSV file.
-    
-    Args:
-        dataset_path: Path to CSV file. If None, tries to load from Kaggle.
-        text_column: Name of the column containing text
-        label_column: Name of the column containing labels
+    Load dataset from local CSV file.
     
     Returns:
         DatasetDict with train and test splits
@@ -92,7 +84,7 @@ def preprocess_dataset(dataset, tokenizer, text_column: str, label_column: str, 
     Returns:
         Preprocessed dataset
     """
-    def tokenize_function(examples):
+    def tokenize(examples):
         # Tokenize texts
         texts = examples[text_column]
         if isinstance(texts, str):
@@ -115,7 +107,7 @@ def preprocess_dataset(dataset, tokenizer, text_column: str, label_column: str, 
         
         return tokenized
     
-    return dataset.map(tokenize_function, batched=True, remove_columns=dataset.column_names)
+    return dataset.map(tokenize, batched=True, remove_columns=dataset.column_names)
 
 
 def compute_metrics(eval_pred):
@@ -137,27 +129,24 @@ def compute_metrics(eval_pred):
 
 
 def train(
-    model_name: str = "distilbert-base-uncased",
-    output_dir: str = "./models/classify_model",
-    num_epochs: int = 3,
-    batch_size: int = 16,
-    learning_rate: float = 2e-5,
+    model_name: str,
+    output_dir: str,
+    num_epochs: int,
+    batch_size: int,
+    learning_rate: float,
 ):
     """
     Train a text classification model.
     
     Args:
-        dataset_path: Path to CSV dataset file
         model_name: Hugging Face model name
         output_dir: Directory to save the model
         num_epochs: Number of training epochs
         batch_size: Training batch size
         learning_rate: Learning rate
-        text_column: Name of text column in dataset
-        label_column: Name of label column in dataset
     """
     # Load dataset
-    dataset_dict, text_col, label_col = load_dataset_from_kaggle()
+    dataset_dict, text_col, label_col = load_dataset()
     
     # Get unique labels and create mappings
     train_labels = dataset_dict['train'][label_col]
@@ -226,7 +215,7 @@ def train(
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=test_dataset,
-        tokenizer=tokenizer,
+        processing_class=tokenizer,
         data_collator=data_collator,
         compute_metrics=compute_metrics,
     )
@@ -241,19 +230,6 @@ def train(
     print("\nTest Set Results:")
     for key, value in eval_results.items():
         print(f"  {key}: {value:.4f}")
-    
-    # Get detailed classification report
-    predictions = trainer.predict(test_dataset)
-    y_pred = np.argmax(predictions.predictions, axis=1)
-    y_true = predictions.label_ids
-    
-    print("\nDetailed Classification Report:")
-    print(classification_report(
-        y_true,
-        y_pred,
-        target_names=[id2label[i] for i in range(num_labels)],
-        digits=4
-    ))
     
     # Save the model
     print(f"\nSaving model to {output_dir}...")
