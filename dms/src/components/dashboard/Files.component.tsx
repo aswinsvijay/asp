@@ -181,7 +181,18 @@ export const FilesComponent = () => {
         </Breadcrumbs>
       </Box>
 
-      <Box display={'flex'} p={Spacing.SMALL} gap={Spacing.SMALL} className="flex-shrink-0 border-b border-gray-200">
+      <Box
+        display={'flex'}
+        p={Spacing.SMALL}
+        gap={Spacing.SMALL}
+        className="flex-grow-0 flex-shrink-0 border-b border-gray-200"
+        sx={{
+          '& > button': {
+            minWidth: 'unset',
+            padding: 0.5,
+          },
+        }}
+      >
         <Button variant="contained" onClick={handleFileUpload} title="Upload File">
           <CustomIcon name="Upload" />
         </Button>
