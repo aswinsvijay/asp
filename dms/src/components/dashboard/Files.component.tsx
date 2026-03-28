@@ -7,10 +7,11 @@ import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
 import { FileViewerModal } from './FileViewerModal.component';
 import { FileRedactModal } from './FileRedactModal.component';
 import { CreateFolderModal } from './CreateFolderModal.component';
+import { FolderSummarizeModal } from './FolderSummarizeModal.component';
 
 export const FilesComponent = () => {
   const [path, setPath] = useState<ItemInfo[]>([]);
-  const [widget, setWidget] = useState<'view' | 'redact' | null>(null);
+  const [widget, setWidget] = useState<'view' | 'redact' | 'folder_summarize' | null>(null);
   const [selectedFile, setSelectedFile] = useState<ItemInfo | null>(null);
   const [createFolderOpen, setCreateFolderOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -90,6 +91,14 @@ export const FilesComponent = () => {
     }
   };
 
+  const handleSummarizeFolder = () => {
+    try {
+      setWidget('folder_summarize');
+    } catch (redactError) {
+      console.error('Error summarizing folder:', redactError);
+    }
+  };
+
   const openCreateFolderModal = () => {
     setCreateFolderOpen(true);
   };
@@ -126,17 +135,26 @@ export const FilesComponent = () => {
         }}
       />
 
+      {widget === 'folder_summarize' && (
+        <FolderSummarizeModal
+          folderId={deepestParent}
+          onClose={() => {
+            setWidget(null);
+          }}
+        />
+      )}
+
       {selectedFile && (
         <>
-          {widget === 'view' ? (
+          {widget === 'view' && (
             <FileViewerModal
               selectedFile={selectedFile}
               onClose={() => {
                 setWidget(null);
               }}
             />
-          ) : null}
-          {widget === 'redact' ? (
+          )}
+          {widget === 'redact' && (
             <FileRedactModal
               parent={deepestParent}
               selectedFile={selectedFile}
@@ -144,7 +162,7 @@ export const FilesComponent = () => {
                 setWidget(null);
               }}
             />
-          ) : null}
+          )}
         </>
       )}
 
@@ -209,7 +227,7 @@ export const FilesComponent = () => {
         >
           <CustomIcon name="DatasetLinked" />
         </Button>
-        <Button variant="contained" color="info" title="Summarize Folder">
+        <Button variant="contained" color="info" onClick={handleSummarizeFolder} title="Summarize Folder">
           <CustomIcon name="AutoAwesome" />
         </Button>
       </Box>
