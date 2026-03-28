@@ -3,9 +3,8 @@ import { Folder, StoredDocument } from './models';
 
 export const getStoredDocumentsRecursive = async (args: { parent: Types.ObjectId; owner: Types.ObjectId }) => {
   const foldersCollection = Folder.collection.name;
-  const documentsCollection = StoredDocument.collection.name;
 
-  const results = await Folder.aggregate<{ documents: StoredDocument[] }>()
+  const results = await Folder.aggregate<{ folderIds: Types.ObjectId[] }>()
     // Gets all child folders of given parent
     .match({
       parent: args.parent,
@@ -33,36 +32,30 @@ export const getStoredDocumentsRecursive = async (args: { parent: Types.ObjectId
       folderIds: {
         $reduce: {
           input: '$nestedFolderIds',
-          // Also include the given parent, otherwise documents that
-          // are direct children are not included
-          initialValue: [args.parent],
+          initialValue: [],
           in: { $concatArrays: ['$$value', '$$this'] },
         },
       },
-    })
-    // Find all documents under the given folder IDs
-    .lookup({
-      from: documentsCollection,
-      let: { folderIds: '$folderIds' },
-      pipeline: [
+    });
+
+  const folderIds = results[0]?.folderIds ?? [];
+
+  // Also include the given parent, otherwise documents that
+  // are direct children are not included
+  folderIds.push(args.parent);
+
+  const documents = await StoredDocument.aggregate<StoredDocument>().match({
+    $expr: {
+      $and: [
         {
-          $match: {
-            $expr: {
-              $and: [
-                {
-                  $in: ['$parent', '$$folderIds'],
-                },
-                {
-                  $eq: ['$owner', args.owner],
-                },
-              ],
-            },
-          },
+          $in: ['$parent', folderIds],
+        },
+        {
+          $eq: ['$owner', args.owner],
         },
       ],
-      as: 'documents',
-    })
-    .project({ _id: 0, documents: 1 });
+    },
+  });
 
-  return results.flatMap((res) => res.documents);
+  return documents;
 };
