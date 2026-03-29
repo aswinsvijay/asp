@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -18,27 +18,12 @@ interface FileViewerModalProps {
   onClose: () => void;
 }
 
-const modalViews = [
-  { id: 'content', buttonLabel: 'Content' },
-  { id: 'summmary', buttonLabel: 'Summarize' },
-] as const satisfies { id: string; buttonLabel: string }[];
-
 export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, onClose }) => {
   const effectRanRef = useRef(false);
   const [fileContent, setFileContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const [viewIndex, setViewIndex] = useState(0);
-
-  const getNextViewIndex = useCallback(() => (viewIndex + 1) % modalViews.length, [viewIndex]);
-
-  const setNextView = () => {
-    effectRanRef.current = false;
-    setViewIndex(getNextViewIndex());
-  };
-
-  const currentViewId = useMemo(() => modalViews[viewIndex]?.id, [viewIndex]);
+  const [isSummarizing, setIsSummarizing] = useState(false);
 
   useEffect(() => {
     const fetchFileContent = async () => {
@@ -49,7 +34,7 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
       try {
         let contentToSet: string;
 
-        if (currentViewId === 'content') {
+        if (!isSummarizing) {
           const blob = await downloadDocument(selectedFile.id);
 
           if (!blob) {
@@ -57,7 +42,7 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
           }
 
           contentToSet = await blob.text();
-        } else if (currentViewId === 'summmary') {
+        } else {
           const response = await apiCall('SummarizeFile', {
             pathParams: {
               fileId: new Types.ObjectId(selectedFile.id),
@@ -67,8 +52,6 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
           });
 
           contentToSet = response.data;
-        } else {
-          contentToSet = '';
         }
 
         setFileContent(contentToSet);
@@ -84,7 +67,7 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
       effectRanRef.current = true;
       void fetchFileContent();
     }
-  }, [currentViewId, selectedFile.id]);
+  }, [isSummarizing, selectedFile.id]);
 
   const handleClose = () => {
     setFileContent(null);
@@ -132,8 +115,15 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={setNextView} variant="contained">
-          {modalViews[getNextViewIndex()]?.buttonLabel}
+        <Button
+          onClick={() => {
+            if (!isSummarizing) {
+              setIsSummarizing(true);
+            }
+          }}
+          variant="contained"
+        >
+          {isSummarizing ? 'Summarize again' : 'Summarize'}
         </Button>
         <Button onClick={handleClose} variant="contained">
           Close
