@@ -158,7 +158,20 @@ async def summarize(file: UploadFile = File(...)):
         # Read PDF file
         text = (await file.read()).decode('utf-8')
 
-        summary = summary_pipeline(text)[0]['summary_text']
+        # Split the input text into chunks of up to 500 words each
+        words = text.split()
+        text_chunks = []
+        chunk_size = 500
+        for i in range(0, len(words), chunk_size):
+            chunk = " ".join(words[i:i + chunk_size])
+            text_chunks.append(chunk)
+
+        summary = ' '. join([
+            *map(
+                lambda text: summary_pipeline(text)[0]['summary_text'],
+                text_chunks
+            )
+        ])
 
         return JSONResponse(
             content={"data": summary}
