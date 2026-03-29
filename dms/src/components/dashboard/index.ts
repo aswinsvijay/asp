@@ -1,5 +1,6 @@
 import { StatsComponent } from './Stats.component';
 import { FilesComponent } from './Files.component';
+import { RedactComponent } from './Redact.component';
 
 export const DashboardViews = [
   {
@@ -12,7 +13,7 @@ export const DashboardViews = [
   },
   {
     label: 'Redact',
-    Component: () => null,
+    Component: RedactComponent,
   },
 ] as const satisfies {
   label: string;
