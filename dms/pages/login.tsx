@@ -7,17 +7,18 @@ import { AxiosError } from 'axios';
 const Login: React.FC = () => {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [error, setError] = React.useState<string | null>(null);
+  const [message, setMessage] = React.useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    setError(null);
+    setMessage(null);
   }, [username, password]);
 
   const handleSubmit = async () => {
     // TODO: ESLint to enforce spacing
     try {
       await AuthUtils.login(username, password);
+      setMessage({ type: 'success', text: 'Login success, redirecting...' });
       await router.push('/dashboard');
     } catch (error) {
       let errorMessage = '';
@@ -27,7 +28,7 @@ const Login: React.FC = () => {
       }
 
       console.error(error);
-      setError(errorMessage || 'Failed to login');
+      setMessage({ type: 'error', text: errorMessage || 'Failed to login' });
     }
   };
 
@@ -65,8 +66,8 @@ const Login: React.FC = () => {
             fullWidth
             required
           />
-          <Button type="submit" color={error ? 'error' : 'primary'} variant="contained" fullWidth>
-            {error ?? 'Login'}
+          <Button type="submit" color={message?.type ?? 'primary'} variant="contained" fullWidth>
+            {message?.text ?? 'Login'}
           </Button>
         </Stack>
       </Box>
