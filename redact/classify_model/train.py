@@ -15,11 +15,11 @@ from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 import numpy as np
 
 class_mapping = {
-    0: 'politics',
-    1: 'sport',
-    2: 'technology',
-    3: 'entertainment',
-    4: 'business',
+    '0': 'politics',
+    '1': 'sport',
+    '2': 'technology',
+    '3': 'entertainment',
+    '4': 'business',
 }
 
 dir = os.path.dirname(os.path.realpath(__file__))

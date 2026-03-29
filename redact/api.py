@@ -137,8 +137,8 @@ async def classify(file: UploadFile = File(...)):
         # Run document classification pipeline
         result = classify_pipeline(text)
         prediction = result[0] if result else {}
-        category_int = prediction.get("label", "unknown")
-        category = class_mapping.get(category_int, "unknown")
+        category_id_str = prediction.get("label", "")
+        category = class_mapping.get(category_id_str, "")
         score = prediction.get("score")
 
         return JSONResponse(
