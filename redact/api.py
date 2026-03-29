@@ -70,26 +70,50 @@ def redact_pii(text: str, entities: List[dict]) -> str:
             )
     return redacted_text
 
+def chunk_text(text: str, chunk_size: int):
+    # Split the input text into chunks of up to 500 words each
+    words = text.split(' ')
+    text_chunks = []
+    for i in range(0, len(words), chunk_size):
+        chunk = " ".join(words[i:i + chunk_size])
+        text_chunks.append(chunk)
+
+    return text_chunks
+
 @app.post("/redaction-entities")
 async def get_redaction_entities(file: UploadFile = File(...)):
     try:
         # Read PDF file
         text = (await file.read()).decode('utf-8')
 
-        # Detect PII entities
-        entities = ner_pipeline(text)
+        text_chunks = chunk_text(text, 500)
+        nested_entities = [
+            *map(
+                lambda text: ner_pipeline(text),
+                text_chunks,
+            )
+        ]
+
+        offset = 0
+        result = []
+        for i, (text, entities) in enumerate(zip(text_chunks, nested_entities)):
+            for e in entities:
+                e['start'] += offset+i
+                e['end'] += offset+i
+                result.append(e)
+            offset += len(text)
 
         # replace np.float32 with python float
-        entities = json.loads(json.dumps(entities, cls=CustomEncoder))
+        result = json.loads(json.dumps(result, cls=CustomEncoder))
 
         # do not include general text
-        entities = [*filter(
+        result = [*filter(
             lambda entity: '0' not in entity['entity_group'],
-            entities
+            result
         )]
 
         return JSONResponse(
-            content={"data": entities}
+            content={"data": result}
         )
 
     except Exception as e:
@@ -158,15 +182,9 @@ async def summarize(file: UploadFile = File(...)):
         # Read PDF file
         text = (await file.read()).decode('utf-8')
 
-        # Split the input text into chunks of up to 500 words each
-        words = text.split()
-        text_chunks = []
-        chunk_size = 500
-        for i in range(0, len(words), chunk_size):
-            chunk = " ".join(words[i:i + chunk_size])
-            text_chunks.append(chunk)
+        text_chunks = chunk_text(text, 500)
 
-        summary = ' '. join([
+        summary = ' '.join([
             *map(
                 lambda text: summary_pipeline(text)[0]['summary_text'],
                 text_chunks
