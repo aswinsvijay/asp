@@ -41,3 +41,25 @@ export const uploadFile = async (file: File, parentId: Types.ObjectId) => {
     },
   });
 };
+
+export const uploadTempFile = async (file: File, parentId: Types.ObjectId) => {
+  const formData = new FormData();
+
+  formData.append('file', file);
+
+  const response = await apiCall('UploadTempFile', {
+    pathParams: {},
+    queryParams: {},
+    requestBody: formData,
+  });
+
+  await apiCall('UpdateFile', {
+    pathParams: {
+      fileId: new Types.ObjectId(response.data.id),
+    },
+    queryParams: {},
+    requestBody: {
+      parentId,
+    },
+  });
+};
