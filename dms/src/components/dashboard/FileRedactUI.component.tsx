@@ -13,6 +13,7 @@ import {
 import { apiCall, assertUnreachable, downloadDocument, uploadFile } from '@/src/utils';
 import { EntitySpan, ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
 import { Types } from 'mongoose';
+import { useSnackbar } from 'notistack';
 
 interface FileRedactModalProps {
   parent: Types.ObjectId;
@@ -43,6 +44,7 @@ export const FileRedactUI: React.FC<FileRedactModalProps & { style: 'modal' | 'i
   file,
   onClose,
 }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const effectRanRef = useRef(false);
   const [fileContent, setFileContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -133,7 +135,7 @@ export const FileRedactUI: React.FC<FileRedactModalProps & { style: 'modal' | 'i
 
     await uploadFile(file, parent);
 
-    handleClose();
+    enqueueSnackbar({ message: 'Successfully saved the redacted file', variant: 'success' });
   };
 
   const redactUI = (
