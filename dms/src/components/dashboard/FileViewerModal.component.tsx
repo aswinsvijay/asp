@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -9,20 +9,22 @@ import {
   Typography,
   CircularProgress,
 } from '@mui/material';
-import { apiCall, downloadDocument } from '@/src/utils';
+import { apiCall, downloadDocument, uploadFile } from '@/src/utils';
 import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
 import { Types } from 'mongoose';
 
 interface FileViewerModalProps {
+  parent: Types.ObjectId;
   selectedFile: ItemInfo;
   onClose: () => void;
 }
 
-export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, onClose }) => {
+export const FileViewerModal: React.FC<FileViewerModalProps> = ({ parent, selectedFile, onClose }) => {
   const [fileContent, setFileContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSummarizing, setIsSummarizing] = useState(0);
+  const editorRef = useRef<HTMLPreElement>(null);
 
   useEffect(() => {
     const fetchFileContent = async () => {
@@ -75,6 +77,21 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
     void fetchFileContent();
   }, [isSummarizing, selectedFile.id]);
 
+  const saveSummaryFile = async () => {
+    if (!editorRef.current) {
+      throw new Error('Editor element not found');
+    }
+
+    const content = editorRef.current.innerText;
+    const file = new File([content], `SUMMARIZED - ${selectedFile.name}`, {
+      type: 'text/plain',
+    });
+
+    await uploadFile(file, parent);
+
+    handleClose();
+  };
+
   const handleClose = () => {
     setFileContent(null);
     setError(null);
@@ -103,6 +120,7 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
           {!loading && !error && fileContent !== null && (
             <Box
               component="pre"
+              ref={editorRef}
               sx={{
                 margin: 0,
                 padding: 2,
@@ -121,8 +139,14 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
         </Box>
       </DialogContent>
       <DialogActions>
-        {isSummarizing && (
-          <Button color="success" variant="contained">
+        {isSummarizing !== 0 && (
+          <Button
+            onClick={() => {
+              void saveSummaryFile();
+            }}
+            color="success"
+            variant="contained"
+          >
             Save as new
           </Button>
         )}
