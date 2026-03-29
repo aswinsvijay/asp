@@ -23,10 +23,10 @@ export const classifyDocumentFromStream = async (stream: Readable) => {
   }
 };
 
-export const summarizeDocumentFromStream = async (stream: Readable) => {
+export const summarizeDocumentFromStream = async (stream: Readable, filename = 'document.txt') => {
   try {
     const formData = new FormData();
-    formData.append('file', stream);
+    formData.append('file', stream, filename);
 
     const response = await redactionAxiosInstance.post('/summarize', formData, {
       headers: formData.getHeaders(),
