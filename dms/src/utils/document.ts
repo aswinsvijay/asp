@@ -44,7 +44,7 @@ export const uploadFile = async (file: File, parentId: Types.ObjectId) => {
   return response.data;
 };
 
-export const uploadTempFile = async (file: File, parentId: Types.ObjectId) => {
+export const uploadTempFile = async (file: File) => {
   const formData = new FormData();
 
   formData.append('file', file);
@@ -53,16 +53,6 @@ export const uploadTempFile = async (file: File, parentId: Types.ObjectId) => {
     pathParams: {},
     queryParams: {},
     requestBody: formData,
-  });
-
-  await apiCall('UpdateFile', {
-    pathParams: {
-      fileId: new Types.ObjectId(response.data.id),
-    },
-    queryParams: {},
-    requestBody: {
-      parentId,
-    },
   });
 
   return response.data;
