@@ -9,7 +9,7 @@ import {
   Typography,
   CircularProgress,
 } from '@mui/material';
-import { apiCall, downloadDocument, uploadFile } from '@/src/utils';
+import { apiCall, downloadDocument, uploadFile, uploadTempFile } from '@/src/utils';
 import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
 import { Types } from 'mongoose';
 
@@ -35,7 +35,7 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ parent, select
       try {
         let contentToSet: string;
 
-        if (isSummarizing === 0) {
+        if (!isSummarizing) {
           const blob = await downloadDocument(selectedFile.id);
 
           if (!blob) {
@@ -43,20 +43,21 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ parent, select
           }
 
           contentToSet = await blob.text();
-        } else if (isSummarizing === 1) {
-          const response = await apiCall('SummarizeFile', {
-            pathParams: {
-              fileId: new Types.ObjectId(selectedFile.id),
-            },
-            queryParams: {},
-            requestBody: null,
+        } else {
+          if (!editorRef.current) {
+            throw new Error('Editor element not found');
+          }
+
+          const content = editorRef.current.innerText;
+          const file = new File([content], `SUMMARIZED - ${selectedFile.name}`, {
+            type: 'text/plain',
           });
 
-          contentToSet = response.data;
-        } else {
-          const response = await apiCall('SummarizeFile', {
+          const { id } = await uploadTempFile(file);
+
+          const response = await apiCall('SummarizeTempFile', {
             pathParams: {
-              fileId: new Types.ObjectId(selectedFile.id),
+              fileId: new Types.ObjectId(id),
             },
             queryParams: {},
             requestBody: null,
@@ -75,7 +76,7 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ parent, select
     };
 
     void fetchFileContent();
-  }, [isSummarizing, selectedFile.id]);
+  }, [isSummarizing, selectedFile]);
 
   const saveSummaryFile = async () => {
     if (!editorRef.current) {
