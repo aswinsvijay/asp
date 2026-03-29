@@ -121,6 +121,11 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
         </Box>
       </DialogContent>
       <DialogActions>
+        {isSummarizing && (
+          <Button color="success" variant="contained">
+            Save as new
+          </Button>
+        )}
         <Button
           onClick={() => {
             setIsSummarizing((prev) => prev + 1);
