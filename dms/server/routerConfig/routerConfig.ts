@@ -448,5 +448,95 @@ export default narrowedValue({
         },
       },
     },
+    '/tempfiles': {
+      methods: {
+        post: {
+          operationId: 'UploadTempFile',
+          queryParams: {},
+          requestBody: {
+            contentType: 'multipart/form-data',
+            schema: tsNonNullable,
+          },
+          response: {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  id: {
+                    type: 'string',
+                  },
+                },
+                required: ['id'],
+                additionalProperties: false,
+              },
+            },
+            required: ['data'],
+            additionalProperties: false,
+          },
+        },
+      },
+    },
+    '/tempfiles/:fileId/redaction-entities': {
+      methods: {
+        get: {
+          operationId: 'GetTempFileRedactionEntities',
+          pathParams: {
+            properties: {
+              fileId: mongoId,
+            },
+          },
+          response: {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  title: 'EntitySpan',
+                  properties: {
+                    entity_group: {
+                      type: 'string',
+                    },
+                    start: {
+                      type: 'integer',
+                    },
+                    end: {
+                      type: 'integer',
+                    },
+                  },
+                  required: ['entity_group', 'start', 'end'],
+                  additionalProperties: false,
+                },
+              },
+            },
+            required: ['data'],
+            additionalProperties: false,
+          },
+        },
+      },
+    },
+    '/tempfiles/:fileId/summarize': {
+      methods: {
+        post: {
+          operationId: 'SummarizeTempFile',
+          pathParams: {
+            properties: {
+              fileId: mongoId,
+            },
+          },
+          response: {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'string',
+              },
+            },
+            required: ['data'],
+            additionalProperties: false,
+          },
+        },
+      },
+    },
   },
 } satisfies RouterConfig);
