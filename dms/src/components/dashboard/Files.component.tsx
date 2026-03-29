@@ -5,7 +5,7 @@ import { Box, Breadcrumbs, Button, Link, Typography } from '@mui/material';
 import { CustomIcon } from '../CustomIcon.component';
 import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
 import { FileViewerModal } from './FileViewerModal.component';
-import { FileRedactModal } from './FileRedactModal.component';
+import { FileRedactModal } from './FileRedactUI.component';
 import { CreateFolderModal } from './CreateFolderModal.component';
 import { FolderSummarizeModal } from './FolderSummarizeModal.component';
 
@@ -160,7 +160,7 @@ export const FilesComponent = () => {
           {widget === 'redact' && (
             <FileRedactModal
               parent={deepestParent}
-              selectedFile={selectedFile}
+              file={{ type: 'stored', selectedFile: selectedFile }}
               onClose={() => {
                 setWidget(null);
                 reset();

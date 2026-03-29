@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -10,17 +10,39 @@ import {
   CircularProgress,
   Divider,
 } from '@mui/material';
-import { apiCall, downloadDocument, uploadFile } from '@/src/utils';
+import { apiCall, assertUnreachable, downloadDocument, uploadFile } from '@/src/utils';
 import { EntitySpan, ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
 import { Types } from 'mongoose';
 
 interface FileRedactModalProps {
   parent: Types.ObjectId;
-  selectedFile: ItemInfo;
   onClose: () => void;
+  file:
+    | {
+        type: 'stored';
+        selectedFile: ItemInfo;
+      }
+    | {
+        type: 'temp';
+        id: Types.ObjectId;
+        blob: Blob;
+      };
 }
 
-export const FileRedactModal: React.FC<FileRedactModalProps> = ({ parent, selectedFile, onClose }) => {
+export const FileRedactInline: React.FC<FileRedactModalProps> = (props) => {
+  return <FileRedactUI style="inline" {...props} />;
+};
+
+export const FileRedactModal: React.FC<FileRedactModalProps> = (props) => {
+  return <FileRedactUI style="modal" {...props} />;
+};
+
+export const FileRedactUI: React.FC<FileRedactModalProps & { style: 'modal' | 'inline' }> = ({
+  style,
+  parent,
+  file,
+  onClose,
+}) => {
   const effectRanRef = useRef(false);
   const [fileContent, setFileContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -35,23 +57,37 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ parent, select
       setFileContent(null);
 
       try {
-        const blob = await downloadDocument(selectedFile.id);
+        if (file.type === 'stored') {
+          const blob = await downloadDocument(file.selectedFile.id);
 
-        if (!blob) {
-          throw new Error('Invalid file response');
+          if (!blob) {
+            throw new Error('Invalid file response');
+          }
+
+          // Try to get file name from blob if available
+          const content = await blob.text();
+          setFileContent(content);
+
+          const entitiesResponse = await apiCall('GetRedactionEntities', {
+            pathParams: { fileId: new Types.ObjectId(file.selectedFile.id) },
+            queryParams: {},
+            requestBody: null,
+          });
+
+          setEntities(entitiesResponse.data);
+        } else {
+          // Try to get file name from blob if available
+          const content = await file.blob.text();
+          setFileContent(content);
+
+          const entitiesResponse = await apiCall('GetTempFileRedactionEntities', {
+            pathParams: { fileId: new Types.ObjectId(file.id) },
+            queryParams: {},
+            requestBody: null,
+          });
+
+          setEntities(entitiesResponse.data);
         }
-
-        // Try to get file name from blob if available
-        const content = await blob.text();
-        setFileContent(content);
-
-        const entitiesResponse = await apiCall('GetRedactionEntities', {
-          pathParams: { fileId: new Types.ObjectId(selectedFile.id) },
-          queryParams: {},
-          requestBody: null,
-        });
-
-        setEntities(entitiesResponse.data);
       } catch (err) {
         console.error('Error fetching file content:', err);
         setError(err instanceof Error ? err.message : 'Failed to load file content');
@@ -64,7 +100,7 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ parent, select
       effectRanRef.current = true;
       void fetchFileContent();
     }
-  }, [selectedFile.id]);
+  }, [file]);
 
   const handleClose = () => {
     setFileContent(null);
@@ -72,13 +108,26 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ parent, select
     onClose();
   };
 
+  const fileName = useMemo(() => {
+    switch (file.type) {
+      case 'stored':
+        return file.selectedFile.name;
+      case 'temp':
+        return 'tempfile.txt';
+      default:
+        assertUnreachable(file, 'Unhandled file type');
+    }
+
+    return '';
+  }, [file]);
+
   const saveRedactedFile = async () => {
     if (!editorRef.current) {
       throw new Error('Editor element not found');
     }
 
     const content = editorRef.current.innerText;
-    const file = new File([content], `REDACTED - ${selectedFile.name}`, {
+    const file = new File([content], `REDACTED - ${fileName}`, {
       type: 'text/plain',
     });
 
@@ -87,11 +136,11 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ parent, select
     handleClose();
   };
 
-  return (
-    <Dialog open onClose={handleClose} maxWidth="lg" fullWidth>
+  const redactUI = (
+    <>
       <DialogTitle>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">{selectedFile.name}</Typography>
+          <Typography variant="h6">{fileName}</Typography>
         </Box>
       </DialogTitle>
       <DialogContent dividers>
@@ -256,10 +305,23 @@ export const FileRedactModal: React.FC<FileRedactModalProps> = ({ parent, select
         >
           Save as new
         </Button>
-        <Button onClick={handleClose} variant="outlined" color="error">
-          Close
-        </Button>
+        {style === 'modal' && (
+          <Button onClick={handleClose} variant="outlined" color="error">
+            Close
+          </Button>
+        )}
       </DialogActions>
-    </Dialog>
+    </>
+  );
+
+  return (
+    <>
+      {style === 'modal' && (
+        <Dialog open onClose={handleClose} maxWidth="lg" fullWidth>
+          {redactUI}
+        </Dialog>
+      )}
+      {style === 'inline' && <>{redactUI}</>}
+    </>
   );
 };
