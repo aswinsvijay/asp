@@ -40,6 +40,8 @@ export const uploadFile = async (file: File, parentId: Types.ObjectId) => {
       parentId,
     },
   });
+
+  return response.data;
 };
 
 export const uploadTempFile = async (file: File, parentId: Types.ObjectId) => {
@@ -62,4 +64,6 @@ export const uploadTempFile = async (file: File, parentId: Types.ObjectId) => {
       parentId,
     },
   });
+
+  return response.data;
 };
