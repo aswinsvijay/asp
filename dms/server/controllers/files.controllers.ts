@@ -15,13 +15,12 @@ import {
   ServerUnauthorizedError,
   ServerStreamResponse,
 } from '../objects';
-import { rootFolder, UNSAFE_CAST } from '../../src/utils';
-import FormData from 'form-data';
-import { EntitySpan, ItemInfo } from '../routerConfig/compiledRouterTypes.out';
+import { rootFolder } from '../../src/utils';
+import { ItemInfo } from '../routerConfig/compiledRouterTypes.out';
 import {
   classifyDocumentFromStream,
   getDocumentStream,
-  redactionAxiosInstance,
+  getRedactionEntitiesForDocumentStream,
   summarizeDocumentFromStream,
 } from '../utils';
 import { createReadStream } from 'fs';
@@ -154,19 +153,9 @@ controllerGroup.add('GetRedactionEntities', async (ctx) => {
   }
 
   const stream = await getDocumentStream(documentId, { owner: ctx.state.user._id });
+  const entities = await getRedactionEntitiesForDocumentStream(stream);
 
-  try {
-    const formData = new FormData();
-    formData.append('file', stream);
-
-    const response = await redactionAxiosInstance.post('/redaction-entities', formData, {
-      headers: formData.getHeaders(),
-    });
-
-    return new ServerJSONResponse(UNSAFE_CAST<{ data: EntitySpan[] }>(response.data));
-  } catch {
-    throw new Error('Upstream server error');
-  }
+  return new ServerJSONResponse({ data: entities });
 });
 
 controllerGroup.add('ClassifyFile', async (ctx) => {

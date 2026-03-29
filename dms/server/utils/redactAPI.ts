@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Readable } from 'stream';
 import FormData from 'form-data';
 import { environment } from '../environment';
+import { EntitySpan1 } from '../routerConfig/compiledRouterTypes.out';
 
 export const redactionAxiosInstance = axios.create({
   baseURL: environment.REDACT_SERVER_URL,
@@ -33,6 +34,21 @@ export const summarizeDocumentFromStream = async (stream: Readable, filename = '
     });
 
     return UNSAFE_CAST<{ data: string }>(response.data).data;
+  } catch {
+    throw new Error('Upstream server error');
+  }
+};
+
+export const getRedactionEntitiesForDocumentStream = async (stream: Readable) => {
+  try {
+    const formData = new FormData();
+    formData.append('file', stream);
+
+    const response = await redactionAxiosInstance.post('/redaction-entities', formData, {
+      headers: formData.getHeaders(),
+    });
+
+    return UNSAFE_CAST<{ data: EntitySpan1[] }>(response.data).data;
   } catch {
     throw new Error('Upstream server error');
   }

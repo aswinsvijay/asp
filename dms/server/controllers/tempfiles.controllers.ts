@@ -1,10 +1,7 @@
 import { controllerGroup } from './controllerGroup';
 import { createTempDocument } from '../db';
 import { ServerBadRequestError, ServerJSONResponse, ServerUnauthorizedError } from '../objects';
-import { UNSAFE_CAST } from '../../src/utils';
-import FormData from 'form-data';
-import { EntitySpan } from '../routerConfig/compiledRouterTypes.out';
-import { getTempDocumentStream, redactionAxiosInstance, summarizeDocumentFromStream } from '../utils';
+import { getRedactionEntitiesForDocumentStream, getTempDocumentStream, summarizeDocumentFromStream } from '../utils';
 
 controllerGroup.add('UploadTempFile', async (ctx) => {
   if (!ctx.state.user) {
@@ -50,19 +47,9 @@ controllerGroup.add('GetTempFileRedactionEntities', async (ctx) => {
   }
 
   const stream = await getTempDocumentStream(documentId, { owner: ctx.state.user._id });
+  const entities = await getRedactionEntitiesForDocumentStream(stream);
 
-  try {
-    const formData = new FormData();
-    formData.append('file', stream);
-
-    const response = await redactionAxiosInstance.post('/redaction-entities', formData, {
-      headers: formData.getHeaders(),
-    });
-
-    return new ServerJSONResponse(UNSAFE_CAST<{ data: EntitySpan[] }>(response.data));
-  } catch {
-    throw new Error('Upstream server error');
-  }
+  return new ServerJSONResponse({ data: entities });
 });
 
 controllerGroup.add('SummarizeTempFile', async (ctx) => {
