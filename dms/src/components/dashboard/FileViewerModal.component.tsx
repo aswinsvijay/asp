@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -19,11 +19,10 @@ interface FileViewerModalProps {
 }
 
 export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, onClose }) => {
-  const effectRanRef = useRef(false);
   const [fileContent, setFileContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isSummarizing, setIsSummarizing] = useState(false);
+  const [isSummarizing, setIsSummarizing] = useState(0);
 
   useEffect(() => {
     const fetchFileContent = async () => {
@@ -34,7 +33,7 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
       try {
         let contentToSet: string;
 
-        if (!isSummarizing) {
+        if (isSummarizing === 0) {
           const blob = await downloadDocument(selectedFile.id);
 
           if (!blob) {
@@ -42,6 +41,16 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
           }
 
           contentToSet = await blob.text();
+        } else if (isSummarizing === 1) {
+          const response = await apiCall('SummarizeFile', {
+            pathParams: {
+              fileId: new Types.ObjectId(selectedFile.id),
+            },
+            queryParams: {},
+            requestBody: null,
+          });
+
+          contentToSet = response.data;
         } else {
           const response = await apiCall('SummarizeFile', {
             pathParams: {
@@ -63,10 +72,7 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
       }
     };
 
-    if (!effectRanRef.current) {
-      effectRanRef.current = true;
-      void fetchFileContent();
-    }
+    void fetchFileContent();
   }, [isSummarizing, selectedFile.id]);
 
   const handleClose = () => {
@@ -117,9 +123,7 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ selectedFile, 
       <DialogActions>
         <Button
           onClick={() => {
-            if (!isSummarizing) {
-              setIsSummarizing(true);
-            }
+            setIsSummarizing((prev) => prev + 1);
           }}
           variant="contained"
         >
