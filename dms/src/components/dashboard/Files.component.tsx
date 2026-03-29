@@ -140,6 +140,7 @@ export const FilesComponent = () => {
           folderId={deepestParent}
           onClose={() => {
             setWidget(null);
+            reset();
           }}
         />
       )}
@@ -148,9 +149,11 @@ export const FilesComponent = () => {
         <>
           {widget === 'view' && (
             <FileViewerModal
+              parent={deepestParent}
               selectedFile={selectedFile}
               onClose={() => {
                 setWidget(null);
+                reset();
               }}
             />
           )}
@@ -160,6 +163,7 @@ export const FilesComponent = () => {
               selectedFile={selectedFile}
               onClose={() => {
                 setWidget(null);
+                reset();
               }}
             />
           )}
