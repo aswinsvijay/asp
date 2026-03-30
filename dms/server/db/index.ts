@@ -10,3 +10,6 @@ export * from './getTempDocumentById';
 export * from './updateStoredDocumentById';
 export * from './createUser';
 export * from './stats';
+export * from './createWorkflow';
+export * from './getWorkflows';
+export * from './getWorkflowById';
