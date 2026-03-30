@@ -100,7 +100,7 @@ export const WorkflowsComponent = () => {
             </Box>
           </div>
           <div className="flex flex-col flex-1 px-4 py-2 gap-2 overflow-auto">
-            <WorkflowForm workflow={selectedWorkflow} />
+            <WorkflowRun workflow={selectedWorkflow} />
           </div>
         </div>
       )}
@@ -108,7 +108,7 @@ export const WorkflowsComponent = () => {
   );
 };
 
-const WorkflowForm: React.FC<{ workflow: Workflow | null }> = ({ workflow }) => {
+const WorkflowRun: React.FC<{ workflow: Workflow | null }> = ({ workflow }) => {
   const [runStatus, setRunStatus] = useState<
     | { type: 'loading' }
     | {
