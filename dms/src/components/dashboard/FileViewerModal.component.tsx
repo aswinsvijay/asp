@@ -68,7 +68,6 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ parent, select
 
         setFileContent(contentToSet);
       } catch (err) {
-        console.error('Error fetching file content:', err);
         setError(err instanceof Error ? err.message : 'Failed to load file content');
       } finally {
         setLoading(false);

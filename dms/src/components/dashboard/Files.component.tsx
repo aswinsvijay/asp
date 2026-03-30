@@ -65,12 +65,8 @@ export const FilesComponent = () => {
   };
 
   const handleView = (item: ItemInfo) => {
-    try {
-      setSelectedFile(item);
-      setWidget('view');
-    } catch (viewError) {
-      console.error('Error viewing file:', viewError);
-    }
+    setSelectedFile(item);
+    setWidget('view');
   };
 
   const handleDownload = async (item: ItemInfo) => {
@@ -95,20 +91,12 @@ export const FilesComponent = () => {
   };
 
   const handleRedact = (item: ItemInfo) => {
-    try {
-      setSelectedFile(item);
-      setWidget('redact');
-    } catch (redactError) {
-      console.error('Error redacting file:', redactError);
-    }
+    setSelectedFile(item);
+    setWidget('redact');
   };
 
   const handleSummarizeFolder = () => {
-    try {
-      setWidget('folder_summarize');
-    } catch (redactError) {
-      console.error('Error summarizing folder:', redactError);
-    }
+    setWidget('folder_summarize');
   };
 
   const openCreateFolderModal = () => {

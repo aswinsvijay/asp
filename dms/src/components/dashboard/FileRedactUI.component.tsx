@@ -91,7 +91,6 @@ export const FileRedactUI: React.FC<FileRedactModalProps & { style: 'modal' | 'i
           setEntities(entitiesResponse.data);
         }
       } catch (err) {
-        console.error('Error fetching file content:', err);
         setError(err instanceof Error ? err.message : 'Failed to load file content');
       } finally {
         setLoading(false);
