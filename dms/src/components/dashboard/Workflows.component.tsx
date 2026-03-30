@@ -90,7 +90,8 @@ export const WorkflowsComponent = () => {
                     size="small"
                     startIcon={<CustomIcon name="PlayArrow" />}
                     onClick={() => {
-                      setSelectedWorkflow(workflow);
+                      // Avoiding referential equality to allow running same workflow again
+                      setSelectedWorkflow({ ...workflow });
                     }}
                   >
                     Run
