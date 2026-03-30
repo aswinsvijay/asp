@@ -74,7 +74,7 @@ export const WorkflowsComponent = () => {
       )}
 
       <div className="flex flex-col flex-1 px-4 py-2 gap-2 overflow-auto">
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4">
+        <Box display={'flex'} flexDirection={'column'} gap={1}>
           {response.data.map((workflow) => (
             <div
               key={workflow.id}
@@ -83,7 +83,7 @@ export const WorkflowsComponent = () => {
               <div className="text-sm font-medium text-gray-900 truncate">{workflow.name}</div>
             </div>
           ))}
-        </div>
+        </Box>
       </div>
     </div>
   );
