@@ -379,9 +379,20 @@ export default narrowedValue({
                 callback_url: {
                   type: 'string',
                 },
-                parameters: {},
+                inputs: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      name: { type: 'string' },
+                      type: { type: 'string', enum: ['string', 'number', 'date'] },
+                    },
+                    required: ['name', 'type'],
+                    additionalProperties: false,
+                  },
+                },
               },
-              required: ['name', 'callback_url'],
+              required: ['name', 'callback_url', 'inputs'],
               additionalProperties: false,
             },
           },
