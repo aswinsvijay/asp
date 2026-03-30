@@ -96,6 +96,7 @@ export const CreateWorkflowModal = ({ onClose }: CreateWorkflowModalProps) => {
               Inputs
             </Typography>
             <Box display={'flex'} flexDirection={'column'} px={1} gap={1} sx={{ flex: 1, overflow: 'auto' }}>
+              {inputs.length === 0 && <Typography color="textSecondary">No inputs</Typography>}
               {inputs.map((input) => (
                 <Box key={input.id}>
                   <Box display="flex" gap={2}>
