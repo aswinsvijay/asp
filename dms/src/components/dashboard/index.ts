@@ -1,6 +1,7 @@
 import { StatsComponent } from './Stats.component';
 import { FilesComponent } from './Files.component';
 import { RedactComponent } from './Redact.component';
+import { WorkflowsComponent } from './Workflows.component';
 
 export const DashboardViews = [
   {
@@ -14,6 +15,10 @@ export const DashboardViews = [
   {
     label: 'Redact',
     Component: RedactComponent,
+  },
+  {
+    label: 'Workflows',
+    Component: WorkflowsComponent,
   },
 ] as const satisfies {
   label: string;
