@@ -385,7 +385,7 @@ export default narrowedValue({
                     type: 'object',
                     properties: {
                       name: { type: 'string' },
-                      type: { type: 'string', enum: ['string', 'number', 'date'] },
+                      type: { type: 'string', enum: ['string', 'number', 'date', 'boolean'] },
                     },
                     required: ['name', 'type'],
                     additionalProperties: false,
@@ -436,7 +436,7 @@ export default narrowedValue({
                         type: 'object',
                         properties: {
                           name: { type: 'string' },
-                          type: { type: 'string', enum: ['string', 'number', 'date'] },
+                          type: { type: 'string', enum: ['string', 'number', 'date', 'boolean'] },
                         },
                         required: ['name', 'type'],
                         additionalProperties: false,
