@@ -172,6 +172,10 @@ const WorkflowRun: React.FC<{ workflow: Workflow | null }> = ({ workflow }) => {
     }
   }
 
+  return <WorkflowInputs workflow={workflow} />;
+};
+
+const WorkflowInputs: React.FC<{ workflow: Workflow }> = () => {
   return (
     <div className="flex items-center justify-center h-full">
       <div className="text-gray-500">Enter inputs</div>
