@@ -11,6 +11,7 @@ controllerGroup.add('CreateWorkflow', async (ctx) => {
     name: ctx.requestBody.name,
     owner: ctx.state.user._id,
     url: ctx.requestBody.callback_url,
+    inputs: ctx.requestBody.inputs,
   });
 
   return new ServerJSONResponse({
