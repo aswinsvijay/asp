@@ -16,13 +16,12 @@ export const getDocumentCountByClass = async (args: { owner: Types.ObjectId }) =
 
 export const getDocumentCountBySize = async (args: { owner: Types.ObjectId }) => {
   const ONE_KB = 1024;
-  const ONE_MB = ONE_KB * 1024;
-  const sizeRangesInBytes = [
+  const QUARTER_MB = ONE_KB * 256;
+  const sizeRanges = [
     { min: 0, max: 1 },
     { min: 1, max: 2 },
     { min: 2, max: 3 },
     { min: 3, max: 4 },
-    { min: 4, max: 5 },
   ];
 
   const results = await StoredDocument.aggregate<{ _id: { min: number; max: number; label: string }; count: number }>()
@@ -30,11 +29,15 @@ export const getDocumentCountBySize = async (args: { owner: Types.ObjectId }) =>
     .group({
       _id: {
         $switch: {
-          branches: sizeRangesInBytes.map((range) => ({
-            case: { $lte: ['$size', range.max * ONE_MB] },
-            then: { min: range.min, max: range.max, label: `${String(range.min)}-${String(range.max)} MB` },
+          branches: sizeRanges.map((range) => ({
+            case: { $lte: ['$size', range.max * QUARTER_MB] },
+            then: {
+              min: range.min,
+              max: range.max,
+              label: `${String((range.min * QUARTER_MB) / ONE_KB)}-${String((range.max * QUARTER_MB) / ONE_KB)} KB`,
+            },
           })),
-          default: { min: 5, max: 1_000_000, label: '> 5 MB' },
+          default: { min: 5, max: 1_000_000, label: '> 1 MB' },
         },
       },
       count: { $sum: 1 },
