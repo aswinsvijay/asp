@@ -6,7 +6,7 @@ import { assertUnreachable, UNSAFE_CAST } from './typeUtils';
 import { getToken } from './auth';
 import { Types } from 'mongoose';
 
-type ApiParameters<T extends keyof CompiledOperations> = Pick<
+export type ApiParameters<T extends keyof CompiledOperations> = Pick<
   CompiledOperations[T],
   'pathParams' | 'queryParams' | 'requestBody'
 > & {
