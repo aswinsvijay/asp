@@ -2,6 +2,7 @@ import React, { useState, useRef, useMemo } from 'react';
 import { Spacing, useApiCall, useMemoizedParameters, downloadDocument, uploadFile, rootFolder } from '@/src/utils';
 import { Types } from 'mongoose';
 import { Box, Breadcrumbs, Button, Link, Typography } from '@mui/material';
+import { useSnackbar } from 'notistack';
 import { CustomIcon } from '../CustomIcon.component';
 import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
 import { FileViewerModal } from './FileViewerModal.component';
@@ -10,6 +11,7 @@ import { CreateFolderModal } from './CreateFolderModal.component';
 import { FolderSummarizeModal } from './FolderSummarizeModal.component';
 
 export const FilesComponent = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const [path, setPath] = useState<ItemInfo[]>([]);
   const [widget, setWidget] = useState<'view' | 'redact' | 'folder_summarize' | null>(null);
   const [selectedFile, setSelectedFile] = useState<ItemInfo | null>(null);
@@ -44,12 +46,22 @@ export const FilesComponent = () => {
     if (file) {
       console.log('File selected:', file.name, file.size, file.type);
 
-      void uploadFile(file, deepestParent).then(reset);
+      void uploadFile(file, deepestParent)
+        .then(() => {
+          enqueueSnackbar({ variant: 'success', message: 'File uploaded' });
+          reset();
+        })
+        .catch(() => {
+          enqueueSnackbar({ variant: 'error', message: 'Error uploading file' });
+        });
     }
   };
 
   const handleFileUpload = () => {
-    fileInputRef.current?.click();
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+      fileInputRef.current.click();
+    }
   };
 
   const handleView = (item: ItemInfo) => {
