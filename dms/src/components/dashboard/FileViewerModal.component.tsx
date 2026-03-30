@@ -156,7 +156,7 @@ export const FileViewerModal: React.FC<FileViewerModalProps> = ({ parent, select
           }}
           variant="contained"
         >
-          {isSummarizing ? 'Summarize again' : 'Summarize'}
+          {isSummarizing ? 'Summarize more' : 'Summarize'}
         </Button>
         <Button onClick={handleClose} variant="contained">
           Close
