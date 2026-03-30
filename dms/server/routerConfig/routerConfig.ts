@@ -430,8 +430,20 @@ export default narrowedValue({
                     name: {
                       type: 'string',
                     },
+                    inputs: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          name: { type: 'string' },
+                          type: { type: 'string', enum: ['string', 'number', 'date'] },
+                        },
+                        required: ['name', 'type'],
+                        additionalProperties: false,
+                      },
+                    },
                   },
-                  required: ['id', 'name'],
+                  required: ['id', 'name', 'inputs'],
                   additionalProperties: false,
                 },
               },
