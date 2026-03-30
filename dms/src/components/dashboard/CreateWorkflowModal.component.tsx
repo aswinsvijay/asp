@@ -9,6 +9,7 @@ import {
   MenuItem,
   TextField,
   Select,
+  Typography,
 } from '@mui/material';
 import { useState } from 'react';
 
@@ -91,7 +92,10 @@ export const CreateWorkflowModal = ({ onClose }: CreateWorkflowModalProps) => {
               overflow: 'hidden',
             }}
           >
-            <Box display={'flex'} flexDirection={'column'} p={1} gap={1} sx={{ flex: 1, overflow: 'auto' }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+              Inputs
+            </Typography>
+            <Box display={'flex'} flexDirection={'column'} px={1} gap={1} sx={{ flex: 1, overflow: 'auto' }}>
               {inputs.map((input) => (
                 <Box key={input.id}>
                   <Box display="flex" gap={2}>
@@ -139,7 +143,7 @@ export const CreateWorkflowModal = ({ onClose }: CreateWorkflowModalProps) => {
                   ]);
                 }}
               >
-                Add Input
+                Add
               </Button>
               <Button
                 variant="outlined"
