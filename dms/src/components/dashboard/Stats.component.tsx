@@ -160,7 +160,7 @@ export const StatsComponent = () => {
     <Box
       p={Spacing.MEDIUM}
       display="grid"
-      gridTemplateColumns="repeat(2, minmax(0, 1fr))"
+      gridTemplateColumns="repeat(1, minmax(0, 1fr))"
       gridTemplateRows="repeat(2, minmax(0, 1fr))"
       gap={Spacing.SMALL}
       height="100%"
@@ -172,21 +172,6 @@ export const StatsComponent = () => {
       <Box border="1px solid #e5e7eb" borderRadius={Spacing.SMALL} minHeight={0}>
         <DocumentSizeChart data={response.data.documentSizes} />
       </Box>
-
-      {['Widget 3', 'Widget 4'].map((title) => (
-        <Box
-          key={title}
-          border="1px solid #e5e7eb"
-          borderRadius={Spacing.SMALL}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          minHeight={0}
-          p={Spacing.MEDIUM}
-        >
-          <Typography color="text.secondary">{title}</Typography>
-        </Box>
-      ))}
     </Box>
   );
 };
