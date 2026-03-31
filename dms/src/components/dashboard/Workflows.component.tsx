@@ -87,7 +87,7 @@ export const WorkflowsComponent = () => {
                 >
                   <div className="text-sm font-medium text-gray-900 truncate flex-1">{workflow.name}</div>
                   <Button
-                    variant="outlined"
+                    variant={workflow.id === selectedWorkflow?.id ? 'contained' : 'outlined'}
                     size="small"
                     startIcon={<CustomIcon name="PlayArrow" />}
                     onClick={() => {
