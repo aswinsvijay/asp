@@ -257,26 +257,41 @@ export const FilesComponent = () => {
                         <div className="text-sm font-medium text-gray-900 truncate">{item.name}</div>
                         {item.type === 'document' && (
                           <div className="flex flex-col gap-2">
-                            <Button
-                              size="small"
-                              variant="outlined"
-                              onClick={() => {
-                                handleView(item);
-                              }}
-                              className="flex-1"
-                            >
-                              <CustomIcon name="RemoveRedEye" />
-                            </Button>
-                            <Button
-                              size="small"
-                              variant="outlined"
-                              onClick={() => {
-                                void handleDownload(item);
-                              }}
-                              className="flex-1"
-                            >
-                              <CustomIcon name="Download" />
-                            </Button>
+                            <Box display="flex" flexDirection="row" gap={1}>
+                              <Button
+                                sx={{ flex: 1, minWidth: 0 }}
+                                size="small"
+                                variant="outlined"
+                                onClick={() => {
+                                  handleView(item);
+                                }}
+                                className="flex-1"
+                              >
+                                <CustomIcon name="RemoveRedEye" />
+                              </Button>
+                              <Button
+                                sx={{ flex: 1, minWidth: 0 }}
+                                size="small"
+                                variant="outlined"
+                                onClick={() => {
+                                  void handleDownload(item);
+                                }}
+                                className="flex-1"
+                              >
+                                <CustomIcon name="Download" />
+                              </Button>
+                              <Button
+                                sx={{ flex: 1, minWidth: 0 }}
+                                size="small"
+                                variant="outlined"
+                                onClick={() => {
+                                  void navigator.clipboard.writeText(item.id);
+                                }}
+                                title="Copy Document ID"
+                              >
+                                <CustomIcon name="DatasetLinked" />
+                              </Button>
+                            </Box>
                             <Button
                               size="small"
                               variant="outlined"
