@@ -20,7 +20,7 @@ type InputConfig = ApiParameters<'CreateWorkflow'>['requestBody']['inputs'][numb
   id: string;
 };
 
-const inputTypes = ['string', 'number', 'date'] as const;
+const inputTypes = ['string', 'number', 'boolean', 'date'] as const;
 
 export const CreateWorkflowModal = ({ onClose }: CreateWorkflowModalProps) => {
   const [name, setName] = useState('');
