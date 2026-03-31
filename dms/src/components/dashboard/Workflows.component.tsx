@@ -1,4 +1,4 @@
-import { Alert, Box, Button, CircularProgress } from '@mui/material';
+import { Alert, Box, Button, Checkbox, CircularProgress, FormControlLabel, TextField } from '@mui/material';
 import { ApiResponse, Spacing, tryApiCall, useApiCall, useMemoizedParameters } from '@/src/utils';
 import { CustomIcon } from '../CustomIcon.component';
 import { CreateWorkflowModal } from './CreateWorkflowModal.component';
@@ -119,7 +119,7 @@ const WorkflowRun: React.FC<{ workflow: Workflow | null }> = ({ workflow }) => {
     | null
   >(null);
 
-  const runWorkflow = useCallback(async (workflow: Workflow, data: NonNullable<unknown>) => {
+  const runWorkflow = useCallback(async (workflow: Workflow, data: Record<string, unknown>) => {
     setRunStatus({ type: 'loading' });
 
     const [, error] = await tryApiCall('RunWorkflow', {
@@ -140,7 +140,7 @@ const WorkflowRun: React.FC<{ workflow: Workflow | null }> = ({ workflow }) => {
   useEffect(() => {
     setRunStatus(null);
     if (workflow && workflow.inputs.length === 0) {
-      runWorkflow(workflow, {}).catch(() => undefined);
+      void runWorkflow(workflow, {});
     }
   }, [workflow, runWorkflow]);
 
@@ -172,13 +172,99 @@ const WorkflowRun: React.FC<{ workflow: Workflow | null }> = ({ workflow }) => {
     }
   }
 
-  return <WorkflowInputs workflow={workflow} />;
+  return (
+    <WorkflowInputs
+      workflow={workflow}
+      onSubmit={(data) => {
+        void runWorkflow(workflow, data);
+      }}
+    />
+  );
 };
 
-const WorkflowInputs: React.FC<{ workflow: Workflow }> = () => {
+const WorkflowInputs: React.FC<{ workflow: Workflow; onSubmit: (data: Record<string, unknown>) => void }> = ({
+  workflow,
+  onSubmit,
+}) => {
+  const [data, setData] = useState<Record<string, unknown>>({});
+
+  const updateData = useCallback((payload: Record<string, unknown>) => {
+    setData((prev) => ({ ...prev, ...payload }));
+  }, []);
+
   return (
-    <div className="flex items-center justify-center h-full">
-      <div className="text-gray-500">Enter inputs</div>
-    </div>
+    <>
+      Enter values to pass to workflow
+      {workflow.inputs.map((input) => {
+        const props = {
+          id: input.name,
+          size: 'small',
+          label: input.name,
+        } as const;
+
+        switch (input.type) {
+          case 'string':
+            return (
+              <div key={input.name}>
+                <TextField
+                  {...props}
+                  type="text"
+                  fullWidth
+                  value={typeof data[input.name] === 'string' ? (data[input.name] as string) : ''}
+                  onChange={(e) => {
+                    updateData({ [input.name]: e.target.value });
+                  }}
+                />
+              </div>
+            );
+          case 'number':
+            return (
+              <div key={input.name}>
+                <TextField
+                  {...props}
+                  type="number"
+                  fullWidth
+                  value={
+                    typeof data[input.name] === 'number' || data[input.name] === undefined
+                      ? ((data[input.name] as number | undefined) ?? '')
+                      : ''
+                  }
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    updateData({ [input.name]: value === '' ? undefined : Number(value) });
+                  }}
+                />
+              </div>
+            );
+          case 'boolean':
+            return (
+              <div key={input.name}>
+                <FormControlLabel
+                  label={input.name}
+                  control={
+                    <Checkbox
+                      {...props}
+                      checked={Boolean(data[input.name])}
+                      onChange={(e) => {
+                        updateData({ [input.name]: e.target.checked });
+                      }}
+                    />
+                  }
+                />
+              </div>
+            );
+          default:
+            return null;
+        }
+      })}
+      <Button
+        variant="contained"
+        onClick={() => {
+          onSubmit(data);
+        }}
+      >
+        Submit
+      </Button>
+    </>
   );
 };
