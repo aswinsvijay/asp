@@ -73,7 +73,7 @@ def redact_pii(text: str, entities: List[dict]) -> str:
 def chunk_text(text: str, chunk_size: int):
     # Split the input text into chunks of up to 500 words each
     words = text.split(' ')
-    text_chunks = []
+    text_chunks: list[str] = []
     for i in range(0, len(words), chunk_size):
         chunk = " ".join(words[i:i + chunk_size])
         text_chunks.append(chunk)
@@ -182,17 +182,28 @@ async def summarize(file: UploadFile = File(...)):
         # Read PDF file
         text = (await file.read()).decode('utf-8')
 
-        text_chunks = chunk_text(text, 500)
+        individual_files = filter(
+            lambda x: len(x),
+            list(map(lambda x: x.strip(), text.split('<FILE SEPARATOR>')))
+        )
+        text_chunks_by_file = map(lambda x: chunk_text(x, 500), individual_files)
 
-        summary = ' '.join([
-            *map(
-                lambda text: summary_pipeline(text)[0]['summary_text'],
-                text_chunks
+        summary_by_file = '\n'.join(
+            # for every file
+            map(
+                lambda file_content: ' '.join(
+                    # for every chunk
+                    map(
+                        lambda text: summary_pipeline(text)[0]['summary_text'],
+                        file_content
+                    )
+                ),
+                text_chunks_by_file
             )
-        ])
+        )
 
         return JSONResponse(
-            content={"data": summary}
+            content={"data": summary_by_file}
         )
     
     except Exception as e:
