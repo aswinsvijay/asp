@@ -9,7 +9,7 @@ export const DashboardViews = [
     Component: FilesComponent,
   },
   {
-    label: 'Stats',
+    label: 'Insights',
     Component: StatsComponent,
   },
   {
