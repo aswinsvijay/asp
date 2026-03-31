@@ -463,6 +463,10 @@ export default narrowedValue({
               workflowId: mongoId,
             },
           },
+          requestBody: {
+            contentType: 'application/json',
+            schema: { type: 'object' },
+          },
           response: {
             type: 'object',
             properties: {},

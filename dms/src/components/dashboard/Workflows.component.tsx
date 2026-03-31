@@ -127,7 +127,7 @@ const WorkflowRun: React.FC<{ workflow: Workflow | null }> = ({ workflow }) => {
         workflowId: new Types.ObjectId(workflow.id),
       },
       queryParams: {},
-      requestBody: null,
+      requestBody: data,
     });
 
     if (error) {
