@@ -1,0 +1,208 @@
+{
+  "name": "Summary through workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "6fe4028d-e67d-48e8-80fc-6063060d4e10",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "fbfed012-ab99-4b00-82e6-a58c8fea9572",
+      "name": "Webhook",
+      "webhookId": "6fe4028d-e67d-48e8-80fc-6063060d4e10"
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "data",
+        "options": {
+          "fileName": "={{ $('Webhook').item.json.body['Summary document name'] }}.txt"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        624,
+        0
+      ],
+      "id": "bd16f0bf-1304-472e-9730-d652e15c712d",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.dmsHost }}/api/files/{{ $('Webhook').item.json.body['Document ID'] }}/summarize",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "5643f241-e8d6-42e7-ad05-a10a4d8d738b",
+      "name": "Get summary",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "NKbWzhxUUO60xBYh",
+          "name": "DMS admin account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  dmsHost: 'http://host.docker.internal:3000',\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "a0180a0f-5cdf-4bbc-943d-78be14d02028",
+      "name": "Setup variables"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Setup variables').item.json.dmsHost }}/api/files",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        832,
+        0
+      ],
+      "id": "f74d2856-b5b8-4fdc-a71e-db571e0fa8b3",
+      "name": "Upload document",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "NKbWzhxUUO60xBYh",
+          "name": "DMS admin account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $('Setup variables').item.json.dmsHost }}/api/files/{{ $json.data.id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "parentId",
+              "value": "={{ $('Webhook').item.json.body['Summary folder ID'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "5c1df828-05cf-4179-924b-d3cd8935a103",
+      "name": "Move to folder",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "NKbWzhxUUO60xBYh",
+          "name": "DMS admin account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Setup variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get summary": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setup variables": {
+      "main": [
+        [
+          {
+            "node": "Get summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Upload document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload document": {
+      "main": [
+        [
+          {
+            "node": "Move to folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "380d3321-1fbf-4032-a909-a08ddd8889e6",
+  "meta": {
+    "instanceId": "716fb4239b9b454a4142ac7c148b16e88dcd29eb15d5ff4ba01c6fb846b20a03"
+  },
+  "id": "mdacUBFBq63nEZVI",
+  "tags": []
+}
