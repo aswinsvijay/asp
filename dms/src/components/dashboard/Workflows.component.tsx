@@ -1,9 +1,10 @@
-import { Alert, Box, Button, Checkbox, CircularProgress, FormControlLabel, TextField } from '@mui/material';
+import { Alert, Box, Button, CircularProgress } from '@mui/material';
 import { ApiResponse, Spacing, tryApiCall, useApiCall, useMemoizedParameters } from '@/src/utils';
 import { CustomIcon } from '../CustomIcon.component';
 import { CreateWorkflowModal } from './CreateWorkflowModal.component';
 import { useCallback, useEffect, useState } from 'react';
 import { Types } from 'mongoose';
+import { WorkflowInputs } from './WorkflowInputs.component';
 
 type Workflow = ApiResponse<'GetWorkflows'>['data'][number];
 
@@ -109,7 +110,7 @@ export const WorkflowsComponent = () => {
   );
 };
 
-const WorkflowRun: React.FC<{ workflow: Workflow | null }> = ({ workflow }) => {
+export const WorkflowRun: React.FC<{ workflow: Workflow | null }> = ({ workflow }) => {
   const [runStatus, setRunStatus] = useState<
     | { type: 'loading' }
     | {
@@ -179,92 +180,5 @@ const WorkflowRun: React.FC<{ workflow: Workflow | null }> = ({ workflow }) => {
         void runWorkflow(workflow, data);
       }}
     />
-  );
-};
-
-const WorkflowInputs: React.FC<{ workflow: Workflow; onSubmit: (data: Record<string, unknown>) => void }> = ({
-  workflow,
-  onSubmit,
-}) => {
-  const [data, setData] = useState<Record<string, unknown>>({});
-
-  const updateData = useCallback((payload: Record<string, unknown>) => {
-    setData((prev) => ({ ...prev, ...payload }));
-  }, []);
-
-  return (
-    <>
-      Enter values to pass to workflow
-      {workflow.inputs.map((input) => {
-        const props = {
-          id: input.name,
-          size: 'small',
-          label: input.name,
-        } as const;
-
-        switch (input.type) {
-          case 'string':
-            return (
-              <div key={input.name}>
-                <TextField
-                  {...props}
-                  type="text"
-                  fullWidth
-                  value={typeof data[input.name] === 'string' ? (data[input.name] as string) : ''}
-                  onChange={(e) => {
-                    updateData({ [input.name]: e.target.value });
-                  }}
-                />
-              </div>
-            );
-          case 'number':
-            return (
-              <div key={input.name}>
-                <TextField
-                  {...props}
-                  type="number"
-                  fullWidth
-                  value={
-                    typeof data[input.name] === 'number' || data[input.name] === undefined
-                      ? ((data[input.name] as number | undefined) ?? '')
-                      : ''
-                  }
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    updateData({ [input.name]: value === '' ? undefined : Number(value) });
-                  }}
-                />
-              </div>
-            );
-          case 'boolean':
-            return (
-              <div key={input.name}>
-                <FormControlLabel
-                  label={input.name}
-                  control={
-                    <Checkbox
-                      {...props}
-                      checked={Boolean(data[input.name])}
-                      onChange={(e) => {
-                        updateData({ [input.name]: e.target.checked });
-                      }}
-                    />
-                  }
-                />
-              </div>
-            );
-          default:
-            return null;
-        }
-      })}
-      <Button
-        variant="contained"
-        onClick={() => {
-          onSubmit(data);
-        }}
-      >
-        Submit
-      </Button>
-    </>
   );
 };
