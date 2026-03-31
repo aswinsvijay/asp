@@ -64,7 +64,7 @@ controllerGroup.add('SummarizeFolder', async (ctx) => {
         yield chunk;
       }
 
-      yield '\n\n';
+      yield '\n<FILE SEPARATOR>\n';
     }
   }
 
