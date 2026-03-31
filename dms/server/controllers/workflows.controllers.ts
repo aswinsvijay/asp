@@ -1,6 +1,7 @@
 import { controllerGroup } from './controllerGroup';
-import { ServerBadRequestError, ServerJSONResponse, ServerUnauthorizedError } from '../objects';
+import { ServerBadRequestError, ServerJSONResponse, ServerNotFoundError, ServerUnauthorizedError } from '../objects';
 import { createWorkflow, getWorkflowById, getWorkflows } from '../db';
+import axios from 'axios';
 
 controllerGroup.add('CreateWorkflow', async (ctx) => {
   if (!ctx.state.user) {
@@ -49,5 +50,15 @@ controllerGroup.add('RunWorkflow', async (ctx) => {
 
   const workflow = await getWorkflowById(workflowId, { owner: ctx.state.user._id });
 
-  return Promise.resolve(new ServerJSONResponse({ data: workflow }));
+  if (!workflow) {
+    throw new ServerNotFoundError('Workflow not found');
+  }
+
+  const response = await axios({
+    url: workflow.url,
+    method: 'post',
+    data: ctx.requestBody,
+  });
+
+  return Promise.resolve(new ServerJSONResponse({ data: (response.data as unknown) ?? {} }));
 });
