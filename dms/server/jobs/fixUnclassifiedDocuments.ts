@@ -7,9 +7,13 @@ export async function fixUnclassifiedDocuments() {
   const documents = await StoredDocument.find({ class: { $exists: false } }).lean();
 
   for (const doc of documents) {
-    const stream = createReadStream(doc.path);
-    const documentClass = (await classifyDocumentFromStream(stream)).category;
+    try {
+      const stream = createReadStream(doc.path);
+      const documentClass = (await classifyDocumentFromStream(stream)).category;
 
-    await updateStoredDocumentById(doc._id, { owner: { $exists: true } }, { class: documentClass });
+      await updateStoredDocumentById(doc._id, { owner: { $exists: true } }, { class: documentClass });
+    } catch {
+      console.error(`fixUnclassifiedDocuments failed for ${doc._id.toString()}`);
+    }
   }
 }
