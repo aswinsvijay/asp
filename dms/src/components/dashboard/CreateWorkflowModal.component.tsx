@@ -13,6 +13,8 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { WorkflowInputs } from './WorkflowInputs.component';
+import axios from 'axios';
+import { useSnackbar } from 'notistack';
 
 interface CreateWorkflowModalProps {
   onClose: () => void;
@@ -27,8 +29,9 @@ export const CreateWorkflowModal = ({ onClose }: CreateWorkflowModalProps) => {
   const [view, setView] = useState<'edit' | 'test'>('edit');
   const [name, setName] = useState('');
   const [url, setUrl] = useState('');
-
   const [inputs, setInputs] = useState<InputConfig[]>([]);
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const updateInput = (id: string, update: Partial<InputConfig>) => {
     setInputs(inputs.map((inp) => (inp.id === id ? { ...inp, ...update } : inp)));
@@ -167,7 +170,22 @@ export const CreateWorkflowModal = ({ onClose }: CreateWorkflowModalProps) => {
         )}
         {view === 'test' && (
           <div className="flex flex-col flex-1 px-4 py-2 gap-2 overflow-auto">
-            <WorkflowInputs workflow={{ id: '', name, inputs }} onSubmit={() => {}} />
+            <WorkflowInputs
+              workflow={{ id: '', name, inputs }}
+              onSubmit={(data) => {
+                axios({
+                  url,
+                  method: 'post',
+                  data,
+                })
+                  .then(() => {
+                    enqueueSnackbar({ variant: 'success', message: 'Successfully started workflow' });
+                  })
+                  .catch(() => {
+                    enqueueSnackbar({ variant: 'error', message: 'Failed to start workflow' });
+                  });
+              }}
+            />
           </div>
         )}
       </DialogContent>
