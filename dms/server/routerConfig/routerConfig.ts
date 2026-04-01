@@ -25,8 +25,7 @@ const itemInfo = {
     {
       properties: {
         type: {
-          type: 'string',
-          enum: ['document'],
+          const: 'document',
         },
         id: {
           type: 'string',
@@ -42,12 +41,12 @@ const itemInfo = {
         },
       },
       required: ['id', 'name', 'path', 'class'],
+      additionalProperties: false,
     },
     {
       properties: {
         type: {
-          type: 'string',
-          enum: ['folder'],
+          const: 'folder',
         },
         id: {
           type: 'string',
@@ -57,6 +56,7 @@ const itemInfo = {
         },
       },
       required: ['id', 'name'],
+      additionalProperties: false,
     },
   ],
 } as const satisfies HttpJsonSchemaOrgDraft04Schema;
