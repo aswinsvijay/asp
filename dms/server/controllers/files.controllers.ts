@@ -47,6 +47,7 @@ controllerGroup.add('GetChildren', async (ctx) => {
       ...document,
       id: document._id.toString(),
       type: 'document' as const,
+      class: (document.class ?? '') || '(NO CLASS)',
     })
   );
 

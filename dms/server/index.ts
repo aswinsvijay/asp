@@ -24,7 +24,7 @@ const koaApiRouter = new KoaRouter<CustomState>();
 const koaAuthRouter = new KoaRouter<CustomState>();
 const ajv = new Ajv({
   removeAdditional: true,
-  keywords: [mongoId, stringNull, 'tsType'],
+  keywords: [mongoId, stringNull, 'tsType', 'discriminator'],
 });
 
 koaApp.use(errorHandler);

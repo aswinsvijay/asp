@@ -18,9 +18,11 @@ export const stringNull = {
 
 const itemInfo = {
   title: 'ItemInfo',
+  type: 'object',
+  discriminator: { propertyName: 'type' },
+  required: ['type'],
   oneOf: [
     {
-      type: 'object',
       properties: {
         type: {
           type: 'string',
@@ -35,12 +37,13 @@ const itemInfo = {
         path: {
           type: 'string',
         },
+        class: {
+          type: 'string',
+        },
       },
-      required: ['id', 'name', 'path', 'type'],
-      additionalProperties: false,
+      required: ['id', 'name', 'path', 'class'],
     },
     {
-      type: 'object',
       properties: {
         type: {
           type: 'string',
@@ -53,8 +56,7 @@ const itemInfo = {
           type: 'string',
         },
       },
-      required: ['id', 'name', 'type'],
-      additionalProperties: false,
+      required: ['id', 'name'],
     },
   ],
 } as const satisfies HttpJsonSchemaOrgDraft04Schema;
