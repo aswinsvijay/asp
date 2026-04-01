@@ -20,7 +20,6 @@ const itemInfo = {
   title: 'ItemInfo',
   type: 'object',
   discriminator: { propertyName: 'type' },
-  required: ['type'],
   oneOf: [
     {
       properties: {
@@ -40,7 +39,7 @@ const itemInfo = {
           type: 'string',
         },
       },
-      required: ['id', 'name', 'path', 'class'],
+      required: ['type', 'id', 'name', 'path', 'class'],
       additionalProperties: false,
     },
     {
@@ -55,7 +54,7 @@ const itemInfo = {
           type: 'string',
         },
       },
-      required: ['id', 'name'],
+      required: ['type', 'id', 'name'],
       additionalProperties: false,
     },
   ],
