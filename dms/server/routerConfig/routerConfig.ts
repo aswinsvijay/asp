@@ -61,6 +61,24 @@ const itemInfo = {
   ],
 } as const satisfies HttpJsonSchemaOrgDraft04Schema;
 
+const entitySpan = {
+  type: 'object',
+  title: 'EntitySpan',
+  properties: {
+    entity_group: {
+      type: 'string',
+    },
+    start: {
+      type: 'integer',
+    },
+    end: {
+      type: 'integer',
+    },
+  },
+  required: ['entity_group', 'start', 'end'],
+  additionalProperties: false,
+} as const satisfies HttpJsonSchemaOrgDraft04Schema;
+
 export default narrowedValue({
   paths: {
     '/:parentId/children': {
@@ -259,23 +277,7 @@ export default narrowedValue({
             properties: {
               data: {
                 type: 'array',
-                items: {
-                  type: 'object',
-                  title: 'EntitySpan',
-                  properties: {
-                    entity_group: {
-                      type: 'string',
-                    },
-                    start: {
-                      type: 'integer',
-                    },
-                    end: {
-                      type: 'integer',
-                    },
-                  },
-                  required: ['entity_group', 'start', 'end'],
-                  additionalProperties: false,
-                },
+                items: entitySpan,
               },
             },
             required: ['data'],
@@ -520,23 +522,7 @@ export default narrowedValue({
             properties: {
               data: {
                 type: 'array',
-                items: {
-                  type: 'object',
-                  title: 'EntitySpan',
-                  properties: {
-                    entity_group: {
-                      type: 'string',
-                    },
-                    start: {
-                      type: 'integer',
-                    },
-                    end: {
-                      type: 'integer',
-                    },
-                  },
-                  required: ['entity_group', 'start', 'end'],
-                  additionalProperties: false,
-                },
+                items: entitySpan,
               },
             },
             required: ['data'],
