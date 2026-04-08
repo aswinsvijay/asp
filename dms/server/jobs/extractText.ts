@@ -73,6 +73,7 @@ export async function extractText() {
 
       const newDoc = await new StoredDocument(data).save();
 
+      // update old document
       doc.extractFile = newDoc._id;
       await doc.save();
     } catch (err) {
