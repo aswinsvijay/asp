@@ -316,6 +316,7 @@ export const FilesComponent = () => {
                               <Button
                                 size="small"
                                 variant="outlined"
+                                disabled={item.mimetype !== 'text/plain'}
                                 onClick={() => {
                                   handleRedact(item);
                                 }}
