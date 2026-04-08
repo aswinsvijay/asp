@@ -13,13 +13,13 @@ import { apiCall, downloadDocument, uploadFile, uploadTempFile } from '@/src/uti
 import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
 import { Types } from 'mongoose';
 
-interface FileViewerModalProps {
+interface TextFileViewerModalProps {
   parent: Types.ObjectId;
   selectedFile: ItemInfo;
   onClose: () => void;
 }
 
-export const FileViewerModal: React.FC<FileViewerModalProps> = ({ parent, selectedFile, onClose }) => {
+export const TextFileViewerModal: React.FC<TextFileViewerModalProps> = ({ parent, selectedFile, onClose }) => {
   const [fileContent, setFileContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

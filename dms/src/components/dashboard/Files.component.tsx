@@ -5,7 +5,7 @@ import { Box, Breadcrumbs, Button, Link, Typography } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import { CustomIcon } from '../CustomIcon.component';
 import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
-import { FileViewerModal } from './FileViewerModal.component';
+import { TextFileViewerModal } from './TextFileViewerModal.component';
 import { FileRedactModal } from './FileRedactUI.component';
 import { CreateFolderModal } from './CreateFolderModal.component';
 import { FolderSummarizeModal } from './FolderSummarizeModal.component';
@@ -150,14 +150,29 @@ export const FilesComponent = () => {
       {selectedFile && (
         <>
           {widget === 'view' && (
-            <FileViewerModal
-              parent={deepestParent}
-              selectedFile={selectedFile}
-              onClose={() => {
-                setWidget(null);
-                reset();
-              }}
-            />
+            <>
+              {selectedFile.mimetype === 'text/plain' && (
+                <TextFileViewerModal
+                  parent={deepestParent}
+                  selectedFile={selectedFile}
+                  onClose={() => {
+                    setWidget(null);
+                    reset();
+                  }}
+                />
+              )}
+              {
+                selectedFile.mimetype === 'audio/mpeg' && null
+                // <AudioViewerModal
+                //   parent={deepestParent}
+                //   selectedFile={selectedFile}
+                //   onClose={() => {
+                //     setWidget(null);
+                //     reset();
+                //   }}
+                // />
+              }
+            </>
           )}
           {widget === 'redact' && (
             <FileRedactModal
