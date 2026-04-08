@@ -1,5 +1,6 @@
 import { Types } from 'mongoose';
 import { Folder, StoredDocument } from './models';
+import { ContentType } from '../schemas/routerConfig/type';
 
 export const getStoredDocumentsRecursive = async (args: { parent: Types.ObjectId; owner: Types.ObjectId }) => {
   const foldersCollection = Folder.collection.name;
@@ -52,6 +53,9 @@ export const getStoredDocumentsRecursive = async (args: { parent: Types.ObjectId
         },
         {
           $eq: ['$owner', args.owner],
+        },
+        {
+          $eq: ['$mimetype', 'text/plain' satisfies ContentType],
         },
       ],
     },
