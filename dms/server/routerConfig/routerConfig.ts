@@ -491,6 +491,13 @@ export default narrowedValue({
       methods: {
         get: {
           operationId: 'GetN8NWorkflowLastRun',
+          pathParams: {
+            properties: {
+              n8nWfId: {
+                type: 'string',
+              },
+            },
+          },
           response: {
             type: 'object',
             properties: {
