@@ -6,6 +6,7 @@ import { useSnackbar } from 'notistack';
 import { CustomIcon } from '../CustomIcon.component';
 import { ItemInfo } from '@/server/routerConfig/compiledRouterTypes.out';
 import { TextFileViewerModal } from './TextFileViewerModal.component';
+import { AudioViewerModal } from './AudioViewerModal.component';
 import { FileRedactModal } from './FileRedactUI.component';
 import { CreateFolderModal } from './CreateFolderModal.component';
 import { FolderSummarizeModal } from './FolderSummarizeModal.component';
@@ -161,17 +162,16 @@ export const FilesComponent = () => {
                   }}
                 />
               )}
-              {
-                selectedFile.mimetype === 'audio/mpeg' && null
-                // <AudioViewerModal
-                //   parent={deepestParent}
-                //   selectedFile={selectedFile}
-                //   onClose={() => {
-                //     setWidget(null);
-                //     reset();
-                //   }}
-                // />
-              }
+              {selectedFile.mimetype === 'audio/mpeg' && (
+                <AudioViewerModal
+                  parent={deepestParent}
+                  selectedFile={selectedFile}
+                  onClose={() => {
+                    setWidget(null);
+                    reset();
+                  }}
+                />
+              )}
             </>
           )}
           {widget === 'redact' && (
