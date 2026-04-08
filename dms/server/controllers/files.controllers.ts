@@ -42,17 +42,25 @@ controllerGroup.add('GetChildren', async (ctx) => {
     })
   );
 
-  const mappedDocuments = documents.map(
-    (document): ItemInfo => ({
-      ...document,
+  const mappedDocuments = documents.map((document): ItemInfo => {
+    const { extractFile, ...rest } = document;
+
+    return {
+      ...rest,
       id: document._id.toString(),
       type: 'document' as const,
       class: (document.class ?? '') || '(NO CLASS)',
-      extractFile: {
-        class: (document.extractFile?.class ?? '') || '(NO CLASS)',
-      },
-    })
-  );
+
+      ...(extractFile
+        ? {
+            extractFile: {
+              ...extractFile,
+              class: (extractFile.class ?? '') || '(NO CLASS)',
+            },
+          }
+        : {}),
+    };
+  });
 
   return new ServerJSONResponse({ data: [...mappedFolders, ...mappedDocuments] });
 });
