@@ -45,6 +45,7 @@ const itemInfo = {
               type: 'string',
             },
           },
+          required: ['class'],
           additionalProperties: false,
         },
       },
