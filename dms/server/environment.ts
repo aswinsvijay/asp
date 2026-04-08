@@ -5,6 +5,7 @@ const requiredEnvironmentVariables = [
   'FILE_STORAGE_PATH',
   'REDACT_SERVER_URL',
   'N8N_HOST',
+  'GROQ_API_KEY',
 ] as const satisfies string[];
 
 type Environment = Record<(typeof requiredEnvironmentVariables)[number], string>;
