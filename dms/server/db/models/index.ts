@@ -4,3 +4,4 @@ export * from './TempDocument';
 export * from './User';
 export * from './UserSession';
 export * from './Workflow';
+export * from './Config';
