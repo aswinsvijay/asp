@@ -8,8 +8,8 @@ const StoredDocumentSchema = new Schema({
   mimetype: { type: String, required: true },
   parent: { type: Schema.Types.ObjectId, required: true },
   class: { type: String },
+  extractFile: { type: Schema.Types.ObjectId, ref: 'StoredDocument' },
 });
 
 export const StoredDocument = model('StoredDocument', StoredDocumentSchema);
-
 export type StoredDocument = Require_id<InferSchemaType<typeof StoredDocumentSchema>>;
