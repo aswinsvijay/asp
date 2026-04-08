@@ -8,5 +8,5 @@ export const getStoredDocuments = async (args: { parent: Types.ObjectId; owner: 
     owner: args.owner,
   } satisfies Filter<StoredDocument>;
 
-  return await StoredDocument.find(filter).populate('extractFile').lean();
+  return await StoredDocument.find(filter).populate<{ extractFile: StoredDocument }>('extractFile').lean();
 };
