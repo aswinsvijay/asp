@@ -15,7 +15,7 @@ export type ApiParameters<T extends keyof CompiledOperations> = Pick<
 
 export type ApiResponse<T extends keyof CompiledOperations> = CompiledOperations[T]['response'];
 
-function convertPathParams(pathParams: Record<string, Types.ObjectId | null>) {
+function convertPathParams(pathParams: Record<string, string | Types.ObjectId | null>) {
   const convertedPathParams = Object.fromEntries(
     Object.entries(pathParams).map(([key, value]) => {
       let convertedValue;
@@ -28,6 +28,10 @@ function convertPathParams(pathParams: Record<string, Types.ObjectId | null>) {
         // TODO: ESLint to enforce spaces
         case value instanceof Types.ObjectId:
           convertedValue = value.toString();
+          break;
+
+        case typeof value === 'string':
+          convertedValue = value;
           break;
 
         default:
