@@ -13,3 +13,5 @@ export * from './stats';
 export * from './createWorkflow';
 export * from './getWorkflows';
 export * from './getWorkflowById';
+export * from './setWorkflowLastRun';
+export * from './getWorkflowLastRun';
