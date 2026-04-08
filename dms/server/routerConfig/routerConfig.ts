@@ -38,6 +38,15 @@ const itemInfo = {
         class: {
           type: 'string',
         },
+        extractFile: {
+          type: 'object',
+          properties: {
+            class: {
+              type: 'string',
+            },
+          },
+          additionalProperties: false,
+        },
       },
       required: ['type', 'id', 'name', 'path', 'class'],
       additionalProperties: false,

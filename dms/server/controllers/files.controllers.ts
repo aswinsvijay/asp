@@ -48,6 +48,9 @@ controllerGroup.add('GetChildren', async (ctx) => {
       id: document._id.toString(),
       type: 'document' as const,
       class: (document.class ?? '') || '(NO CLASS)',
+      extractFile: {
+        class: (document.extractFile.class ?? '') || '(NO CLASS)',
+      },
     })
   );
 
