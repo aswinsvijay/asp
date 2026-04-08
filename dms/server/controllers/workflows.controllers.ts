@@ -62,3 +62,19 @@ controllerGroup.add('RunWorkflow', async (ctx) => {
 
   return Promise.resolve(new ServerJSONResponse({ data: (response.data as unknown) ?? {} }));
 });
+
+controllerGroup.add('GetN8NWorkflowLastRun', async (ctx) => {
+  return new ServerJSONResponse(
+    await Promise.resolve({
+      data: ctx.pathParams.n8nWfId ?? '',
+    })
+  );
+});
+
+controllerGroup.add('SetN8NWorkflowLastRun', async (ctx) => {
+  return new ServerJSONResponse(
+    await Promise.resolve({
+      data: ctx.pathParams.n8nWfId ?? '',
+    })
+  );
+});
