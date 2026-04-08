@@ -478,6 +478,38 @@ export default narrowedValue({
         },
       },
     },
+    '/n8n-workflows/:n8nWfId/lastRun': {
+      methods: {
+        get: {
+          operationId: 'GetN8NWorkflowLastRun',
+          response: {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'string',
+              },
+            },
+            required: ['data'],
+            additionalProperties: false,
+          },
+        },
+        post: {
+          operationId: 'SetN8NWorkflowLastRun',
+          pathParams: {
+            properties: {
+              n8nWfId: {
+                type: 'string',
+              },
+            },
+          },
+          response: {
+            type: 'object',
+            properties: {},
+            additionalProperties: false,
+          },
+        },
+      },
+    },
     '/tempfiles': {
       methods: {
         post: {
