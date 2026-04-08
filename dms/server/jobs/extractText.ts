@@ -40,7 +40,7 @@ export async function extractText() {
     class: { $exists: false },
     mimetype: { $ne: 'text/plain' satisfies ContentType },
     extractFile: { $exists: false },
-  }).lean();
+  });
 
   for (const doc of documents) {
     let text: string | null = null;
@@ -74,6 +74,7 @@ export async function extractText() {
       const newDoc = await new StoredDocument(data).save();
 
       doc.extractFile = newDoc._id;
+      await doc.save();
     } catch (err) {
       console.error(`extractText failed for ${doc._id.toString()}`, err);
     }
