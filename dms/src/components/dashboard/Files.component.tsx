@@ -257,7 +257,9 @@ export const FilesComponent = () => {
                         <div className="text-md font-medium text-gray-900 truncate">{item.name}</div>
                         {item.type === 'document' && (
                           <>
-                            <div className="text-xs font-medium text-gray-500 truncate">{item.class.toUpperCase()}</div>
+                            <div className="text-xs font-medium text-gray-500 truncate">
+                              {(item.extractFile?.class ?? item.class).toUpperCase()}
+                            </div>
                             <div className="flex flex-col gap-2">
                               <Box display="flex" flexDirection="row" gap={1}>
                                 <Button
