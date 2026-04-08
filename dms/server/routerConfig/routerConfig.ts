@@ -35,6 +35,9 @@ const itemInfo = {
         path: {
           type: 'string',
         },
+        mimetype: {
+          type: 'string',
+        },
         class: {
           type: 'string',
         },
@@ -49,7 +52,7 @@ const itemInfo = {
           additionalProperties: false,
         },
       },
-      required: ['type', 'id', 'name', 'path', 'class'],
+      required: ['type', 'id', 'name', 'path', 'mimetype', 'class'],
       additionalProperties: false,
     },
     {
