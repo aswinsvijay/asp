@@ -10,11 +10,13 @@ import { FileRedactModal } from './FileRedactUI.component';
 import { CreateFolderModal } from './CreateFolderModal.component';
 import { FolderSummarizeModal } from './FolderSummarizeModal.component';
 
+type FileItem = Extract<ItemInfo, { type: 'document' }>;
+
 export const FilesComponent = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [path, setPath] = useState<ItemInfo[]>([]);
   const [widget, setWidget] = useState<'view' | 'redact' | 'folder_summarize' | null>(null);
-  const [selectedFile, setSelectedFile] = useState<ItemInfo | null>(null);
+  const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
   const [createFolderOpen, setCreateFolderOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -64,7 +66,7 @@ export const FilesComponent = () => {
     }
   };
 
-  const handleView = (item: ItemInfo) => {
+  const handleView = (item: FileItem) => {
     setSelectedFile(item);
     setWidget('view');
   };
@@ -90,7 +92,7 @@ export const FilesComponent = () => {
     }
   };
 
-  const handleRedact = (item: ItemInfo) => {
+  const handleRedact = (item: FileItem) => {
     setSelectedFile(item);
     setWidget('redact');
   };
