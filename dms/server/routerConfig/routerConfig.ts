@@ -612,5 +612,24 @@ export default narrowedValue({
         },
       },
     },
+    '/jobs': {
+      methods: {
+        post: {
+          operationId: 'ForceRunAllJobs',
+          response: {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {},
+                additionalProperties: false,
+              },
+            },
+            required: ['data'],
+            additionalProperties: false,
+          },
+        },
+      },
+    },
   },
 } satisfies RouterConfig);
