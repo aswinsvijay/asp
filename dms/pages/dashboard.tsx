@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { SidebarComponent, DashboardViews, CustomIcon } from '@/src/components';
 import { Box, Button } from '@mui/material';
-import { Colors, Spacing, AuthUtils } from '@/src/utils';
+import { Colors, Spacing, AuthUtils, apiCall } from '@/src/utils';
 import { useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
 
 const Dashboard: React.FC = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const [currentView, setCurrentView] = useState<(typeof DashboardViews)[number]['label']>('Files');
   const router = useRouter();
 
@@ -37,7 +39,23 @@ const Dashboard: React.FC = () => {
           alignItems={'center'}
           justifyContent={'flex-end'}
           px={Spacing.SMALL}
+          gap={Spacing.SMALL}
         >
+          <Button
+            variant="outlined"
+            onClick={() => {
+              apiCall('ForceRunAllJobs', { pathParams: {}, queryParams: {}, requestBody: null })
+                .then(() => {
+                  enqueueSnackbar({ variant: 'success', message: 'Successfully started background jobs' });
+                })
+                .catch(() => {
+                  enqueueSnackbar({ variant: 'error', message: 'Error starting background jobs' });
+                });
+            }}
+            size="small"
+          >
+            Run Jobs
+          </Button>
           <Button
             variant="outlined"
             onClick={() => {
