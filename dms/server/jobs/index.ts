@@ -3,6 +3,8 @@ import { extractText } from './extractText';
 
 const FIFTEEN_MINUTES_IN_MS = 15 * 60 * 1000;
 
+export const jobs = [fixUnclassifiedDocuments, extractText];
+
 async function runLoop(callback: () => Promise<void>) {
   try {
     console.log(`Starting job ${callback.name}`);
@@ -16,8 +18,6 @@ async function runLoop(callback: () => Promise<void>) {
 }
 
 export function initialize() {
-  const jobs = [fixUnclassifiedDocuments, extractText];
-
   for (const job of jobs) {
     void runLoop(job);
   }
