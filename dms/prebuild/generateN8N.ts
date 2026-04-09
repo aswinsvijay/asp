@@ -1,7 +1,7 @@
 import compiledRouterConfig from '../server/routerConfig/compiledRouterConfig.out';
 
 export default function generateN8N() {
-  Object.entries(compiledRouterConfig).map(([operationId, config]) => {
+  Object.entries(compiledRouterConfig.compiledOperations).map(([operationId, config]) => {
     const key = `/api${config.path}`;
 
     return [

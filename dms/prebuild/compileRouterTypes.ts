@@ -4,7 +4,7 @@ import { JSONSchema, compile } from 'json-schema-to-typescript';
 import compiledRouterConfig from '../server/routerConfig/compiledRouterConfig.out';
 
 export default async function compileRouterTypes() {
-  const routerConfig = compiledRouterConfig;
+  const routerConfig = compiledRouterConfig.compiledOperations;
 
   const compiledOperations = Object.entries(routerConfig).reduce<Record<string, JSONSchema>>(
     (acc, [operationId, operationInfo]) => {
@@ -50,6 +50,7 @@ export default async function compileRouterTypes() {
         properties: compiledOperations,
         required: Object.keys(compiledOperations),
         additionalProperties: false,
+        definitions: compiledRouterConfig.definitions,
       },
       'CompiledOperations',
       {

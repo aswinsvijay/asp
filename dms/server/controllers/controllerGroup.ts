@@ -3,4 +3,6 @@ import { ControllerGroup } from '../objects';
 import compiledRouterConfig from '../routerConfig/compiledRouterConfig.out';
 import { CompiledOperations } from '../routerConfig/compiledRouterTypes.out';
 
-export const controllerGroup = new ControllerGroup<RemoveIndexSignature<CompiledOperations>>(compiledRouterConfig);
+export const controllerGroup = new ControllerGroup<RemoveIndexSignature<CompiledOperations>>(
+  compiledRouterConfig.compiledOperations
+);

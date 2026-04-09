@@ -73,7 +73,7 @@ const itemInfo = {
   ],
 } as const satisfies HttpJsonSchemaOrgDraft04Schema;
 
-const entitySpan = {
+const EntitySpan = {
   type: 'object',
   title: 'EntitySpan',
   properties: {
@@ -90,6 +90,10 @@ const entitySpan = {
   required: ['entity_group', 'start', 'end'],
   additionalProperties: false,
 } as const satisfies HttpJsonSchemaOrgDraft04Schema;
+
+export const definitions = {
+  EntitySpan,
+};
 
 export default narrowedValue({
   paths: {
@@ -289,7 +293,9 @@ export default narrowedValue({
             properties: {
               data: {
                 type: 'array',
-                items: entitySpan,
+                items: {
+                  $ref: '#/definitions/EntitySpan',
+                },
               },
             },
             required: ['data'],
@@ -573,7 +579,9 @@ export default narrowedValue({
             properties: {
               data: {
                 type: 'array',
-                items: entitySpan,
+                items: {
+                  $ref: '#/definitions/EntitySpan',
+                },
               },
             },
             required: ['data'],

@@ -47,7 +47,7 @@ function convertPathParams(pathParams: Record<string, string | Types.ObjectId | 
 }
 
 export async function apiCall<T extends keyof CompiledOperations>(operation: T, parameters: ApiParameters<T>) {
-  const operationInfo = compiledRouterConfig[operation];
+  const operationInfo = compiledRouterConfig.compiledOperations[operation];
   let url = `/api${operationInfo.path}`;
 
   const convertedPathParams = convertPathParams(parameters.pathParams);

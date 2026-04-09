@@ -134,11 +134,18 @@ koaAuthRouter.post('/register', async (ctx) => {
 
 koaApiRouter.use(authenticator);
 
-Object.entries(compiledRouterConfig).forEach(([operationId, operationInfo]) => {
-  const pathValidator = ajv.compile(operationInfo.pathParams);
-  const queryValidator = ajv.compile(operationInfo.queryParams);
-  const requestBodyValidator = ajv.compile(operationInfo.requestBody?.schema ?? {});
-  const responseValidator = ajv.compile(operationInfo.response);
+function withDefinitions<T extends NonNullable<unknown>>(schema: T) {
+  return {
+    ...schema,
+    definitions: compiledRouterConfig.definitions,
+  };
+}
+
+Object.entries(compiledRouterConfig.compiledOperations).forEach(([operationId, operationInfo]) => {
+  const pathValidator = ajv.compile(withDefinitions(operationInfo.pathParams));
+  const queryValidator = ajv.compile(withDefinitions(operationInfo.queryParams));
+  const requestBodyValidator = ajv.compile(withDefinitions(operationInfo.requestBody?.schema ?? {}));
+  const responseValidator = ajv.compile(withDefinitions(operationInfo.response));
 
   const controller = controllerGroup.get(operationId);
 

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { format, resolveConfig } from 'prettier';
 import { PostMethodConfig, RouterConfig, PathMethods } from '../server/schemas/routerConfig/type';
-import routerConfig from '../server/routerConfig/routerConfig';
+import routerConfig, { definitions } from '../server/routerConfig/routerConfig';
 import { OperationInfo } from '@/server/types';
 
 function* compileRouterGenerator(
@@ -75,7 +75,7 @@ export default async function compileRouter() {
 
   const templateString = fs.readFileSync('./server/templates/compiledRouterConfig', 'utf8');
   const replacedString = await format(
-    templateString.replace('`{{compiledRouterConfig}}`', JSON.stringify(compiledOperations, null, 2)),
+    templateString.replace('`{{compiledRouterConfig}}`', JSON.stringify({ compiledOperations, definitions }, null, 2)),
     { ...config, parser: 'typescript' }
   );
 
