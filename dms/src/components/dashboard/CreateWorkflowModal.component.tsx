@@ -11,7 +11,7 @@ import {
   Select,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { WorkflowInputs } from './WorkflowInputs.component';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
@@ -25,6 +25,43 @@ type InputConfig = ApiParameters<'CreateWorkflow'>['requestBody']['inputs'][numb
 
 const inputTypes = ['string', 'number', 'boolean', 'date'] as const;
 
+const _DesignerInput: React.FC<{
+  input: InputConfig;
+  updateInput: (id: string, update: Partial<InputConfig>) => void;
+}> = ({ input, updateInput }) => {
+  return (
+    <Box display="flex" gap={2}>
+      <TextField
+        label="Name"
+        value={input.name}
+        size="small"
+        onChange={(e) => {
+          updateInput(input.id, { name: e.target.value });
+        }}
+        fullWidth
+      />
+      <Select
+        size="small"
+        sx={{ minWidth: 120 }}
+        labelId={`input-type-label-${input.id}`}
+        id={`input-type-select-${input.id}`}
+        value={input.type}
+        onChange={(e) => {
+          updateInput(input.id, { type: e.target.value });
+        }}
+      >
+        {inputTypes.map((type) => (
+          <MenuItem key={type} value={type}>
+            {type.toUpperCase()}
+          </MenuItem>
+        ))}
+      </Select>
+    </Box>
+  );
+};
+
+const DesignerInput = React.memo(_DesignerInput);
+
 export const CreateWorkflowModal = ({ onClose }: CreateWorkflowModalProps) => {
   const [view, setView] = useState<'edit' | 'test'>('edit');
   const [name, setName] = useState('');
@@ -33,9 +70,9 @@ export const CreateWorkflowModal = ({ onClose }: CreateWorkflowModalProps) => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const updateInput = (id: string, update: Partial<InputConfig>) => {
-    setInputs(inputs.map((inp) => (inp.id === id ? { ...inp, ...update } : inp)));
-  };
+  const updateInput = useCallback((id: string, update: Partial<InputConfig>) => {
+    setInputs((inputs) => inputs.map((inp) => (inp.id === id ? { ...inp, ...update } : inp)));
+  }, []);
 
   const handleClose = () => {
     setName('');
@@ -104,35 +141,7 @@ export const CreateWorkflowModal = ({ onClose }: CreateWorkflowModalProps) => {
               <Box display={'flex'} flexDirection={'column'} p={1} gap={1} sx={{ flex: 1, overflow: 'auto' }}>
                 {inputs.length === 0 && <Typography color="textSecondary">No inputs</Typography>}
                 {inputs.map((input) => (
-                  <Box key={input.id}>
-                    <Box display="flex" gap={2}>
-                      <TextField
-                        label="Name"
-                        value={input.name}
-                        size="small"
-                        onChange={(e) => {
-                          updateInput(input.id, { name: e.target.value });
-                        }}
-                        fullWidth
-                      />
-                      <Select
-                        size="small"
-                        sx={{ minWidth: 120 }}
-                        labelId={`input-type-label-${input.id}`}
-                        id={`input-type-select-${input.id}`}
-                        value={input.type}
-                        onChange={(e) => {
-                          updateInput(input.id, { type: e.target.value });
-                        }}
-                      >
-                        {inputTypes.map((type) => (
-                          <MenuItem key={type} value={type}>
-                            {type.toUpperCase()}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </Box>
-                  </Box>
+                  <DesignerInput key={input.id} input={input} updateInput={updateInput} />
                 ))}
               </Box>
               <Box px={1} sx={{ display: 'flex', gap: 1 }}>
