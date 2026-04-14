@@ -1,6 +1,6 @@
 import { controllerGroup } from './controllerGroup';
 import { ServerBadRequestError, ServerJSONResponse, ServerNotFoundError, ServerUnauthorizedError } from '../objects';
-import { createWorkflow, getWorkflowById, getWorkflows } from '../db';
+import { createWorkflow, getWorkflowById, getWorkflowLastRun, getWorkflows, setWorkflowLastRun } from '../db';
 import axios from 'axios';
 
 controllerGroup.add('CreateWorkflow', async (ctx) => {
@@ -64,17 +64,45 @@ controllerGroup.add('RunWorkflow', async (ctx) => {
 });
 
 controllerGroup.add('GetN8NWorkflowLastRun', async (ctx) => {
+  if (!ctx.state.user) {
+    throw new ServerUnauthorizedError('Un-authorized');
+  }
+
+  if (!ctx.pathParams.n8nWfId) {
+    throw new ServerBadRequestError('n8nWfId is required');
+  }
+
+  let result: Date | null = await getWorkflowLastRun(ctx.pathParams.n8nWfId, { owner: ctx.state.user._id });
+
+  if (!result) {
+    const now = new Date();
+
+    now.setHours(now.getHours() - 1);
+
+    result = now;
+  }
+
   return new ServerJSONResponse(
     await Promise.resolve({
-      data: ctx.pathParams.n8nWfId ?? '',
+      data: result.toString(),
     })
   );
 });
 
 controllerGroup.add('SetN8NWorkflowLastRun', async (ctx) => {
+  if (!ctx.state.user) {
+    throw new ServerUnauthorizedError('Un-authorized');
+  }
+
+  if (!ctx.pathParams.n8nWfId) {
+    throw new ServerBadRequestError('n8nWfId is required');
+  }
+
+  await setWorkflowLastRun(ctx.pathParams.n8nWfId, new Date(), { owner: ctx.state.user._id });
+
   return new ServerJSONResponse(
     await Promise.resolve({
-      data: ctx.pathParams.n8nWfId ?? '',
+      data: ctx.pathParams.n8nWfId,
     })
   );
 });
