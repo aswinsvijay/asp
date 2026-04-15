@@ -47,9 +47,7 @@ export const FilesComponent = () => {
   const handleFileSelected = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      console.log('File selected:', file.name, file.size, file.type);
-
-      void uploadFile(file, deepestParent)
+      uploadFile(file, deepestParent)
         .then(() => {
           enqueueSnackbar({ variant: 'success', message: 'File uploaded' });
           reset();

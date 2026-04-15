@@ -10,8 +10,6 @@ export const RenderInputField: React.FC<{
   updateData: (payload: Record<string, unknown>) => void;
   input: WorkflowFormInput;
 }> = ({ data, updateData, input }) => {
-  console.log('b', input);
-
   const props = {
     id: input.name,
     size: 'small',
