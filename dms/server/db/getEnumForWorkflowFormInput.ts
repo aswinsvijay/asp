@@ -12,7 +12,7 @@ interface OptionResult {
 
 const getDocuments = async (args: { owner: Types.ObjectId }): Promise<OptionResult[]> => {
   const documents = await StoredDocument.find(
-    { owner: args.owner },
+    { owner: args.owner, mimetype: 'text/plain' },
     {
       _id: 1,
       name: 1,
