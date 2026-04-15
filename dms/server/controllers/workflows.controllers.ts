@@ -84,7 +84,7 @@ controllerGroup.add('GetN8NWorkflowLastRun', async (ctx) => {
 
   return new ServerJSONResponse(
     await Promise.resolve({
-      data: result.toString(),
+      data: result.toISOString(),
     })
   );
 });
