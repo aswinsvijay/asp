@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 import { WorkflowFormInput } from '../routerConfig/compiledRouterTypes.out';
 import { Folder, StoredDocument } from './models';
-import { rootFolder } from '../../src/utils';
+import { assertUnreachable, rootFolder } from '../../src/utils';
 
 type Sources = NonNullable<WorkflowFormInput['enumFrom']>;
 
@@ -73,9 +73,7 @@ export const getEnumForWorkflowFormInput = async (
     }
 
     default: {
-      source satisfies never;
+      return assertUnreachable(source, 'Unhandled enum source');
     }
   }
-
-  return [];
 };
