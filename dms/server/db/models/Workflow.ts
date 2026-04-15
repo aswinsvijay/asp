@@ -13,6 +13,10 @@ const WorkflowSchemaDefinition = {
           required: true,
           enum: ['string', 'number', 'boolean', 'date'], // Only allow these specific types
         },
+        enumFrom: {
+          type: String,
+          enum: ['documents', 'folders'], // Only allow these specific types
+        },
       },
     ],
     required: true,
