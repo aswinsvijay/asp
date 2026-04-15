@@ -202,18 +202,6 @@ export const CreateWorkflowModal = ({ onClose }: CreateWorkflowModalProps) => {
                 >
                   Add
                 </Button>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  color="info"
-                  onClick={() => {
-                    // Implement a preview handler here or trigger a modal
-                    // For now, just log preview
-                    console.log('Preview workflow input:', inputs);
-                  }}
-                >
-                  Preview
-                </Button>
               </Box>
             </Box>
           </Box>
