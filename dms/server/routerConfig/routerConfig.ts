@@ -91,8 +91,24 @@ const EntitySpan = {
   additionalProperties: false,
 } as const satisfies HttpJsonSchemaOrgDraft04Schema;
 
+const WorkflowFormInput = {
+  title: 'WorkflowFormInput',
+  type: 'object',
+  properties: {
+    name: { type: 'string' },
+    type: { type: 'string', enum: ['string', 'number', 'date', 'boolean'] },
+    enumFrom: {
+      type: 'string',
+      enum: ['documents', 'folders'],
+    },
+  },
+  required: ['name', 'type'],
+  additionalProperties: false,
+} as const satisfies HttpJsonSchemaOrgDraft04Schema;
+
 export const definitions = {
   EntitySpan,
+  WorkflowFormInput,
 };
 
 export default narrowedValue({
@@ -403,15 +419,7 @@ export default narrowedValue({
                 },
                 inputs: {
                   type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      name: { type: 'string' },
-                      type: { type: 'string', enum: ['string', 'number', 'date', 'boolean'] },
-                    },
-                    required: ['name', 'type'],
-                    additionalProperties: false,
-                  },
+                  items: { $ref: '#/definitions/WorkflowFormInput' },
                 },
               },
               required: ['name', 'callback_url', 'inputs'],
@@ -454,15 +462,7 @@ export default narrowedValue({
                     },
                     inputs: {
                       type: 'array',
-                      items: {
-                        type: 'object',
-                        properties: {
-                          name: { type: 'string' },
-                          type: { type: 'string', enum: ['string', 'number', 'date', 'boolean'] },
-                        },
-                        required: ['name', 'type'],
-                        additionalProperties: false,
-                      },
+                      items: { $ref: '#/definitions/WorkflowFormInput' },
                     },
                   },
                   required: ['id', 'name', 'inputs'],

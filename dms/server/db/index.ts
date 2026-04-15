@@ -15,3 +15,4 @@ export * from './getWorkflows';
 export * from './getWorkflowById';
 export * from './setWorkflowLastRun';
 export * from './getWorkflowLastRun';
+export * from './getEnumForWorkflowFormInput';
