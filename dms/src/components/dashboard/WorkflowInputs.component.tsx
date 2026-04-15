@@ -154,7 +154,7 @@ export const WorkflowInputs: React.FC<{ workflow: Workflow; onSubmit: (data: Rec
   }, [workflow.id]);
 
   return (
-    <>
+    <React.Fragment key={workflow.id}>
       Enter values to pass to workflow
       {workflow.inputs.map((input) => {
         return <RenderInputField key={input.name} input={input} data={data} updateData={updateData} />;
@@ -167,6 +167,6 @@ export const WorkflowInputs: React.FC<{ workflow: Workflow; onSubmit: (data: Rec
       >
         Submit
       </Button>
-    </>
+    </React.Fragment>
   );
 };
