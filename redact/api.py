@@ -107,13 +107,21 @@ async def get_redaction_entities(file: UploadFile = File(...)):
         result = json.loads(json.dumps(result, cls=CustomEncoder))
 
         # do not include general text
-        result = [*filter(
+        result_before_merge = [*filter(
             lambda entity: '0' not in entity['entity_group'],
             result
         )]
 
+        result_after_merge = []
+        for entity in result_before_merge:
+            idx = int(entity['entity_group'].split('_')[1])
+            if idx%2:
+                result_after_merge.append(entity)
+            else:
+                result_after_merge[-1]['end'] = entity['end']
+
         return JSONResponse(
-            content={"data": result}
+            content={"data": result_after_merge}
         )
 
     except Exception as e:
