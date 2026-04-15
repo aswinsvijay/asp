@@ -41,11 +41,10 @@ controllerGroup.add('GetWorkflows', async (ctx) => {
       ...workflow,
       id: workflow._id.toString(),
       inputs: workflow.inputs.map((input) => {
-        const { enumFrom, name, type } = input;
+        const { enumFrom, ...other } = input;
 
         return {
-          name,
-          type,
+          ...other,
           ...(enumFrom ? { enumFrom } : {}),
         };
       }),
