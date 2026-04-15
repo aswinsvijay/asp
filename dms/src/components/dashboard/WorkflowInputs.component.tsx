@@ -44,7 +44,7 @@ export const RenderInputField: React.FC<{
     };
 
     void load();
-  });
+  }, [input.enumFrom]);
 
   switch (input.type) {
     case 'string':
