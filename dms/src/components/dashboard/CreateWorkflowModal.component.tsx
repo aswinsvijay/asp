@@ -1,4 +1,4 @@
-import { apiCall, ApiParameters } from '@/src/utils';
+import { apiCall } from '@/src/utils';
 import {
   Box,
   Button,
@@ -15,15 +15,19 @@ import React, { useCallback, useState } from 'react';
 import { WorkflowInputs } from './WorkflowInputs.component';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
+import { WorkflowFormInput } from '@/server/routerConfig/compiledRouterTypes.out';
 
 interface CreateWorkflowModalProps {
   onClose: () => void;
 }
-type InputConfig = ApiParameters<'CreateWorkflow'>['requestBody']['inputs'][number] & {
-  id: string;
-};
 
-const inputTypes = ['string', 'number', 'boolean', 'date'] as const;
+const inputTypes = ['Document', 'Folder', 'String', 'Number', 'Boolean'] as const satisfies string[];
+
+interface InputConfig {
+  name: string;
+  type: (typeof inputTypes)[number];
+  id: string;
+}
 
 const _DesignerInput: React.FC<{
   input: InputConfig;
@@ -50,9 +54,9 @@ const _DesignerInput: React.FC<{
           updateInput(input.id, { type: e.target.value });
         }}
       >
-        {inputTypes.map((type) => (
-          <MenuItem key={type} value={type}>
-            {type.toUpperCase()}
+        {inputTypes.map((displayName) => (
+          <MenuItem key={displayName} value={displayName}>
+            {displayName}
           </MenuItem>
         ))}
       </Select>
@@ -61,6 +65,43 @@ const _DesignerInput: React.FC<{
 };
 
 const DesignerInput = React.memo(_DesignerInput);
+
+const transformInput = (input: InputConfig): WorkflowFormInput => {
+  switch (input.type) {
+    case 'String': {
+      return {
+        name: input.name,
+        type: 'string',
+      };
+    }
+    case 'Number': {
+      return {
+        name: input.name,
+        type: 'number',
+      };
+    }
+    case 'Boolean': {
+      return {
+        name: input.name,
+        type: 'boolean',
+      };
+    }
+    case 'Document': {
+      return {
+        name: input.name,
+        type: 'string',
+        enumFrom: 'documents',
+      };
+    }
+    case 'Folder': {
+      return {
+        name: input.name,
+        type: 'string',
+        enumFrom: 'folders',
+      };
+    }
+  }
+};
 
 export const CreateWorkflowModal = ({ onClose }: CreateWorkflowModalProps) => {
   const [view, setView] = useState<'edit' | 'test'>('edit');
@@ -88,7 +129,7 @@ export const CreateWorkflowModal = ({ onClose }: CreateWorkflowModalProps) => {
       requestBody: {
         name,
         callback_url: url,
-        inputs,
+        inputs: inputs.map(transformInput),
       },
     });
 
@@ -154,7 +195,7 @@ export const CreateWorkflowModal = ({ onClose }: CreateWorkflowModalProps) => {
                       {
                         id: Date.now().toString(),
                         name: '',
-                        type: 'string',
+                        type: 'String',
                       },
                     ]);
                   }}
@@ -180,7 +221,7 @@ export const CreateWorkflowModal = ({ onClose }: CreateWorkflowModalProps) => {
         {view === 'test' && (
           <div className="flex flex-col flex-1 px-4 py-2 gap-2 overflow-auto">
             <WorkflowInputs
-              workflow={{ id: '', name, inputs }}
+              workflow={{ id: '', name, inputs: inputs.map(transformInput) }}
               onSubmit={(data) => {
                 axios({
                   url,
