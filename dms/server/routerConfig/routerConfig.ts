@@ -631,7 +631,7 @@ export default narrowedValue({
         },
       },
     },
-    '/workflowInputOptions/{type}': {
+    '/workflowInputOptions/:type': {
       methods: {
         get: {
           operationId: 'GetWorkflowInputOptions',
