@@ -631,5 +631,43 @@ export default narrowedValue({
         },
       },
     },
+    '/workflowInputOptions/{type}': {
+      methods: {
+        get: {
+          operationId: 'GetWorkflowInputOptions',
+          pathParams: {
+            properties: {
+              type: {
+                type: 'string',
+                enum: WorkflowFormInput.properties.enumFrom.enum,
+              },
+            },
+          },
+          response: {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    displayName: {
+                      type: 'string',
+                    },
+                    value: {
+                      type: 'string',
+                    },
+                  },
+                  required: ['value', 'displayName'],
+                  additionalProperties: false,
+                },
+              },
+            },
+            required: ['data'],
+            additionalProperties: false,
+          },
+        },
+      },
+    },
   },
 } satisfies RouterConfig);

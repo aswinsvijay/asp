@@ -1,6 +1,13 @@
 import { controllerGroup } from './controllerGroup';
 import { ServerBadRequestError, ServerJSONResponse, ServerNotFoundError, ServerUnauthorizedError } from '../objects';
-import { createWorkflow, getWorkflowById, getWorkflowLastRun, getWorkflows, setWorkflowLastRun } from '../db';
+import {
+  createWorkflow,
+  getEnumForWorkflowFormInput,
+  getWorkflowById,
+  getWorkflowLastRun,
+  getWorkflows,
+  setWorkflowLastRun,
+} from '../db';
 import axios from 'axios';
 
 controllerGroup.add('CreateWorkflow', async (ctx) => {
@@ -82,11 +89,9 @@ controllerGroup.add('GetN8NWorkflowLastRun', async (ctx) => {
     result = now;
   }
 
-  return new ServerJSONResponse(
-    await Promise.resolve({
-      data: result.toISOString(),
-    })
-  );
+  return new ServerJSONResponse({
+    data: result.toISOString(),
+  });
 });
 
 controllerGroup.add('SetN8NWorkflowLastRun', async (ctx) => {
@@ -100,9 +105,25 @@ controllerGroup.add('SetN8NWorkflowLastRun', async (ctx) => {
 
   await setWorkflowLastRun(ctx.pathParams.n8nWfId, new Date(), { owner: ctx.state.user._id });
 
-  return new ServerJSONResponse(
-    await Promise.resolve({
-      data: ctx.pathParams.n8nWfId,
-    })
-  );
+  return new ServerJSONResponse({
+    data: ctx.pathParams.n8nWfId,
+  });
+});
+
+controllerGroup.add('GetWorkflowInputOptions', async (ctx) => {
+  if (!ctx.state.user) {
+    throw new ServerUnauthorizedError('Un-authorized');
+  }
+
+  const inputType = ctx.pathParams.type;
+
+  if (!inputType) {
+    throw new ServerBadRequestError('inputType is required');
+  }
+
+  const result = await getEnumForWorkflowFormInput(inputType, { owner: ctx.state.user._id });
+
+  return new ServerJSONResponse({
+    data: result,
+  });
 });
