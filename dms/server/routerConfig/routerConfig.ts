@@ -111,6 +111,10 @@ export const definitions = {
   WorkflowFormInput,
 };
 
+function generateRef(key: keyof typeof definitions) {
+  return { $ref: `#/definitions/${key}` };
+}
+
 export default narrowedValue({
   paths: {
     '/:parentId/children': {
@@ -309,9 +313,7 @@ export default narrowedValue({
             properties: {
               data: {
                 type: 'array',
-                items: {
-                  $ref: '#/definitions/EntitySpan',
-                },
+                items: generateRef('EntitySpan'),
               },
             },
             required: ['data'],
@@ -419,7 +421,7 @@ export default narrowedValue({
                 },
                 inputs: {
                   type: 'array',
-                  items: { $ref: '#/definitions/WorkflowFormInput' },
+                  items: generateRef('WorkflowFormInput'),
                 },
               },
               required: ['name', 'callback_url', 'inputs'],
@@ -462,7 +464,7 @@ export default narrowedValue({
                     },
                     inputs: {
                       type: 'array',
-                      items: { $ref: '#/definitions/WorkflowFormInput' },
+                      items: generateRef('WorkflowFormInput'),
                     },
                   },
                   required: ['id', 'name', 'inputs'],
@@ -579,9 +581,7 @@ export default narrowedValue({
             properties: {
               data: {
                 type: 'array',
-                items: {
-                  $ref: '#/definitions/EntitySpan',
-                },
+                items: generateRef('EntitySpan'),
               },
             },
             required: ['data'],
