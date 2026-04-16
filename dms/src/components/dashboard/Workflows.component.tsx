@@ -1,5 +1,5 @@
 import { Alert, Box, Button, CircularProgress } from '@mui/material';
-import { ApiResponse, Spacing, tryApiCall, useApiCall, useMemoizedParameters } from '@/src/utils';
+import { ApiResponse, assertUnreachable, Spacing, tryApiCall, useApiCall, useMemoizedParameters } from '@/src/utils';
 import { CustomIcon } from '../CustomIcon.component';
 import { CreateWorkflowModal } from './CreateWorkflowModal.component';
 import { useCallback, useEffect, useState } from 'react';
@@ -170,6 +170,8 @@ export const WorkflowRun: React.FC<{ workflow: Workflow | null }> = ({ workflow 
             </Alert>
           </div>
         );
+      default:
+        assertUnreachable(runStatus, 'Unhandled runStatus type');
     }
   }
 
