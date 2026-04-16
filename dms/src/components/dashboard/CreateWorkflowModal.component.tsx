@@ -1,4 +1,4 @@
-import { apiCall } from '@/src/utils';
+import { apiCall, assertUnreachable } from '@/src/utils';
 import {
   Box,
   Button,
@@ -99,6 +99,9 @@ const transformInput = (input: InputConfig): WorkflowFormInput => {
         type: 'string',
         enumFrom: 'folders',
       };
+    }
+    default: {
+      return assertUnreachable(input.type, 'Unhandled input field type');
     }
   }
 };
