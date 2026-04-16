@@ -1,5 +1,5 @@
 import { Button, Checkbox, FormControlLabel, MenuItem, TextField } from '@mui/material';
-import { apiCall, ApiResponse } from '@/src/utils';
+import { apiCall, ApiResponse, assertUnreachable } from '@/src/utils';
 import React, { useCallback, useEffect, useState } from 'react';
 import { WorkflowFormInput } from '@/server/routerConfig/compiledRouterTypes.out';
 
@@ -132,7 +132,11 @@ export const RenderInputField: React.FC<{
           />
         </div>
       );
+    case 'date':
+      return null;
     default:
+      assertUnreachable(input.type, 'Unhandled input type');
+
       return null;
   }
 };
