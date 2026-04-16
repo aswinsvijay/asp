@@ -116,10 +116,8 @@ export const FileRedactUI: React.FC<FileRedactModalProps & { style: 'modal' | 'i
       case 'temp':
         return 'tempfile.txt';
       default:
-        assertUnreachable(file, 'Unhandled file type');
+        return assertUnreachable(file, 'Unhandled file type');
     }
-
-    return '';
   }, [file]);
 
   const saveRedactedFile = async () => {
