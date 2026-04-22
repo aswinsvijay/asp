@@ -27,24 +27,12 @@ MODEL_BASE_PATH = pathlib.Path(dir) / 'models'
 dataset_path  = pathlib.Path(dir) / 'data' / 'dataset.csv'
 
 def load_dataset() -> DatasetDict:
-    """
-    Load dataset from local CSV file.
-    
-    Returns:
-        DatasetDict with train and test splits
-    """
     text_column = "Text"
     label_column = "Label"
     
     # Load CSV file
     print(f"Loading dataset from {dataset_path}...")
     df = pd.read_csv(dataset_path)
-    
-    # Check if required columns exist
-    if text_column not in df.columns:
-        raise ValueError(f"Column '{text_column}' not found. Available columns: {df.columns.tolist()}")
-    if label_column not in df.columns:
-        raise ValueError(f"Column '{label_column}' not found. Available columns: {df.columns.tolist()}")
     
     # Remove rows with missing values
     df = df.dropna(subset=[text_column, label_column])
@@ -71,19 +59,6 @@ def load_dataset() -> DatasetDict:
 
 
 def preprocess_dataset(dataset, tokenizer, text_column: str, label_column: str, label2id: dict):
-    """
-    Preprocess the dataset for training.
-    
-    Args:
-        dataset: Hugging Face Dataset
-        tokenizer: Tokenizer to use
-        text_column: Name of text column
-        label_column: Name of label column
-        label2id: Mapping from label to id
-    
-    Returns:
-        Preprocessed dataset
-    """
     def tokenize(examples):
         # Tokenize texts
         texts = examples[text_column]
@@ -111,9 +86,6 @@ def preprocess_dataset(dataset, tokenizer, text_column: str, label_column: str, 
 
 
 def compute_metrics(eval_pred):
-    """
-    Compute metrics for evaluation.
-    """
     predictions, labels = eval_pred
     predictions = np.argmax(predictions, axis=1)
     
@@ -135,16 +107,6 @@ def train(
     batch_size: int,
     learning_rate: float,
 ):
-    """
-    Train a text classification model.
-    
-    Args:
-        model_name: Hugging Face model name
-        output_dir: Directory to save the model
-        num_epochs: Number of training epochs
-        batch_size: Training batch size
-        learning_rate: Learning rate
-    """
     # Load dataset
     dataset_dict, text_col, label_col = load_dataset()
     
