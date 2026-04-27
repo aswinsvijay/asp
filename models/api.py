@@ -41,8 +41,8 @@ summary_model_path = "./summary_model/models/summary_model"
 if not os.path.exists(summary_model_path):
     raise FileNotFoundError("Model not found")
 
-summary_tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-cnn")
-summary_model = AutoModelForSeq2SeqLM.from_pretrained("facebook/bart-large-cnn")
+summary_tokenizer = AutoTokenizer.from_pretrained(summary_model_path)
+summary_model = AutoModelForSeq2SeqLM.from_pretrained(summary_model_path)
 
 summary_pipeline = pipeline(
     task="summarization",

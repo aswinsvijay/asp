@@ -1,4 +1,4 @@
-# https://www.kaggle.com/datasets/sunilthite/text-document-classification-dataset/code
+# https://www.kaggle.com/datasets/sunilthite/text-document-classification-dataset
 
 import os
 import pathlib

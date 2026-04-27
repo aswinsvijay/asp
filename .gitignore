@@ -44,11 +44,11 @@ n8n
 dist
 *.out.ts
 
-redact/redact_model/models
+models/redact_model/models
 pii-model.zip
-redact/classify_model/models
+models/classify_model/models
 classify_model.zip
-redact/summary_model/models
+models/summary_model/models
 summary_model.zip
 
 .env
